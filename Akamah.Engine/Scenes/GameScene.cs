@@ -3,7 +3,7 @@ namespace Akamah.Engine.Scenes;
 
 public class GameScene : Scene
 {
-  readonly Map map = new(100, 100);
+  readonly Map map = new(300, 200);
   Camera2D camera = new()
   {
     Target = new Vector2(0, 0),
@@ -51,7 +51,6 @@ public class GameScene : Scene
 
 
     camera.Target += movement;
-    camera.Target = Vector2.Clamp(camera.Target, Vector2.Zero, new Vector2(74 * 16, 85 * 16));
   }
 
   public override void Draw()

@@ -23,24 +23,21 @@ public class ForestTile : Tile
     base.Update(deltaTime);
     if (tree != null)
     {
-      tree.Position = Position + new Vector2(4, 4);
+      tree.Position = Position;
     }
   }
 
   public override void Draw()
   {
     base.Draw();
-    DrawRectangleV(Position, new Vector2(16), Color.DarkGreen);
+    DrawTexturePro(
+      AssetsManager.Textures["TinyTown"],
+      new Rectangle(16, 0, 16, 16),
+      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Vector2(0, 0),
+      0.0f,
+      Color.White
+    );
     tree?.Draw();
-  }
-
-  public override List<(TileType type, float weight)> ValidNeighbors()
-  {
-    return
-    [
-      (TileType.Forest, 3.0f),    // High chance to cluster
-      (TileType.Grass, 2.0f),     // Medium chance (forest edges)
-      (TileType.Mountain, 1.5f),  // Medium chance (forested hills)
-    ];
   }
 }

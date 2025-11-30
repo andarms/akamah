@@ -19,6 +19,7 @@ public static class SceneManager
   public static void Initialize()
   {
     currentScene?.Initialize();
+    AssetsManager.LoadAssets();
   }
 
   public static void AddScene(Scene scene)

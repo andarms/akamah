@@ -23,6 +23,9 @@ public class Map(int width, int height) : GameObject
   PerlinNoise heightNoise = new(12345);
   PerlinNoise moistureNoise = new(54321);
 
+  public int width { get; } = width;
+  public int height { get; } = height;
+
 
   const int INVALID_NEIGHBOR = -1;
   private static Random random = new();
@@ -107,7 +110,8 @@ public class Map(int width, int height) : GameObject
 
     // Peak elevations - mostly mountains with some variation
     if (moisture > 0.8f && height < 0.95f)
-      return TileType.Forest; // High-altitude cloud forests
+      // return TileType.Forest; // High-altitude cloud forests
+      return TileType.Mountain; // High-altitude cloud forests
     else
       return TileType.Mountain; // Rocky peaks and alpine zones
   }

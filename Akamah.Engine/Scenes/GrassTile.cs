@@ -7,16 +7,13 @@ public class GrassTile : Tile
   public override void Draw()
   {
     base.Draw();
-    DrawRectangleV(Position, new Vector2(16), Color.Green);
-  }
-
-  public override List<(TileType type, float weight)> ValidNeighbors()
-  {
-    return
-    [
-      (TileType.Grass, 10.0f),   // High chance to cluster
-      (TileType.Forest, 2.0f),  // Medium chance
-      (TileType.Sand, 0.5f),    // Low chance, transition tile
-    ];
+    DrawTexturePro(
+      AssetsManager.Textures["TinyTown"],
+      new Rectangle(0, 0, 16, 16),
+      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Vector2(0, 0),
+      0.0f,
+      Color.White
+    );
   }
 }

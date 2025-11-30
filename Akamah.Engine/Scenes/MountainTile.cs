@@ -7,15 +7,13 @@ public class MountainTile : Tile
   public override void Draw()
   {
     base.Draw();
-    DrawRectangleV(Position, new Vector2(16), Color.Gray);
-  }
-
-  public override List<(TileType type, float weight)> ValidNeighbors()
-  {
-    return
-    [
-      (TileType.Mountain, 2.5f),  // High chance to cluster (mountain ranges)
-      (TileType.Forest, 1.5f),    // Medium chance (forested mountains)
-    ];
+    DrawTexturePro(
+      AssetsManager.Textures["TinyDungeon"],
+      new Rectangle(64, 48, 16, 16),
+      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Vector2(0, 0),
+      0.0f,
+      Color.White
+    );
   }
 }
