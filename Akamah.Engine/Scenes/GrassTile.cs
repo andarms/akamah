@@ -10,13 +10,13 @@ public class GrassTile : Tile
     DrawRectangleV(Position, new Vector2(16), Color.Green);
   }
 
-  public override List<TileType> ValidNeighbors()
+  public override List<(TileType type, float weight)> ValidNeighbors()
   {
     return
     [
-      TileType.Grass,
-      TileType.Forest,
-      TileType.Sand,
+      (TileType.Grass, 10.0f),   // High chance to cluster
+      (TileType.Forest, 2.0f),  // Medium chance
+      (TileType.Sand, 0.5f),    // Low chance, transition tile
     ];
   }
 }

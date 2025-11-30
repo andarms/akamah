@@ -11,12 +11,12 @@ public class WaterTile : Tile
   }
 
 
-  public override List<TileType> ValidNeighbors()
+  public override List<(TileType type, float weight)> ValidNeighbors()
   {
     return
     [
-      TileType.Water,
-      TileType.Sand,
+      (TileType.Water, 10.0f),   // Very high chance to cluster (lakes, rivers)
+      (TileType.Sand, 1.0f),    // Medium chance (beaches)
     ];
   }
 }

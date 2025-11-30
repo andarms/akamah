@@ -10,12 +10,12 @@ public class MountainTile : Tile
     DrawRectangleV(Position, new Vector2(16), Color.Gray);
   }
 
-  public override List<TileType> ValidNeighbors()
+  public override List<(TileType type, float weight)> ValidNeighbors()
   {
     return
     [
-      TileType.Mountain,
-      TileType.Forest,
+      (TileType.Mountain, 2.5f),  // High chance to cluster (mountain ranges)
+      (TileType.Forest, 1.5f),    // Medium chance (forested mountains)
     ];
   }
 }

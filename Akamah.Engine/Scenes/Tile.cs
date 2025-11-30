@@ -9,15 +9,15 @@ public abstract class Tile : GameObject
     DrawRectangleV(Position, new Vector2(16), Color.Black);
   }
 
-  public virtual List<TileType> ValidNeighbors()
+  public virtual List<(TileType type, float weight)> ValidNeighbors()
   {
     return
     [
-      TileType.Grass,
-      TileType.Forest,
-      TileType.Sand,
-      TileType.Mountain,
-      TileType.Water
+      (TileType.Grass, 1.0f),
+      (TileType.Forest, 1.0f),
+      (TileType.Sand, 1.0f),
+      (TileType.Mountain, 1.0f),
+      (TileType.Water, 1.0f)
     ];
   }
 }

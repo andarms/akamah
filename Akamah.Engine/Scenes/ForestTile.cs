@@ -9,13 +9,13 @@ public class ForestTile : Tile
     DrawRectangleV(Position, new Vector2(16), Color.DarkGreen);
   }
 
-  public override List<TileType> ValidNeighbors()
+  public override List<(TileType type, float weight)> ValidNeighbors()
   {
     return
     [
-      TileType.Forest,
-      TileType.Grass,
-      TileType.Mountain,
+      (TileType.Forest, 3.0f),    // High chance to cluster
+      (TileType.Grass, 2.0f),     // Medium chance (forest edges)
+      (TileType.Mountain, 1.5f),  // Medium chance (forested hills)
     ];
   }
 }
