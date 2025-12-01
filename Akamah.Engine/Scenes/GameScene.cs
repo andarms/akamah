@@ -3,7 +3,7 @@ namespace Akamah.Engine.Scenes;
 
 public class GameScene : Scene
 {
-  readonly Map map = new(300, 200);
+  readonly Map map = new(100, 100);
   Camera2D camera = new()
   {
     Target = new Vector2(0, 0),
@@ -11,6 +11,10 @@ public class GameScene : Scene
     Rotation = 0.0f,
     Zoom = 3.0f
   };
+
+
+  Vector2 MapLimit => new(map.width * 16, map.height * 16);
+  Vector2 CameraLimit => new(MapLimit.X - GetScreenWidth() / camera.Zoom, MapLimit.Y - GetScreenHeight() / camera.Zoom);
 
   public override void Initialize()
   {
@@ -51,6 +55,7 @@ public class GameScene : Scene
 
 
     camera.Target += movement;
+    camera.Target = Vector2.Clamp(camera.Target, Vector2.Zero, CameraLimit);
   }
 
   public override void Draw()
@@ -58,5 +63,7 @@ public class GameScene : Scene
     BeginMode2D(camera);
     base.Draw();
     EndMode2D();
+
+    DrawFPS(10, 10);
   }
 }
