@@ -33,11 +33,12 @@ public class Map(int width, int height) : GameObject
 
   public void GenerateRandomMap()
   {
+    // Properly remove all trees using GameManager.RemoveGameObject to clean up spatial systems
     foreach (var obj in GameManager.GameObjects.ToArray())
     {
       if (obj is Tree)
       {
-        GameManager.GameObjects.Remove(obj);
+        GameManager.RemoveGameObject(obj);
       }
     }
     Array.Fill(Tiles, null);

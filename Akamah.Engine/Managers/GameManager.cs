@@ -8,7 +8,7 @@ public static class GameManager
 
   public static List<GameObject> GameObjects { get; set; } = [];
 
-  public static Map Map { get; set; } = new(100, 100);
+  public static Map Map { get; set; } = new(200, 200);
 
   public static int Seed { get; } = new Random().Next();
 
