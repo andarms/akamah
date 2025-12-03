@@ -20,11 +20,9 @@ public class GameObject
 
   public virtual void Draw()
   {
-    if (!IsInCameraView())
-    {
-      Visible = false;
-      return;
-    }
+    // Spatial system now handles visibility culling more efficiently
+    // Individual objects don't need to check visibility anymore
+    // The spatial manager filters objects before calling Draw()
     Visible = true;
   }
 

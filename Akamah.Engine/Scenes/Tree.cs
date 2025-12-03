@@ -17,6 +17,9 @@ public class Tree : GameObject
 
   public override void Draw()
   {
+    // Spatial system handles visibility culling for trees
+    Visible = true;
+
     DrawTexturePro(
       AssetsManager.Textures["TinyTown"],
       new Rectangle(64, 32, 16, 16),
@@ -25,6 +28,7 @@ public class Tree : GameObject
       0.0f,
       Color.White
     );
+
     if (Collider != null && GameManager.DebugMode)
     {
       DrawRectangleV(Position + Collider.Offset, Collider.Size, Collider.DebugColor);

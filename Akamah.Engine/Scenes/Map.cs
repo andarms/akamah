@@ -63,6 +63,9 @@ public class Map(int width, int height) : GameObject
     }
 
     this.Initialize();
+
+    // Resize spatial grid to match current map dimensions
+    SpatialManager.ResizeToMapDimensions();
   }
 
   public override void Initialize()

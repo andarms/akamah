@@ -14,7 +14,7 @@ public abstract class Tile : GameObject
 
   public override void Draw()
   {
-    // Call base visibility check first
+    // Spatial system handles most culling, but tiles still check for precision
     if (!IsInCameraView())
     {
       Visible = false;

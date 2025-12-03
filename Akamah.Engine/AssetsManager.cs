@@ -1,5 +1,3 @@
-using System.Net.NetworkInformation;
-
 namespace Akamah.Engine;
 
 public static class AssetsManager

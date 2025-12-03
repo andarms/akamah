@@ -129,6 +129,75 @@ public class SpatialHashGrid
   }
 
   /// <summary>
+  /// Get all objects within a viewport area for rendering
+  /// </summary>
+  public IEnumerable<GameObject> GetObjectsInViewport(Vector2 topLeft, Vector2 bottomRight)
+  {
+    var viewportBounds = new Rectangle(
+      topLeft.X,
+      topLeft.Y,
+      bottomRight.X - topLeft.X,
+      bottomRight.Y - topLeft.Y
+    );
+
+    var visibleObjects = new HashSet<GameObject>();
+
+    foreach (int cellHash in GetOverlappingCells(viewportBounds))
+    {
+      if (grid.TryGetValue(cellHash, out var cell))
+      {
+        foreach (var obj in cell)
+        {
+          visibleObjects.Add(obj);
+        }
+      }
+    }
+
+    return visibleObjects;
+  }
+
+  /// <summary>
+  /// Get objects in specific grid cells efficiently (for rendering optimization)
+  /// </summary>
+  public IEnumerable<GameObject> GetObjectsInCells(int minGridX, int minGridY, int maxGridX, int maxGridY)
+  {
+    var objects = new HashSet<GameObject>();
+
+    // Clamp to valid grid bounds
+    minGridX = Math.Max(0, minGridX);
+    minGridY = Math.Max(0, minGridY);
+    maxGridX = Math.Min(gridWidth - 1, maxGridX);
+    maxGridY = Math.Min(gridHeight - 1, maxGridY);
+
+    for (int y = minGridY; y <= maxGridY; y++)
+    {
+      for (int x = minGridX; x <= maxGridX; x++)
+      {
+        int cellHash = GridToHash(x, y);
+        if (grid.TryGetValue(cellHash, out var cell))
+        {
+          foreach (var obj in cell)
+          {
+            objects.Add(obj);
+          }
+        }
+      }
+    }
+
+    return objects;
+  }
+
+  /// <summary>
+  /// Get viewport grid coordinates
+  /// </summary>
+  public (int minX, int minY, int maxX, int maxY) GetViewportGridBounds(Vector2 topLeft, Vector2 bottomRight)
+  {
+    var (minX, minY) = WorldToGrid(topLeft.X, topLeft.Y);
+    var (maxX, maxY) = WorldToGrid(bottomRight.X, bottomRight.Y);
+    return (minX, minY, maxX, maxY);
+  }
+
+  /// <summary>
   /// Clear all objects from the grid
   /// </summary>
   public void Clear()
@@ -137,12 +206,9 @@ public class SpatialHashGrid
   }
 
   /// <summary>
-  /// Get debug information about the grid
+  /// Get the cell size used by this grid
   /// </summary>
-  public (int cellCount, int objectCount) GetDebugInfo()
-  {
-    int cellCount = grid.Count;
-    int objectCount = grid.Values.Sum(cell => cell.Count);
-    return (cellCount, objectCount);
-  }
+  public int CellSize => cellSize;
+
+
 }

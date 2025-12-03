@@ -16,7 +16,8 @@ public static class GameManager
 
   public static void Initialize()
   {
-    // Initialize collision system
+    // Initialize spatial system (handles both collision and rendering)
+    SpatialManager.Initialize();
     CollisionsManager.Initialize();
 
     // Subscribe to collision events
@@ -29,8 +30,12 @@ public static class GameManager
     GameObjects.Add(Map);
     GameObjects.Add(Player);
 
-    // Register player with collision system
-    CollisionsManager.AddObject(Player);
+    // Register player with spatial system
+    SpatialManager.AddObject(Player);
+    if (Player.Collider != null)
+    {
+      CollisionsManager.AddObject(Player);
+    }
 
     foreach (var obj in GameObjects.ToArray())
     {
@@ -64,29 +69,57 @@ public static class GameManager
     // Update the map (it has its own internal culling)
     Map.Update(deltaTime);
 
-    // Update collision system
+    // Update spatial system and collision detection
     CollisionsManager.Update(deltaTime);
+
+    // Get visible objects from spatial system for efficient updates
+    var (viewportTopLeft, viewportBottomRight) = ViewportManager.CameraViewport;
+    var visibleObjects = SpatialManager.GetVisibleObjects(viewportTopLeft, viewportBottomRight);
+
+    // Update only visible objects (except special cases)
+    foreach (var obj in visibleObjects)
+    {
+      if (obj != Map && obj != Player && !ShouldAlwaysUpdate(obj))
+      {
+        obj.Update(deltaTime);
+      }
+    }
+
+    // Update objects that should always be updated regardless of visibility
     foreach (var obj in GameObjects)
     {
-      if (obj != Map && obj != Player)
+      if (obj != Map && obj != Player && ShouldAlwaysUpdate(obj))
       {
-        if (obj.Visible || ShouldAlwaysUpdate(obj))
-        {
-          obj.Update(deltaTime);
-        }
+        obj.Update(deltaTime);
       }
     }
   }
 
   public static void DrawVisibleObjects()
   {
+    // Draw the map first (it has its own culling)
     Map.Draw();
-    foreach (var obj in GameObjects)
+
+    // Get visible objects from spatial system
+    var (viewportTopLeft, viewportBottomRight) = ViewportManager.CameraViewport;
+    var visibleObjects = SpatialManager.GetVisibleObjects(viewportTopLeft, viewportBottomRight).ToList();
+
+    // Sort visible objects by Y position for proper rendering order
+    visibleObjects.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
+
+    // Draw visible objects (excluding map since it's already drawn)
+    foreach (var obj in visibleObjects)
     {
-      if (obj != Map && (obj.Visible || obj == Player))
+      if (obj != Map)
       {
         obj.Draw();
       }
+    }
+
+    // Always draw the player if not already in visible objects
+    if (!visibleObjects.Contains(Player))
+    {
+      Player.Draw();
     }
   }
 
@@ -95,11 +128,30 @@ public static class GameManager
   {
     if (gameObject == null) return;
     GameObjects.Add(gameObject);
+
+    // Add to spatial system for rendering optimization
+    SpatialManager.AddObject(gameObject);
+
+    // Add to collision system if it has a collider
     if (gameObject.Collider != null)
     {
       CollisionsManager.AddObject(gameObject);
     }
+
     gameObject.Initialize();
+  }
+
+  public static void RemoveGameObject(GameObject gameObject)
+  {
+    if (gameObject == null) return;
+
+    GameObjects.Remove(gameObject);
+    SpatialManager.RemoveObject(gameObject);
+
+    if (gameObject.Collider != null)
+    {
+      CollisionsManager.RemoveObject(gameObject);
+    }
   }
 
   private static bool ShouldAlwaysUpdate(GameObject obj)

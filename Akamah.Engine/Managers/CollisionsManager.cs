@@ -6,135 +6,51 @@ namespace Akamah.Engine.Managers;
 
 public static class CollisionsManager
 {
-  const int CELL_SIZE = 64;
-  const int WORLD_WIDTH = 10_000;
-  const int WORLD_HEIGHT = 10_000;
-
-  private static SpatialHashGrid spatialGrid = new(CELL_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
-  private static readonly List<GameObject> objects = [];
-  private static readonly Dictionary<GameObject, Rectangle> lastKnownCollisionBounds = [];
+  // Collision events that can be subscribed to
+  public static event Action<GameObject, GameObject>? OnCollisionEnter;
+  public static event Action<GameObject, GameObject>? OnCollisionExit;
 
   public static void Initialize()
   {
-    spatialGrid = new SpatialHashGrid(CELL_SIZE, WORLD_WIDTH, WORLD_HEIGHT);
-    objects.Clear();
-    lastKnownCollisionBounds.Clear();
+    // Wire up collision events from SpatialManager
+    SpatialManager.OnCollisionEnterEvent = (a, b) => OnCollisionEnter?.Invoke(a, b);
+    SpatialManager.OnCollisionExitEvent = (a, b) => OnCollisionExit?.Invoke(a, b);
   }
 
   public static void AddObject(GameObject obj)
   {
     if (obj.Collider == null) return;
-    objects.Add(obj);
-    var bounds = GetBounds(obj);
-    lastKnownCollisionBounds[obj] = bounds;
-    spatialGrid.AddObject(obj, bounds);
+    SpatialManager.AddObject(obj);
   }
 
   public static void RemoveObject(GameObject obj)
   {
-    if (objects.Remove(obj))
-    {
-      if (lastKnownCollisionBounds.TryGetValue(obj, out var bounds))
-      {
-        spatialGrid.RemoveObject(obj, bounds);
-        lastKnownCollisionBounds.Remove(obj);
-      }
-      if (obj.Collider != null)
-      {
-        obj.Collider.Collisions.Clear();
-      }
-    }
+    SpatialManager.RemoveObject(obj);
   }
-
 
   public static void Update(float dt)
   {
-    UpdatePositions();
-    CheckCollisions();
+    // Update spatial positions and perform collision detection
+    SpatialManager.UpdatePositions();
+    SpatialManager.UpdateCollisions();
   }
 
-  /// <summary>
-  /// Process collision enter/stay/exit events for all objects using spatial hashing
-  /// </summary>
-  private static void CheckCollisions()
-  {
-    var checkedPairs = new HashSet<(GameObject, GameObject)>();
-
-    foreach (var objA in objects)
-    {
-      if (objA.Collider == null) continue;
-
-      var objABounds = GetBounds(objA);
-      var potentialCollisions = spatialGrid.GetPotentialCollisions(objABounds);
-
-      foreach (var objB in potentialCollisions)
-      {
-        if (objB == objA || objB.Collider == null) continue;
-
-        // Ensure we only check each pair once
-        var pair = objA.GetHashCode() < objB.GetHashCode() ? (objA, objB) : (objB, objA);
-        if (checkedPairs.Contains(pair)) continue;
-        checkedPairs.Add(pair);
-
-        bool wasColliding = objA.Collider.Collisions.Contains(objB);
-        bool isColliding = CheckCollisionRecs(objABounds, GetBounds(objB));
-
-        if (isColliding && !wasColliding)
-        {
-          objA.Collider.Collisions.Add(objB);
-          objB.Collider.Collisions.Add(objA);
-
-          // Trigger collision events here if needed
-          OnCollisionEnter?.Invoke(objA, objB);
-        }
-        else if (!isColliding && wasColliding)
-        {
-          objA.Collider.Collisions.Remove(objB);
-          objB.Collider.Collisions.Remove(objA);
-
-          // Trigger collision exit events here if needed
-          OnCollisionExit?.Invoke(objA, objB);
-        }
-      }
-    }
-  }  // Collision events that can be subscribed to
-  public static event Action<GameObject, GameObject>? OnCollisionEnter;
-  public static event Action<GameObject, GameObject>? OnCollisionExit;
-
-  private static void UpdatePositions()
-  {
-    foreach (var obj in objects)
-    {
-      if (obj.Collider == null) continue;
-
-      var currentBounds = GetBounds(obj);
-      if (lastKnownCollisionBounds.TryGetValue(obj, out var lastKnownBounds) &&
-          (lastKnownBounds.X != currentBounds.X || lastKnownBounds.Y != currentBounds.Y ||
-           lastKnownBounds.Width != currentBounds.Width || lastKnownBounds.Height != currentBounds.Height))
-      {
-        // Update spatial grid with new position
-        spatialGrid.UpdateObject(obj, lastKnownBounds, currentBounds);
-        lastKnownCollisionBounds[obj] = currentBounds;
-      }
-    }
-  }
   public static IEnumerable<GameObject> GetPotentialCollisions(GameObject obj)
   {
-    if (obj.Collider == null) yield break;
-
-    var objBounds = GetBounds(obj);
-    var potentialObjects = spatialGrid.GetPotentialCollisions(objBounds);
+    var potentialObjects = SpatialManager.GetPotentialCollisions(obj);
 
     foreach (var other in potentialObjects)
     {
       if (other == obj || other.Collider == null) continue;
 
-      if (CheckCollisionRecs(objBounds, GetBounds(other)))
+      if (CheckCollisionRecs(GetBounds(obj), GetBounds(other)))
       {
         yield return other;
       }
     }
-  }  // Helper method to get Rectangle bounds from GameObject
+  }
+
+  // Helper method to get Rectangle bounds from GameObject
   private static Rectangle GetBounds(GameObject obj)
   {
     if (obj.Collider == null) return new Rectangle(0, 0, 0, 0);
@@ -196,16 +112,15 @@ public static class CollisionsManager
 
   public static void Clear()
   {
-    spatialGrid.Clear();
-    objects.Clear();
-    lastKnownCollisionBounds.Clear();
+    SpatialManager.Clear();
   }
 
   /// <summary>
-  /// Get debug information about the spatial grid
+  /// Get debug information about the spatial system
   /// </summary>
-  public static (int cellCount, int objectCount) GetSpatialGridDebugInfo()
+  public static int GetSpatialObjectCount()
   {
-    return spatialGrid.GetDebugInfo();
+    var performanceInfo = SpatialManager.GetPerformanceInfo();
+    return performanceInfo.totalObjects;
   }
 }

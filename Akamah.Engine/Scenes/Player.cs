@@ -86,7 +86,7 @@ public class Player : GameObject
 
   public override void Draw()
   {
-    // Call base visibility check
+    // Player is usually always visible but still check for edge cases
     if (!IsInCameraView())
     {
       Visible = false;
