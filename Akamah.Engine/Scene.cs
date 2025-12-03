@@ -38,6 +38,10 @@ public abstract class Scene : IDisposable
 
   public virtual void Update(float deltaTime)
   {
+    if (IsKeyPressed(KeyboardKey.F1))
+    {
+      GameManager.DebugMode = !GameManager.DebugMode;
+    }
     ViewportManager.Update();
     GameManager.UpdateVisibleObjects(deltaTime);
   }

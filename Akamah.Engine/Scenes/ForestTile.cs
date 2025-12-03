@@ -13,7 +13,7 @@ public class ForestTile : Tile
     if (random.NextDouble() < 0.3)
     {
       Tree tree = new() { Position = Position + new Vector2(4, 4) };
-      GameManager.GameObjects.Add(tree);
+      GameManager.AddGameObject(tree);
     }
   }
 

@@ -1,7 +1,20 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine.Scenes;
 
 public class Tree : GameObject
 {
+
+  public Tree()
+  {
+    Visible = true;
+    Collider = new Collider
+    {
+      Size = new Vector2(16, 8),
+      Offset = new Vector2(0, 8)
+    };
+  }
+
   public override void Draw()
   {
     DrawTexturePro(
@@ -12,5 +25,9 @@ public class Tree : GameObject
       0.0f,
       Color.White
     );
+    if (Collider != null && GameManager.DebugMode)
+    {
+      DrawRectangleV(Position + Collider.Offset, Collider.Size, Collider.DebugColor);
+    }
   }
 }

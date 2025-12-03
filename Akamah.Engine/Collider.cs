@@ -7,4 +7,6 @@ public class Collider
 
   // Hold a list of GameObjects this collider is currently colliding with
   public List<GameObject> Collisions { get; } = [];
+
+  public Color DebugColor { get; set; } = Fade(Color.Red, 0.5f);
 }
