@@ -1,9 +1,11 @@
 using Akamah.Engine;
 using Akamah.Engine.Managers;
 
+namespace Akamah.Engine.Scenes;
+
 public class Player : GameObject
 {
-  const float Speed = 48.0f;
+  const float Speed = 100.0f;
 
   public override void Update(float deltaTime)
   {
@@ -20,8 +22,23 @@ public class Player : GameObject
     ViewportManager.UpdateTarget(Position);
   }
 
+  protected override bool IsInCameraView()
+  {
+    // Player should almost always be visible (around camera center)
+    // But still check for edge cases
+    return ViewportManager.IsRectInView(Position, new Vector2(16, 16));
+  }
+
   public override void Draw()
   {
+    // Call base visibility check
+    if (!IsInCameraView())
+    {
+      Visible = false;
+      return;
+    }
+
+    Visible = true;
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
       new Rectangle(16, 112, 16, 16),

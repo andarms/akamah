@@ -150,19 +150,47 @@ public class Map(int width, int height) : GameObject
 
   public override void Draw()
   {
-    foreach (var tile in Tiles)
+    // Get the visible tile range based on camera viewport
+    var (minX, minY, maxX, maxY) = ViewportManager.GetVisibleTileRange(16);
+
+    // Only render tiles within the visible range
+    for (int x = minX; x <= maxX; x++)
     {
-      if (tile == null) continue;
-      tile.Draw();
+      for (int y = minY; y <= maxY; y++)
+      {
+        int index = y * Width + x;
+        if (index >= 0 && index < Tiles.Length)
+        {
+          var tile = Tiles[index];
+          tile?.Draw();
+        }
+      }
     }
   }
 
   public override void Update(float deltaTime)
   {
-    foreach (var tile in Tiles)
+    // Get the visible tile range for updates (with larger margin for gameplay logic)
+    var (minX, minY, maxX, maxY) = ViewportManager.GetVisibleTileRange(16);
+
+    // Expand the update range slightly beyond visible area for smooth gameplay
+    minX = Math.Max(0, minX - 2);
+    minY = Math.Max(0, minY - 2);
+    maxX = Math.Min(Width - 1, maxX + 2);
+    maxY = Math.Min(Height - 1, maxY + 2);
+
+    // Only update tiles within the expanded visible range
+    for (int x = minX; x <= maxX; x++)
     {
-      if (tile == null) continue;
-      tile.Update(deltaTime);
-    } // Map-specific update logic can go here
+      for (int y = minY; y <= maxY; y++)
+      {
+        int index = y * Width + x;
+        if (index >= 0 && index < Tiles.Length)
+        {
+          var tile = Tiles[index];
+          tile?.Update(deltaTime);
+        }
+      }
+    }
   }
 }

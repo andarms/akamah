@@ -1,11 +1,27 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine.Scenes;
 
 public abstract class Tile : GameObject
 {
   public virtual TileType Type { get; } = TileType.None;
+
+  protected override bool IsInCameraView()
+  {
+    // Use rectangle-based visibility check for tiles (16x16 size)
+    return ViewportManager.IsRectInView(Position, new Vector2(16, 16));
+  }
+
   public override void Draw()
   {
-    base.Draw();
+    // Call base visibility check first
+    if (!IsInCameraView())
+    {
+      Visible = false;
+      return;
+    }
+
+    Visible = true;
     DrawRectangleV(Position, new Vector2(16), Color.Black);
   }
 

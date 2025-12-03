@@ -38,28 +38,24 @@ public abstract class Scene : IDisposable
 
   public virtual void Update(float deltaTime)
   {
-    foreach (var gameObject in GameManager.GameObjects.ToArray())
-    {
-      gameObject.Update(deltaTime);
-    }
+    ViewportManager.Update();
+    GameManager.UpdateVisibleObjects(deltaTime);
   }
 
   public virtual void Draw()
   {
-    foreach (var gameObject in GameManager.GameObjects.ToArray())
-    {
-      gameObject.Draw();
-    }
+    ClearBackground(BackgroundColor);
+    BeginMode2D(ViewportManager.Camera);
+    GameManager.DrawVisibleObjects();
+    EndMode2D();
   }
 
   public virtual void HandleInput()
   {
-    // Override in derived classes for scene-specific input handling
   }
 
   public virtual void Dispose()
   {
-    // Override in derived classes for cleanup
     IsInitialized = false;
     GC.SuppressFinalize(this);
   }
