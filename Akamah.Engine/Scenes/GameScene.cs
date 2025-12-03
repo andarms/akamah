@@ -16,11 +16,14 @@ public class GameScene : Scene
   Vector2 MapLimit => new(map.width * 16, map.height * 16);
   Vector2 CameraLimit => new(MapLimit.X - GetScreenWidth() / camera.Zoom, MapLimit.Y - GetScreenHeight() / camera.Zoom);
 
+  Player player = new();
+
   public override void Initialize()
   {
     base.Initialize();
     map.GenerateRandomMap();
     GameObjects.Add(map);
+    GameObjects.Add(player);
   }
 
 
@@ -42,20 +45,10 @@ public class GameScene : Scene
   public override void Update(float deltaTime)
   {
     base.Update(deltaTime);
-    //  user input to move camera
-    Vector2 movement = Vector2.Zero;
-    if (IsKeyDown(KeyboardKey.Up))
-      movement.Y -= 200 * deltaTime;
-    if (IsKeyDown(KeyboardKey.Down))
-      movement.Y += 200 * deltaTime;
-    if (IsKeyDown(KeyboardKey.Left))
-      movement.X -= 200 * deltaTime;
-    if (IsKeyDown(KeyboardKey.Right))
-      movement.X += 200 * deltaTime;
 
 
-    camera.Target += movement;
-    camera.Target = Vector2.Clamp(camera.Target, Vector2.Zero, CameraLimit);
+    // camera.Target += movement;
+    // camera.Target = Vector2.Clamp(camera.Target, Vector2.Zero, CameraLimit);
   }
 
   public override void Draw()
