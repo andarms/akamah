@@ -1,3 +1,5 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine.Scenes;
 
 
@@ -20,8 +22,8 @@ public class Map(int width, int height) : GameObject
 
   public List<int> queue = [];
 
-  PerlinNoise heightNoise = new(12345);
-  PerlinNoise moistureNoise = new(54321);
+  PerlinNoise heightNoise = new(GameManager.Seed);
+  PerlinNoise moistureNoise = new(GameManager.Seed + 1);
 
   public int Width { get; } = width;
   public int Height { get; } = height;
@@ -31,6 +33,13 @@ public class Map(int width, int height) : GameObject
 
   public void GenerateRandomMap()
   {
+    foreach (var obj in GameManager.GameObjects.ToArray())
+    {
+      if (obj is Tree)
+      {
+        GameManager.GameObjects.Remove(obj);
+      }
+    }
     Array.Fill(Tiles, null);
     var seed = DateTime.Now.Millisecond;
     heightNoise = new PerlinNoise(seed);
@@ -48,10 +57,20 @@ public class Map(int width, int height) : GameObject
         var biome = GetBiome(heightValue, moistureValue);
         int index = y * Width + x;
         // Initially, all tile types are possible
-        Tile tile = GetTileFromType(biome);
-        tile.Position = new Vector2(x * 16, y * 16);
+        Tile tile = GetTileFromType(biome, new Vector2(x * 16, y * 16));
         Tiles[index] = tile;
       }
+    }
+
+    this.Initialize();
+  }
+
+  public override void Initialize()
+  {
+    foreach (var tile in Tiles)
+    {
+      if (tile == null) continue;
+      tile.Initialize();
     }
   }
 
@@ -116,16 +135,16 @@ public class Map(int width, int height) : GameObject
   }
 
 
-  public static Tile GetTileFromType(TileType type)
+  public static Tile GetTileFromType(TileType type, Vector2 position)
   {
     return type switch
     {
-      TileType.Grass => new GrassTile(),
-      TileType.Water => new WaterTile(),
-      TileType.Sand => new SandTile(),
-      TileType.Mountain => new MountainTile(),
-      TileType.Forest => new ForestTile(),
-      _ => new GrassTile(),
+      TileType.Grass => new GrassTile() { Position = position },
+      TileType.Water => new WaterTile() { Position = position },
+      TileType.Sand => new SandTile() { Position = position },
+      TileType.Mountain => new MountainTile() { Position = position },
+      TileType.Forest => new ForestTile() { Position = position },
+      _ => new GrassTile() { Position = position },
     };
   }
 

@@ -6,6 +6,10 @@ public class GameObject
 
   public Collider? Collider { get; set; }
 
+  public virtual void Initialize()
+  {
+  }
+
   public virtual void Update(float deltaTime)
   {
   }

@@ -1,3 +1,5 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine;
 
 public abstract class Scene : IDisposable
@@ -8,11 +10,13 @@ public abstract class Scene : IDisposable
 
   public virtual Color BackgroundColor => Color.Black;
 
-  public List<GameObject> GameObjects { get; } = [];
-
   public virtual void Initialize()
   {
     IsInitialized = true;
+    foreach (var gameObject in GameManager.GameObjects.ToArray())
+    {
+      gameObject.Initialize();
+    }
   }
 
   public virtual void OnEnter()
@@ -31,9 +35,10 @@ public abstract class Scene : IDisposable
   {
   }
 
+
   public virtual void Update(float deltaTime)
   {
-    foreach (var gameObject in GameObjects)
+    foreach (var gameObject in GameManager.GameObjects.ToArray())
     {
       gameObject.Update(deltaTime);
     }
@@ -41,7 +46,7 @@ public abstract class Scene : IDisposable
 
   public virtual void Draw()
   {
-    foreach (var gameObject in GameObjects)
+    foreach (var gameObject in GameManager.GameObjects.ToArray())
     {
       gameObject.Draw();
     }

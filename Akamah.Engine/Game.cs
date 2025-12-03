@@ -9,7 +9,7 @@ public class Game
 
   protected virtual void Initialize()
   {
-
+    SceneManager.Initialize();
   }
 
   protected virtual void LoadContent()

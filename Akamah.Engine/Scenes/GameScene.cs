@@ -8,12 +8,8 @@ public class GameScene : Scene
   public override void Initialize()
   {
     base.Initialize();
-    GameManager.Map.GenerateRandomMap();
-    GameObjects.Add(GameManager.Map);
-    GameObjects.Add(GameManager.Player);
+    GameManager.Initialize();
   }
-
-
 
   public override void HandleInput()
   {
@@ -23,23 +19,13 @@ public class GameScene : Scene
     }
   }
 
-  public override void Unload()
-  {
-    base.Unload();
-  }
-
-
-  public override void Update(float deltaTime)
-  {
-    base.Update(deltaTime);
-  }
-
   public override void Draw()
   {
+    GameManager.GameObjects.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
     BeginMode2D(ViewportManager.Camera);
     base.Draw();
     EndMode2D();
-
+    DrawRectangleV(new Vector2(0, 0), new Vector2(100, 40), Color.Black);
     DrawFPS(10, 10);
   }
 }

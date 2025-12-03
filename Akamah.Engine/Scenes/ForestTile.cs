@@ -1,29 +1,19 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine.Scenes;
 
 public class ForestTile : Tile
 {
-  Random random = new();
+  readonly Random random = new();
   public override TileType Type { get; } = TileType.Forest;
 
-  Tree? tree = null;
-
-  public ForestTile() : base()
+  public override void Initialize()
   {
+    base.Initialize();
     if (random.NextDouble() < 0.3)
     {
-      this.tree = new Tree
-      {
-        Position = Position + new Vector2(4, 4)
-      };
-    }
-  }
-
-  public override void Update(float deltaTime)
-  {
-    base.Update(deltaTime);
-    if (tree != null)
-    {
-      tree.Position = Position;
+      Tree tree = new() { Position = Position + new Vector2(4, 4) };
+      GameManager.GameObjects.Add(tree);
     }
   }
 
@@ -38,6 +28,5 @@ public class ForestTile : Tile
       0.0f,
       Color.White
     );
-    tree?.Draw();
   }
 }
