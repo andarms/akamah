@@ -1,29 +1,16 @@
+using Akamah.Engine.Managers;
+
 namespace Akamah.Engine.Scenes;
 
 
 public class GameScene : Scene
 {
-  readonly Map map = new(100, 100);
-  Camera2D camera = new()
-  {
-    Target = new Vector2(0, 0),
-    Offset = new Vector2(0, 0),
-    Rotation = 0.0f,
-    Zoom = 3.0f
-  };
-
-
-  Vector2 MapLimit => new(map.width * 16, map.height * 16);
-  Vector2 CameraLimit => new(MapLimit.X - GetScreenWidth() / camera.Zoom, MapLimit.Y - GetScreenHeight() / camera.Zoom);
-
-  Player player = new();
-
   public override void Initialize()
   {
     base.Initialize();
-    map.GenerateRandomMap();
-    GameObjects.Add(map);
-    GameObjects.Add(player);
+    GameManager.Map.GenerateRandomMap();
+    GameObjects.Add(GameManager.Map);
+    GameObjects.Add(GameManager.Player);
   }
 
 
@@ -32,7 +19,7 @@ public class GameScene : Scene
   {
     if (IsKeyPressed(KeyboardKey.R))
     {
-      map.GenerateRandomMap();
+      GameManager.Map.GenerateRandomMap();
     }
   }
 
@@ -45,15 +32,11 @@ public class GameScene : Scene
   public override void Update(float deltaTime)
   {
     base.Update(deltaTime);
-
-
-    // camera.Target += movement;
-    // camera.Target = Vector2.Clamp(camera.Target, Vector2.Zero, CameraLimit);
   }
 
   public override void Draw()
   {
-    BeginMode2D(camera);
+    BeginMode2D(ViewportManager.Camera);
     base.Draw();
     EndMode2D();
 

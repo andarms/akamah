@@ -23,12 +23,11 @@ public class Map(int width, int height) : GameObject
   PerlinNoise heightNoise = new(12345);
   PerlinNoise moistureNoise = new(54321);
 
-  public int width { get; } = width;
-  public int height { get; } = height;
+  public int Width { get; } = width;
+  public int Height { get; } = height;
 
+  public Vector2 Limits { get; } = new(width * 16, height * 16);
 
-  const int INVALID_NEIGHBOR = -1;
-  private static Random random = new();
 
   public void GenerateRandomMap()
   {
@@ -38,16 +37,16 @@ public class Map(int width, int height) : GameObject
     moistureNoise = new PerlinNoise(seed + 1);
 
     float scale = 0.05f;
-    for (int x = 0; x < width; x++)
+    for (int x = 0; x < Width; x++)
     {
-      for (int y = 0; y < height; y++)
+      for (int y = 0; y < Height; y++)
       {
         float heightValue = heightNoise.Noise(x * scale, y * scale);
         float moistureValue = moistureNoise.Noise(x * scale, y * scale);
 
 
         var biome = GetBiome(heightValue, moistureValue);
-        int index = y * width + x;
+        int index = y * Width + x;
         // Initially, all tile types are possible
         Tile tile = GetTileFromType(biome);
         tile.Position = new Vector2(x * 16, y * 16);

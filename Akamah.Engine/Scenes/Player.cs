@@ -1,4 +1,5 @@
 using Akamah.Engine;
+using Akamah.Engine.Managers;
 
 public class Player : GameObject
 {
@@ -10,15 +11,13 @@ public class Player : GameObject
 
     //  user input to move camera
     Vector2 movement = Vector2.Zero;
-    if (IsKeyDown(KeyboardKey.Up))
-      movement.Y -= 1;
-    if (IsKeyDown(KeyboardKey.Down))
-      movement.Y += 1;
-    if (IsKeyDown(KeyboardKey.Left))
-      movement.X -= 1;
-    if (IsKeyDown(KeyboardKey.Right))
-      movement.X += 1;
+    if (IsKeyDown(KeyboardKey.Up)) { movement.Y -= 1; }
+    if (IsKeyDown(KeyboardKey.Down)) { movement.Y += 1; }
+    if (IsKeyDown(KeyboardKey.Left)) { movement.X -= 1; }
+    if (IsKeyDown(KeyboardKey.Right)) { movement.X += 1; }
+
     Position += movement * Speed * deltaTime;
+    ViewportManager.UpdateTarget(Position);
   }
 
   public override void Draw()
