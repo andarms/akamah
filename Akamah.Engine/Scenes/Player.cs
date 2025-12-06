@@ -1,11 +1,16 @@
-using Akamah.Engine;
 using Akamah.Engine.Managers;
 
 namespace Akamah.Engine.Scenes;
 
+
 public class Player : GameObject
 {
   const float Speed = 100.0f;
+
+  Direction facing = Direction.Down;
+
+  Cursor cursor = new();
+
 
   public Player()
   {
@@ -16,20 +21,45 @@ public class Player : GameObject
     };
   }
 
+  public override void Initialize()
+  {
+    base.Initialize();
+    GameManager.AddGameObject(cursor);
+  }
+
   public override void Update(float deltaTime)
   {
     base.Update(deltaTime);
 
     // Get input movement
     Vector2 movement = Vector2.Zero;
-    if (IsKeyDown(KeyboardKey.Up)) { movement.Y -= 1; }
-    if (IsKeyDown(KeyboardKey.Down)) { movement.Y += 1; }
-    if (IsKeyDown(KeyboardKey.Left)) { movement.X -= 1; }
-    if (IsKeyDown(KeyboardKey.Right)) { movement.X += 1; }
+    if (IsKeyDown(KeyboardKey.Left))
+    {
+      movement.X -= 1;
+      facing = Direction.Left;
+    }
+    if (IsKeyDown(KeyboardKey.Right))
+    {
+      movement.X += 1;
+      facing = Direction.Right;
+    }
+    if (IsKeyDown(KeyboardKey.Up))
+    {
+      movement.Y -= 1;
+      facing = Direction.Up;
+    }
+    if (IsKeyDown(KeyboardKey.Down))
+    {
+      movement.Y += 1;
+      facing = Direction.Down;
+    }
+
 
     // Apply movement with collision detection per axis
     Vector2 velocity = movement * Speed * deltaTime;
     MoveWithCollisionDetection(velocity);
+
+    cursor.Position = Position + facing.ToVector2() * 16;
 
     ViewportManager.UpdateTarget(Position);
   }

@@ -28,15 +28,15 @@ public class GameScene : Scene
 
     EndMode2D();
 
-    // Debug UI
-    DrawRectangleV(new Vector2(0, 0), new Vector2(280, 150), Color.Black);
-    DrawFPS(10, 10);
-
-    // Always show basic controls
-    DrawText("F1: Debug | R: Regen", 10, GetScreenHeight() - 30, 20, Color.White);
-
     if (GameManager.DebugMode)
     {
+      // Debug UI
+      DrawRectangleV(new Vector2(0, 0), new Vector2(280, 150), Color.Black);
+      DrawFPS(10, 10);
+
+      // Always show basic controls
+      DrawText("F1: Debug | R: Regen", 10, GetScreenHeight() - 30, 20, Color.White);
+
       var performanceInfo = SpatialManager.GetPerformanceInfo();
 
       DrawText($"Objects: {performanceInfo.totalObjects}", 10, 30, 20, Color.White);

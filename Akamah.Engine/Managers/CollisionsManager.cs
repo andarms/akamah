@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Akamah.Engine.Managers;
 
 public static class CollisionsManager

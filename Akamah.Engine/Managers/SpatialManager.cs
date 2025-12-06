@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Akamah.Engine.Scenes;
 
 namespace Akamah.Engine.Managers;
