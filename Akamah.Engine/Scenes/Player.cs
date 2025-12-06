@@ -96,7 +96,7 @@ public class Player : GameObject
 
     foreach (var collision in CollisionsManager.GetPotentialCollisions(this))
     {
-      if (collision is Tree) // Trees are solid objects
+      if (collision.Collider != null && collision.Collider.Solid)
       {
         return collision;
       }

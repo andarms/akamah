@@ -36,7 +36,7 @@ public class Map(int width, int height) : GameObject
     // Properly remove all trees using GameManager.RemoveGameObject to clean up spatial systems
     foreach (var obj in GameManager.GameObjects.ToArray())
     {
-      if (obj is Tree)
+      if (obj is Tree || obj is Rock)
       {
         GameManager.RemoveGameObject(obj);
       }

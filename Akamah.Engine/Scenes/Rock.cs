@@ -2,28 +2,24 @@ using Akamah.Engine.Managers;
 
 namespace Akamah.Engine.Scenes;
 
-public class Tree : GameObject
+public class Rock : GameObject
 {
-
-  public Tree()
+  public Rock()
   {
-    Visible = true;
     Collider = new Collider
     {
-      Size = new Vector2(16, 8),
-      Offset = new Vector2(0, 8),
+      Size = new Vector2(16, 16),
+      Offset = new Vector2(0, 0),
       Solid = true
     };
   }
 
   public override void Draw()
   {
-    // Spatial system handles visibility culling for trees
-    Visible = true;
-
+    base.Draw();
     DrawTexturePro(
-      AssetsManager.Textures["TinyTown"],
-      new Rectangle(64, 32, 16, 16),
+      AssetsManager.Textures["Desert"],
+      new Rectangle(64, 48, 16, 16),
       new Rectangle(Position.X, Position.Y, 16, 16),
       new Vector2(0, 0),
       0.0f,
