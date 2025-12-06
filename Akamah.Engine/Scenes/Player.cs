@@ -9,15 +9,15 @@ public class Player : GameObject
 
   Direction facing = Direction.Down;
 
-  Cursor cursor = new();
+  readonly Cursor cursor = new();
 
 
   public Player()
   {
     Collider = new Collider
     {
-      Size = new Vector2(8, 8),
-      Offset = new Vector2(4, 8)
+      Size = new Vector2(12, 12),
+      Offset = new Vector2(2, 4)
     };
   }
 
@@ -60,6 +60,8 @@ public class Player : GameObject
     MoveWithCollisionDetection(velocity);
 
     cursor.Position = Position + facing.ToVector2() * 16;
+    var c = CollisionsManager.GetPotentialCollisions(cursor);
+    cursor.Colliding = c.Any();
 
     ViewportManager.UpdateTarget(Position);
   }
