@@ -10,6 +10,13 @@ public class GameObject
 
   public bool Visible { get; set; } = true;
 
+  public Vector2 Anchor { get; set; } = Vector2.Zero;
+
+  /// <summary>
+  /// Gets the render position adjusted by the anchor offset
+  /// </summary>
+  public Vector2 RenderPosition => Position - Anchor;
+
   public virtual void Initialize()
   {
   }
@@ -31,8 +38,9 @@ public class GameObject
   {
     if (Collider != null)
     {
-      DrawRectangleV(Position + Collider.Offset, Collider.Size, Collider.DebugColor);
+      DrawRectangleV(Position + Collider.Offset - Anchor, Collider.Size, Collider.DebugColor);
     }
+    DrawCircleV(Position, 2, Color.Lime);
   }
 
   protected virtual bool IsInCameraView()

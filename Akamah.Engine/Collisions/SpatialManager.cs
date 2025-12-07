@@ -215,15 +215,15 @@ public static class SpatialManager
     if (obj.Collider != null)
     {
       return new Rectangle(
-        obj.Position.X + obj.Collider.Offset.X,
-        obj.Position.Y + obj.Collider.Offset.Y,
+        obj.Position.X + obj.Collider.Offset.X - obj.Anchor.X,
+        obj.Position.Y + obj.Collider.Offset.Y - obj.Anchor.Y,
         obj.Collider.Size.X,
         obj.Collider.Size.Y
       );
     }
 
     // For objects without colliders, use position with small default size
-    return new Rectangle(obj.Position.X, obj.Position.Y, 16, 16);
+    return new Rectangle(obj.Position.X - obj.Anchor.X, obj.Position.Y - obj.Anchor.Y, 16, 16);
   }
 
   /// <summary>

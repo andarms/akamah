@@ -22,7 +22,7 @@ public class Rock : GameObject
     DrawTexturePro(
       AssetsManager.Textures["Desert"],
       new Rectangle(64, 48, 16, 16),
-      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
       new Vector2(0, 0),
       0.0f,
       Color.White

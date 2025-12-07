@@ -10,6 +10,7 @@ public class Tree : GameObject
   public Tree()
   {
     Visible = true;
+    Anchor = new(8, 16);
     Collider = new Collider
     {
       Size = new Vector2(16, 8),
@@ -26,7 +27,7 @@ public class Tree : GameObject
     DrawTexturePro(
       AssetsManager.Textures["TinyTown"],
       new Rectangle(64, 32, 16, 16),
-      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
       new Vector2(0, 0),
       0.0f,
       Color.White

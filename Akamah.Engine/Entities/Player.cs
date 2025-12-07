@@ -19,10 +19,11 @@ public class Player : GameObject
 
   public Player()
   {
+    Anchor = new(8, 16);
     Collider = new Collider
     {
-      Size = new Vector2(12, 12),
-      Offset = new Vector2(2, 4)
+      Size = new Vector2(8, 8),
+      Offset = new Vector2(4, 8)
     };
   }
 
@@ -65,11 +66,6 @@ public class Player : GameObject
     // Apply movement with collision detection per axis
     Vector2 velocity = movement * Speed * deltaTime;
     MoveWithCollisionDetection(velocity);
-
-    cursor.Position = Position + facing.ToVector2() * 16;
-    var c = CollisionsManager.GetPotentialCollisions(cursor);
-    cursor.Colliding = c.Any();
-    cursor.Position = c.FirstOrDefault()?.Position ?? cursor.Position;
 
     ViewportManager.UpdateTarget(Position);
   }
@@ -134,14 +130,11 @@ public class Player : GameObject
     }
 
     Visible = true;
-
-    // Create source rectangle with proper flipping
-    Rectangle sourceRect = new Rectangle(16, 112, flipTexture ? -16 : 16, 16);
-
+    Rectangle sourceRect = new(16, 112, flipTexture ? -16 : 16, 16);
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
       sourceRect,
-      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
       new Vector2(0, 0),
       0.0f,
       Color.White

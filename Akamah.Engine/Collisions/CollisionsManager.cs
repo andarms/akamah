@@ -54,8 +54,8 @@ public static class CollisionsManager
     if (obj.Collider == null) return new Rectangle(0, 0, 0, 0);
 
     return new Rectangle(
-      obj.Position.X + obj.Collider.Offset.X,
-      obj.Position.Y + obj.Collider.Offset.Y,
+      obj.Position.X + obj.Collider.Offset.X - obj.Anchor.X,
+      obj.Position.Y + obj.Collider.Offset.Y - obj.Anchor.Y,
       obj.Collider.Size.X,
       obj.Collider.Size.Y
     );
@@ -80,13 +80,13 @@ public static class CollisionsManager
       if (objBounds.X < otherBounds.X)
       {
         // Object is to the left, push it left to just touch the other object
-        float newX = otherBounds.X - obj.Collider.Size.X - obj.Collider.Offset.X;
+        float newX = otherBounds.X - obj.Collider.Size.X - obj.Collider.Offset.X + obj.Anchor.X;
         obj.Position = new Vector2(newX, obj.Position.Y);
       }
       else
       {
         // Object is to the right, push it right to just touch the other object
-        float newX = otherBounds.X + otherBounds.Width - obj.Collider.Offset.X;
+        float newX = otherBounds.X + otherBounds.Width - obj.Collider.Offset.X + obj.Anchor.X;
         obj.Position = new Vector2(newX, obj.Position.Y);
       }
     }
@@ -96,13 +96,13 @@ public static class CollisionsManager
       if (objBounds.Y < otherBounds.Y)
       {
         // Object is above, push it up to just touch the other object
-        float newY = otherBounds.Y - obj.Collider.Size.Y - obj.Collider.Offset.Y;
+        float newY = otherBounds.Y - obj.Collider.Size.Y - obj.Collider.Offset.Y + obj.Anchor.Y;
         obj.Position = new Vector2(obj.Position.X, newY);
       }
       else
       {
         // Object is below, push it down to just touch the other object
-        float newY = otherBounds.Y + otherBounds.Height - obj.Collider.Offset.Y;
+        float newY = otherBounds.Y + otherBounds.Height - obj.Collider.Offset.Y + obj.Anchor.Y;
         obj.Position = new Vector2(obj.Position.X, newY);
       }
     }
