@@ -1,4 +1,4 @@
-﻿using Akamah.Engine;
+﻿using Akamah.Engine.Core;
 using Akamah.Engine.Scenes;
 
 SceneManager.AddScene(new GameScene());

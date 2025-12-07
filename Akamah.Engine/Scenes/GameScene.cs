@@ -1,4 +1,6 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Systems;
+using Akamah.Engine.Core;
+using Akamah.Engine.Collisions;
 
 namespace Akamah.Engine.Scenes;
 

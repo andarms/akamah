@@ -1,6 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
-
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.Common;
 
 public enum Direction
 {

@@ -1,4 +1,6 @@
-namespace Akamah.Engine;
+using Akamah.Engine.Core;
+
+namespace Akamah.Engine.Collisions;
 
 public class Collider
 {

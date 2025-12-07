@@ -1,4 +1,4 @@
-namespace Akamah.Engine;
+namespace Akamah.Engine.Assets;
 
 public static class AssetsManager
 {

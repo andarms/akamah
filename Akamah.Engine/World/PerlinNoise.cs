@@ -1,4 +1,4 @@
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.World;
 
 public class PerlinNoise
 {

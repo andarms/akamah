@@ -1,4 +1,8 @@
-namespace Akamah.Engine.Scenes;
+using Akamah.Engine.Core;
+using Akamah.Engine.Physics;
+using Akamah.Engine.Assets;
+
+namespace Akamah.Engine.Entities;
 
 public class Cursor : GameObject
 {

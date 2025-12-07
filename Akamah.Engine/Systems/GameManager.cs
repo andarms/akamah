@@ -1,6 +1,9 @@
-using Akamah.Engine.Scenes;
+using Akamah.Engine.Entities;
+using Akamah.Engine.World;
+using Akamah.Engine.Core;
+using Akamah.Engine.Collisions;
 
-namespace Akamah.Engine.Managers;
+namespace Akamah.Engine.Systems;
 
 public static class GameManager
 {

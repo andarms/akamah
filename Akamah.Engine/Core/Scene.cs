@@ -1,6 +1,6 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Systems;
 
-namespace Akamah.Engine;
+namespace Akamah.Engine.Core;
 
 public abstract class Scene : IDisposable
 {

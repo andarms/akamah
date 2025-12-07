@@ -1,4 +1,6 @@
-namespace Akamah.Engine.Managers;
+using Akamah.Engine.Core;
+
+namespace Akamah.Engine.Collisions;
 
 public static class CollisionsManager
 {

@@ -1,4 +1,6 @@
-namespace Akamah.Engine;
+using Akamah.Engine.Core;
+
+namespace Akamah.Engine.Collisions;
 
 /// <summary>
 /// Spatial hash grid for efficient collision detection

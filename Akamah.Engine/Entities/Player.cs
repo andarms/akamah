@@ -1,6 +1,10 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Systems;
+using Akamah.Engine.Common;
+using Akamah.Engine.Core;
+using Akamah.Engine.Assets;
+using Akamah.Engine.Collisions;
 
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.Entities;
 
 
 public class Player : GameObject

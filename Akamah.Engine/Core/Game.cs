@@ -1,4 +1,6 @@
-namespace Akamah.Engine;
+using Akamah.Engine.Assets;
+
+namespace Akamah.Engine.Core;
 
 public class Game
 {

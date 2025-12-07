@@ -1,5 +1,6 @@
+using Akamah.Engine.Systems;
 
-namespace Akamah.Engine.Managers;
+namespace Akamah.Engine.Core;
 
 public static class ViewportManager
 {

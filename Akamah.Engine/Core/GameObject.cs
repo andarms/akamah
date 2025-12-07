@@ -1,6 +1,6 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Collisions;
 
-namespace Akamah.Engine;
+namespace Akamah.Engine.Core;
 
 public class GameObject
 {

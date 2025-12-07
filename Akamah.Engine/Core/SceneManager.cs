@@ -1,8 +1,7 @@
-namespace Akamah.Engine;
+using Akamah.Engine.Assets;
 
-/// <summary>
-/// Static scene manager for handling scene transitions and lifecycle
-/// </summary>
+namespace Akamah.Engine.Core;
+
 public static class SceneManager
 {
   static Scene? currentScene = null;

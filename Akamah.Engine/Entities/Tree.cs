@@ -1,6 +1,8 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Core;
+using Akamah.Engine.Physics;
+using Akamah.Engine.Assets;
 
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.Entities;
 
 public class Tree : GameObject
 {

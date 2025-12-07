@@ -1,6 +1,6 @@
-using Akamah.Engine.Managers;
+using Akamah.Engine.Core;
 
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.World;
 
 public abstract class Tile : GameObject
 {

@@ -1,5 +1,5 @@
 
-namespace Akamah.Engine.Scenes;
+namespace Akamah.Engine.World;
 
 public class WaterTile : Tile
 {
