@@ -49,7 +49,13 @@ public static class GameManager
     InputManager.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
     InputManager.MapAction("move_up", KeyboardKey.Up, KeyboardKey.W);
     InputManager.MapAction("move_down", KeyboardKey.Down, KeyboardKey.S);
-    InputManager.MapAction("attack", KeyboardKey.Space, KeyboardKey.Enter);
+
+    // Example of mapping attack to both keyboard and mouse inputs
+    InputManager.MapAction(
+      "attack",
+      [KeyboardKey.Space, KeyboardKey.Enter],
+      [MouseButton.Left]
+    );
 
   }
 
