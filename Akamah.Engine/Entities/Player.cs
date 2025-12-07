@@ -11,11 +11,9 @@ public class Player : GameObject
 {
   const float Speed = 100.0f;
 
-  Direction facing = Direction.Down;
-  bool flipTexture = false;
-
   readonly Cursor cursor = new();
   readonly Weapon weapon = new();
+  Vector2 weaponOffset = new(4, -2);
 
 
   public Player()
@@ -45,29 +43,22 @@ public class Player : GameObject
     if (InputManager.IsHold("move_left"))
     {
       movement.X -= 1;
-      facing = Direction.Left;
-      flipTexture = true;
     }
     if (InputManager.IsHold("move_right"))
     {
       movement.X += 1;
-      facing = Direction.Right;
-      flipTexture = false;
     }
     if (InputManager.IsHold("move_up"))
     {
       movement.Y -= 1;
-      facing = Direction.Up;
     }
     if (InputManager.IsHold("move_down"))
     {
       movement.Y += 1;
-      facing = Direction.Down;
     }
 
     if (InputManager.IsPressed("attack"))
     {
-      weapon.Position = cursor.Position;
       weapon.TryAttack();
     }
 
@@ -75,6 +66,22 @@ public class Player : GameObject
     Vector2 velocity = movement * Speed * deltaTime;
     MoveWithCollisionDetection(velocity);
     ViewportManager.UpdateTarget(Position);
+
+
+    var cursorPosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
+    if (cursorPosition.X > Position.X)
+    {
+      FlipX = false;
+      weapon.FlipX = true;
+      weapon.Position = Position + new Vector2(4, -2);
+    }
+    else
+    {
+      FlipX = true;
+      weapon.FlipX = false;
+      weapon.Position = Position + new Vector2(-4, -2);
+    }
+
   }
 
   private void MoveWithCollisionDetection(Vector2 velocity)
@@ -137,7 +144,7 @@ public class Player : GameObject
     }
 
     Visible = true;
-    Rectangle sourceRect = new(16, 112, flipTexture ? -16 : 16, 16);
+    Rectangle sourceRect = new(16, 112, FlipX ? -16 : 16, 16);
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
       sourceRect,

@@ -5,16 +5,12 @@ namespace Akamah.Engine.Core;
 public class GameObject
 {
   public Vector2 Position { get; set; } = Vector2.Zero;
-
   public Collider? Collider { get; set; }
-
   public bool Visible { get; set; } = true;
-
   public Vector2 Anchor { get; set; } = Vector2.Zero;
 
-  /// <summary>
-  /// Gets the render position adjusted by the anchor offset
-  /// </summary>
+  public bool FlipX { get; set; } = false;
+
   public Vector2 RenderPosition => Position - Anchor;
 
   public virtual void Initialize()

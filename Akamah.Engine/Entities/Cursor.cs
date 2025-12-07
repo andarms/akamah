@@ -46,6 +46,6 @@ public class Cursor : GameObject
   public override void Draw()
   {
     base.Draw();
-    DrawRectangleV(Position, new Vector2(4), Colliding ? collidingColor : normalColor);
+    // DrawRectangleV(Position, new Vector2(4), Colliding ? collidingColor : normalColor);
   }
 }

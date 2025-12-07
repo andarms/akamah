@@ -35,7 +35,7 @@ public class Weapon : GameObject
       Size = new Vector2(16),
       Offset = Vector2.Zero
     };
-    Visible = false; // Start hidden
+    Visible = true;
     currentRotation = 0f; // Start pointing down
   }
 
@@ -85,7 +85,7 @@ public class Weapon : GameObject
 
     // Calculate angle and convert to degrees
     float angleRad = MathF.Atan2(direction.Y, direction.X);
-    targetRotation = angleRad * (180f / MathF.PI) + 90f; // Add 90 to point sprite correctly
+    targetRotation = angleRad * (180f / MathF.PI) + 90f;
 
     // Add swing arc - target 45 degrees ahead of cursor direction for full swing
     targetRotation = NormalizeAngle(targetRotation + 45f);
@@ -184,13 +184,14 @@ public class Weapon : GameObject
     isSwinging = false;
     swingTimer = 0f;
     // Hide weapon immediately when swing animation finishes
-    Visible = false;
+    // Visible = false;
     isActive = false;
+    currentRotation = 0f;
   }
 
   private void DeactivateWeapon()
   {
-    Visible = false;
+    // Visible = false;
     isActive = false;
     isSwinging = false;
     swingTimer = 0f;
@@ -206,9 +207,10 @@ public class Weapon : GameObject
 
   private void RenderWeapon()
   {
+    Rectangle source = new(176, 144, FlipX ? -16 : 16, 16);
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
-      new Rectangle(176, 144, 16, 16),
+      source,
       new Rectangle(Position.X, Position.Y, 16, 16),
       Anchor,
       currentRotation,
