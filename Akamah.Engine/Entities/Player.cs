@@ -68,7 +68,7 @@ public class Player : GameObject
     if (InputManager.IsPressed("attack"))
     {
       weapon.Position = cursor.Position;
-      weapon.Attack();
+      weapon.TryAttack();
     }
 
     // Apply movement with collision detection per axis

@@ -7,59 +7,211 @@ namespace Akamah.Engine.Entities;
 
 public class Weapon : GameObject
 {
-  float lifespan = 1;
-  bool isActive = true;
+  // Configuration constants
+  private const float DefaultRotationSpeed = 1800f; // Even faster animation (degrees per second)
+  private const float DefaultSwingDuration = 0.3f; // Shorter swing duration
 
-  float rotation = 0f;
+  // State variables
+  private bool isActive = false;
+
+  // Rotation and animation
+  private float currentRotation = 0f;
+  private float targetRotation = 0f;
+  private float rotationSpeed = DefaultRotationSpeed;
+  private bool isSwinging = false;
+  private float swingDuration = DefaultSwingDuration;
+  private float swingTimer = 0f;
 
   public Weapon()
   {
-    Anchor = new(8, 16);
+    InitializeWeapon();
+  }
+
+  private void InitializeWeapon()
+  {
+    Anchor = new Vector2(8, 16);
     Collider = new Collider
     {
       Size = new Vector2(16),
-      Offset = new Vector2(0)
+      Offset = Vector2.Zero
     };
+    Visible = false; // Start hidden
+    currentRotation = 0f; // Start pointing down
   }
 
+  /// <summary>
+  /// Initiates an attack. Can be called repeatedly once swing finishes.
+  /// </summary>
+  public bool TryAttack()
+  {
+    // Allow new attacks when not swinging, or restart if swing is nearly complete
+    if (isSwinging && swingTimer < (swingDuration * 0.7f))
+    {
+      return false; // Still in active swing, deny attack
+    }
 
-  public bool Attack()
+    StartAttack();
+    return true;
+  }
+
+  private void StartAttack()
   {
     isActive = true;
-    lifespan = 1;
     Visible = true;
+    isSwinging = true;
+    swingTimer = 0f;
 
+    // Reset to base rotation before calculating target for visible animation
+    ResetToBaseRotation();
+    CalculateTargetRotation();
+  }
+
+  private void ResetToBaseRotation()
+  {
+    // Calculate base rotation (offset from target direction)
     var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-    Vector2 direction = Position - mousePosition;
-    rotation = MathF.Atan2(direction.Y, direction.X) * (180 / MathF.PI) - 90;
+    Vector2 direction = mousePosition - Position;
+    float targetAngleRad = MathF.Atan2(direction.Y, direction.X);
+    float targetAngleDeg = targetAngleRad * (180f / MathF.PI) + 90f;
 
+    // Start swing from 45 degrees behind target direction for visible arc
+    currentRotation = NormalizeAngle(targetAngleDeg - 90f);
+  }
 
+  private void CalculateTargetRotation()
+  {
+    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
+    Vector2 direction = mousePosition - Position;
 
-    return isActive;
+    // Calculate angle and convert to degrees
+    float angleRad = MathF.Atan2(direction.Y, direction.X);
+    targetRotation = angleRad * (180f / MathF.PI) + 90f; // Add 90 to point sprite correctly
+
+    // Add swing arc - target 45 degrees ahead of cursor direction for full swing
+    targetRotation = NormalizeAngle(targetRotation + 45f);
+  }
+
+  /// <summary>
+  /// Returns true if the weapon is currently in swing animation
+  /// </summary>
+  public bool IsSwinging => isSwinging;
+
+  /// <summary>
+  /// Returns true if the weapon is active and visible
+  /// </summary>
+  public bool IsActive => isActive;
+
+  /// <summary>
+  /// Configures the weapon animation properties
+  /// </summary>
+  public void ConfigureAnimation(float rotationSpeed, float swingDuration)
+  {
+    this.rotationSpeed = MathF.Max(rotationSpeed, 1f);
+    this.swingDuration = MathF.Max(swingDuration, 0.05f);
+  }
+
+  /// <summary>
+  /// Updates weapon position (called by player)
+  /// </summary>
+  public void UpdatePosition(Vector2 newPosition)
+  {
+    Position = newPosition;
   }
 
   public override void Update(float dt)
   {
     base.Update(dt);
     if (!isActive) return;
-    lifespan -= dt;
-    if (lifespan <= 0)
+
+    UpdateSwingAnimation(dt);
+  }
+
+  private void UpdateSwingAnimation(float dt)
+  {
+    if (!isSwinging) return;
+
+    swingTimer += dt;
+    UpdateRotation(dt);
+
+    // End swing animation when duration is reached
+    if (swingTimer >= swingDuration)
     {
-      Visible = false;
-      isActive = false;
-      lifespan = 0;
+      EndSwing();
     }
+  }
+
+  private void UpdateRotation(float dt)
+  {
+    float rotationDifference = CalculateShortestRotationDifference();
+
+    // Use easing for more natural swing motion - faster at start, slower at end
+    float progress = swingTimer / swingDuration;
+    float easedSpeed = rotationSpeed * (2f - progress); // Start fast, slow down
+
+    float rotationStep = easedSpeed * dt;
+
+    if (MathF.Abs(rotationDifference) <= rotationStep)
+    {
+      currentRotation = targetRotation;
+    }
+    else
+    {
+      currentRotation += MathF.Sign(rotationDifference) * rotationStep;
+      currentRotation = NormalizeAngle(currentRotation);
+    }
+  }
+
+  private float CalculateShortestRotationDifference()
+  {
+    float difference = targetRotation - currentRotation;
+
+    // Choose shortest rotation path
+    while (difference > 180f) difference -= 360f;
+    while (difference < -180f) difference += 360f;
+
+    return difference;
+  }
+
+  private float NormalizeAngle(float angle)
+  {
+    while (angle >= 360f) angle -= 360f;
+    while (angle < 0f) angle += 360f;
+    return angle;
+  }
+
+  private void EndSwing()
+  {
+    isSwinging = false;
+    swingTimer = 0f;
+    // Hide weapon immediately when swing animation finishes
+    Visible = false;
+    isActive = false;
+  }
+
+  private void DeactivateWeapon()
+  {
+    Visible = false;
+    isActive = false;
+    isSwinging = false;
+    swingTimer = 0f;
   }
 
   public override void Draw()
   {
+    if (!Visible) return;
+
     base.Draw();
+    RenderWeapon();
+  }
+
+  private void RenderWeapon()
+  {
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
-      new Rectangle(128, 128, 16, 16),
+      new Rectangle(176, 144, 16, 16),
       new Rectangle(Position.X, Position.Y, 16, 16),
       Anchor,
-      rotation,
+      currentRotation,
       Color.White
     );
   }
