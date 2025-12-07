@@ -12,8 +12,8 @@ public class Cursor : GameObject
   {
     Collider = new Collider
     {
-      Size = new Vector2(16),
-      Offset = new Vector2(0)
+      Size = new Vector2(4),
+      Offset = new Vector2(6)
     };
   }
 

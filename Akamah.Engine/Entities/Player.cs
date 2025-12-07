@@ -12,6 +12,7 @@ public class Player : GameObject
   const float Speed = 100.0f;
 
   Direction facing = Direction.Down;
+  bool flipTexture = false;
 
   readonly Cursor cursor = new();
 
@@ -35,24 +36,26 @@ public class Player : GameObject
   {
     base.Update(deltaTime);
 
-    // Get input movement
+    // Get input movement using InputManager
     Vector2 movement = Vector2.Zero;
-    if (IsKeyDown(KeyboardKey.Left))
+    if (InputManager.IsHold("move_left"))
     {
       movement.X -= 1;
       facing = Direction.Left;
+      flipTexture = true;
     }
-    if (IsKeyDown(KeyboardKey.Right))
+    if (InputManager.IsHold("move_right"))
     {
       movement.X += 1;
       facing = Direction.Right;
+      flipTexture = false;
     }
-    if (IsKeyDown(KeyboardKey.Up))
+    if (InputManager.IsHold("move_up"))
     {
       movement.Y -= 1;
       facing = Direction.Up;
     }
-    if (IsKeyDown(KeyboardKey.Down))
+    if (InputManager.IsHold("move_down"))
     {
       movement.Y += 1;
       facing = Direction.Down;
@@ -66,6 +69,7 @@ public class Player : GameObject
     cursor.Position = Position + facing.ToVector2() * 16;
     var c = CollisionsManager.GetPotentialCollisions(cursor);
     cursor.Colliding = c.Any();
+    cursor.Position = c.FirstOrDefault()?.Position ?? cursor.Position;
 
     ViewportManager.UpdateTarget(Position);
   }
@@ -131,9 +135,12 @@ public class Player : GameObject
 
     Visible = true;
 
+    // Create source rectangle with proper flipping
+    Rectangle sourceRect = new Rectangle(16, 112, flipTexture ? -16 : 16, 16);
+
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
-      new Rectangle(16, 112, 16, 16),
+      sourceRect,
       new Rectangle(Position.X, Position.Y, 16, 16),
       new Vector2(0, 0),
       0.0f,

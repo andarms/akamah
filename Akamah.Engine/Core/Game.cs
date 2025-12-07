@@ -21,6 +21,7 @@ public class Game
 
   protected virtual void Update(float deltaTime)
   {
+    InputManager.Update();
     SceneManager.Update(deltaTime);
   }
 

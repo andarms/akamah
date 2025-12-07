@@ -44,6 +44,12 @@ public static class GameManager
     {
       obj.Initialize();
     }
+
+    InputManager.MapAction("move_left", KeyboardKey.Left, KeyboardKey.A);
+    InputManager.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
+    InputManager.MapAction("move_up", KeyboardKey.Up, KeyboardKey.W);
+    InputManager.MapAction("move_down", KeyboardKey.Down, KeyboardKey.S);
+
   }
 
   private static void OnCollisionEnter(GameObject objA, GameObject objB)
