@@ -1,6 +1,6 @@
 using Akamah.Engine.Core;
-using Akamah.Engine.Physics;
 using Akamah.Engine.Assets;
+using Akamah.Engine.Collisions;
 
 namespace Akamah.Engine.Entities;
 
