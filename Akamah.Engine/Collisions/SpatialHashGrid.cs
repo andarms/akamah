@@ -150,6 +150,7 @@ public class SpatialHashGrid
       {
         foreach (var obj in cell)
         {
+          if (!obj.Visible) continue;
           visibleObjects.Add(obj);
         }
       }

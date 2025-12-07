@@ -15,6 +15,7 @@ public class Player : GameObject
   bool flipTexture = false;
 
   readonly Cursor cursor = new();
+  readonly Weapon weapon = new();
 
 
   public Player()
@@ -25,12 +26,14 @@ public class Player : GameObject
       Size = new Vector2(8, 8),
       Offset = new Vector2(4, 8)
     };
+
   }
 
   public override void Initialize()
   {
     base.Initialize();
     GameManager.AddGameObject(cursor);
+    GameManager.AddGameObject(weapon);
   }
 
   public override void Update(float deltaTime)
@@ -62,11 +65,15 @@ public class Player : GameObject
       facing = Direction.Down;
     }
 
+    if (InputManager.IsPressed("attack"))
+    {
+      weapon.Position = cursor.Position;
+      weapon.Attack();
+    }
 
     // Apply movement with collision detection per axis
     Vector2 velocity = movement * Speed * deltaTime;
     MoveWithCollisionDetection(velocity);
-
     ViewportManager.UpdateTarget(Position);
   }
 

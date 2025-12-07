@@ -49,6 +49,7 @@ public static class GameManager
     InputManager.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
     InputManager.MapAction("move_up", KeyboardKey.Up, KeyboardKey.W);
     InputManager.MapAction("move_down", KeyboardKey.Down, KeyboardKey.S);
+    InputManager.MapAction("attack", KeyboardKey.Space, KeyboardKey.Enter);
 
   }
 

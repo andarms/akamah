@@ -33,7 +33,7 @@ public class GameScene : Scene
     if (GameManager.DebugMode)
     {
       // Debug UI
-      DrawRectangleV(new Vector2(0, 0), new Vector2(280, 150), Color.Black);
+      DrawRectangleV(new Vector2(0, 0), new Vector2(200, 100), Color.Black);
       DrawFPS(10, 10);
 
       // Always show basic controls

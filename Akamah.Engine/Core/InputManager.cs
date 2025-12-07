@@ -13,12 +13,12 @@ public static class InputManager
 
   public static bool IsPressed(string actionName)
   {
-    if (!actionKeys.ContainsKey(actionName))
-      return false;
-
-    bool currentState = IsHold(actionName);
-    bool wasPressed = currentState && !previousFrameState[actionName];
-    return wasPressed;
+    if (!actionKeys.TryGetValue(actionName, out KeyboardKey[]? actions)) return false;
+    foreach (var key in actions)
+    {
+      if (IsKeyPressed(key)) return true;
+    }
+    return false;
   }
 
   public static bool IsHold(string actionName)
