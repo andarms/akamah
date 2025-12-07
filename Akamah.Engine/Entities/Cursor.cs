@@ -29,8 +29,7 @@ public class Cursor : GameObject
     var worldMousePosition = GetScreenToWorld2D(screenPosition, ViewportManager.Camera);
 
     // Calculate direction from player to real mouse cursor
-    var directionToMouse = worldMousePosition - GameManager.Player.Position - offset;
-    var distanceToMouse = directionToMouse.Length();
+    var directionToMouse = worldMousePosition - GameManager.Player.Position;
 
     // Limit the cursor distance (adjust maxDistance as needed)
 
