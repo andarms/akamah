@@ -29,10 +29,5 @@ public class Tree : GameObject
       0.0f,
       Color.White
     );
-
-    if (Collider != null && GameManager.DebugMode)
-    {
-      DrawRectangleV(Position + Collider.Offset, Collider.Size, Collider.DebugColor);
-    }
   }
 }

@@ -16,6 +16,7 @@ public class Cursor : GameObject
   Color normalColor = Color.Yellow;
   Color collidingColor = Color.Red;
 
+
   public override void Draw()
   {
     base.Draw();

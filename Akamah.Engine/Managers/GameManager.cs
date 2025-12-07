@@ -113,6 +113,10 @@ public static class GameManager
       if (obj != Map)
       {
         obj.Draw();
+        if (DebugMode)
+        {
+          obj.Debug();
+        }
       }
     }
 
@@ -120,6 +124,10 @@ public static class GameManager
     if (!visibleObjects.Contains(Player))
     {
       Player.Draw();
+      if (DebugMode)
+      {
+        Player.Debug();
+      }
     }
   }
 

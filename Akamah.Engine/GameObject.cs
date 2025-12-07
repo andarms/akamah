@@ -26,6 +26,15 @@ public class GameObject
     Visible = true;
   }
 
+
+  public virtual void Debug()
+  {
+    if (Collider != null)
+    {
+      DrawRectangleV(Position + Collider.Offset, Collider.Size, Collider.DebugColor);
+    }
+  }
+
   protected virtual bool IsInCameraView()
   {
     // Default implementation uses point-based visibility with small margin
