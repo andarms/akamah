@@ -69,18 +69,25 @@ public class Player : GameObject
 
 
     var cursorPosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-    if (cursorPosition.X > Position.X)
+    Vector2 direction = cursorPosition - Position;
+
+    // Update player orientation and weapon position based on mouse direction with deadzone
+    const float deadzone = 8f;
+    Vector2 currentWeaponOffset = weaponOffset;
+
+    // Only update orientation if mouse is outside deadzone
+    if (direction.LengthSquared() > deadzone * deadzone)
     {
-      FlipX = false;
-      weapon.FlipX = true;
-      weapon.Position = Position + new Vector2(4, -2);
+      // Basic face direction based on mouse X position relative to player position
+      bool shouldFaceRight = cursorPosition.X > Position.X;
+
+      FlipX = !shouldFaceRight;
+      currentWeaponOffset = shouldFaceRight ? new Vector2(4, -2) : new Vector2(-4, -2);
     }
-    else
-    {
-      FlipX = true;
-      weapon.FlipX = false;
-      weapon.Position = Position + new Vector2(-4, -2);
-    }
+    // If within deadzone, keep current flip state and weapon position
+
+    // Update weapon position using calculated offset
+    weapon.UpdatePosition(Position + currentWeaponOffset);
 
   }
 

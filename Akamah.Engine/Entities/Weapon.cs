@@ -7,24 +7,23 @@ namespace Akamah.Engine.Entities;
 
 public class Weapon : GameObject
 {
-  // Configuration constants
-  private const float DefaultRotationSpeed = 1800f; // Even faster animation (degrees per second)
-  private const float DefaultSwingDuration = 0.3f; // Shorter swing duration
+  public readonly StateMachine stateMachine = new();
 
-  // State variables
-  private bool isActive = false;
+  // Pivot properties for reliable weapon tracking
+  public Vector2 PivotPosition { get; set; } = Vector2.Zero;
+  public float PivotRotation { get; set; } = 0f;
+  public Vector2 PivotScale { get; set; } = Vector2.One;
 
-  // Rotation and animation
-  private float currentRotation = 0f;
-  private float targetRotation = 0f;
-  private float rotationSpeed = DefaultRotationSpeed;
-  private bool isSwinging = false;
-  private float swingDuration = DefaultSwingDuration;
-  private float swingTimer = 0f;
+  // Animation properties
+  internal bool isSwinging = false;
+
+  // Subtle floating effect
+  private float floatOffset = 0f;
 
   public Weapon()
   {
     InitializeWeapon();
+    InitializeStateMachine();
   }
 
   private void InitializeWeapon()
@@ -35,167 +34,75 @@ public class Weapon : GameObject
       Size = new Vector2(16),
       Offset = Vector2.Zero
     };
-    Visible = true;
-    currentRotation = 0f; // Start pointing down
+
+    PivotScale = Vector2.One;
   }
 
-  /// <summary>
-  /// Initiates an attack. Can be called repeatedly once swing finishes.
-  /// </summary>
+  private void InitializeStateMachine()
+  {
+    stateMachine.Start(new WeaponIdleState(this));
+  }
+
+
   public bool TryAttack()
   {
-    // Allow new attacks when not swinging, or restart if swing is nearly complete
-    if (isSwinging && swingTimer < (swingDuration * 0.7f))
+    if (stateMachine.CurrentState is WeaponIdleState)
     {
-      return false; // Still in active swing, deny attack
+      stateMachine.ChangeState(new WeaponAttackingState(this));
+      return true;
     }
-
-    StartAttack();
-    return true;
+    return false;
   }
 
-  private void StartAttack()
-  {
-    isActive = true;
-    Visible = true;
-    isSwinging = true;
-    swingTimer = 0f;
-
-    // Reset to base rotation before calculating target for visible animation
-    ResetToBaseRotation();
-    CalculateTargetRotation();
-  }
-
-  private void ResetToBaseRotation()
-  {
-    // Calculate base rotation (offset from target direction)
-    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-    Vector2 direction = mousePosition - Position;
-    float targetAngleRad = MathF.Atan2(direction.Y, direction.X);
-    float targetAngleDeg = targetAngleRad * (180f / MathF.PI) + 90f;
-
-    // Start swing from 45 degrees behind target direction for visible arc
-    currentRotation = NormalizeAngle(targetAngleDeg - 90f);
-  }
-
-  private void CalculateTargetRotation()
-  {
-    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-    Vector2 direction = mousePosition - Position;
-
-    // Calculate angle and convert to degrees
-    float angleRad = MathF.Atan2(direction.Y, direction.X);
-    targetRotation = angleRad * (180f / MathF.PI) + 90f;
-
-    // Add swing arc - target 45 degrees ahead of cursor direction for full swing
-    targetRotation = NormalizeAngle(targetRotation + 45f);
-  }
-
-  /// <summary>
-  /// Returns true if the weapon is currently in swing animation
-  /// </summary>
   public bool IsSwinging => isSwinging;
 
-  /// <summary>
-  /// Returns true if the weapon is active and visible
-  /// </summary>
-  public bool IsActive => isActive;
+  public bool IsActive => Visible;
 
-  /// <summary>
-  /// Configures the weapon animation properties
-  /// </summary>
-  public void ConfigureAnimation(float rotationSpeed, float swingDuration)
-  {
-    this.rotationSpeed = MathF.Max(rotationSpeed, 1f);
-    this.swingDuration = MathF.Max(swingDuration, 0.05f);
-  }
-
-  /// <summary>
-  /// Updates weapon position (called by player)
-  /// </summary>
   public void UpdatePosition(Vector2 newPosition)
   {
     Position = newPosition;
+    PivotPosition = newPosition;
   }
 
   public override void Update(float dt)
   {
     base.Update(dt);
-    if (!isActive) return;
-
-    UpdateSwingAnimation(dt);
+    UpdatePivotTracking(dt);
+    UpdateFloatingEffect(dt);
+    stateMachine.Update(dt);
   }
 
-  private void UpdateSwingAnimation(float dt)
+  private void UpdatePivotTracking(float dt)
   {
-    if (!isSwinging) return;
+    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
 
-    swingTimer += dt;
-    UpdateRotation(dt);
-
-    // End swing animation when duration is reached
-    if (swingTimer >= swingDuration)
+    // Calculate angle to mouse (like Godot's look_at)
+    Vector2 direction = mousePosition - PivotPosition;
+    if (direction.LengthSquared() > 0.01f) // Avoid zero direction
     {
-      EndSwing();
+      // Add 90 degrees to account for weapon sprite pointing downward by default
+      PivotRotation = MathF.Atan2(direction.Y, direction.X) * (180f / MathF.PI) + 90f;
     }
-  }
 
-  private void UpdateRotation(float dt)
-  {
-    float rotationDifference = CalculateShortestRotationDifference();
-
-    // Use easing for more natural swing motion - faster at start, slower at end
-    float progress = swingTimer / swingDuration;
-    float easedSpeed = rotationSpeed * (2f - progress); // Start fast, slow down
-
-    float rotationStep = easedSpeed * dt;
-
-    if (MathF.Abs(rotationDifference) <= rotationStep)
+    // Handle flipping for left-side attacks (like Godot's scale.y = -1)
+    if (mousePosition.X - PivotPosition.X < 0)
     {
-      currentRotation = targetRotation;
+      PivotScale = new Vector2(1, -1);
     }
     else
     {
-      currentRotation += MathF.Sign(rotationDifference) * rotationStep;
-      currentRotation = NormalizeAngle(currentRotation);
+      PivotScale = new Vector2(1, 1);
     }
   }
 
-  private float CalculateShortestRotationDifference()
+  private void UpdateFloatingEffect(float dt)
   {
-    float difference = targetRotation - currentRotation;
-
-    // Choose shortest rotation path
-    while (difference > 180f) difference -= 360f;
-    while (difference < -180f) difference += 360f;
-
-    return difference;
+    // Subtle floating effect like in Godot demo
+    // Use a simple timer approach since GetTime() may not be available
+    floatOffset = MathF.Sin((float)GetTime() * 5.0f) * 2.0f;
   }
 
-  private float NormalizeAngle(float angle)
-  {
-    while (angle >= 360f) angle -= 360f;
-    while (angle < 0f) angle += 360f;
-    return angle;
-  }
 
-  private void EndSwing()
-  {
-    isSwinging = false;
-    swingTimer = 0f;
-    // Hide weapon immediately when swing animation finishes
-    // Visible = false;
-    isActive = false;
-    currentRotation = 0f;
-  }
-
-  private void DeactivateWeapon()
-  {
-    // Visible = false;
-    isActive = false;
-    isSwinging = false;
-    swingTimer = 0f;
-  }
 
   public override void Draw()
   {
@@ -207,14 +114,122 @@ public class Weapon : GameObject
 
   private void RenderWeapon()
   {
-    Rectangle source = new(176, 144, FlipX ? -16 : 16, 16);
+    // Apply pivot-based rendering similar to Godot approach
+    Vector2 renderPosition = PivotPosition;
+    renderPosition.Y += floatOffset; // Add floating effect
+
+    // Get mouse direction to determine sprite orientation using angle ranges
+    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
+    Vector2 direction = mousePosition - PivotPosition;
+
+    // Basic flip based on mouse X position relative to weapon position
+    bool shouldFlip = mousePosition.X > PivotPosition.X;
+
+    int spriteWidth = shouldFlip ? -16 : 16;
+    Rectangle source = new(176, 144, spriteWidth, 16);
+
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],
       source,
-      new Rectangle(Position.X, Position.Y, 16, 16),
+      new Rectangle(renderPosition.X, renderPosition.Y, 16, 16),
       Anchor,
-      currentRotation,
+      PivotRotation,
       Color.White
     );
+  }
+}
+
+
+public class WeaponIdleState : State
+{
+  private readonly Weapon weapon;
+
+  public WeaponIdleState(Weapon weapon)
+  {
+    this.weapon = weapon;
+  }
+
+  public override void Enter()
+  {
+
+    weapon.isSwinging = false;
+  }
+
+  public override void Update(float deltaTime)
+  {
+    // Weapon stays hidden, pivot tracking handled in main Update()
+    // No manual rotation needed - pivot system handles positioning
+  }
+
+  public override void Exit()
+  {
+    // Prepare for attack - show weapon
+
+  }
+}
+
+public class WeaponAttackingState : State
+{
+  private readonly Weapon weapon;
+  private float swingTimer = 0f;
+  private const float SwingDuration = 0.3f;
+
+  // Store base rotation to animate around
+  private float baseRotation = 0f;
+  private const float SwingArc = 90f; // Total swing arc in degrees
+
+  public WeaponAttackingState(Weapon weapon)
+  {
+    this.weapon = weapon;
+  }
+
+  public override void Enter()
+  {
+    swingTimer = 0f;
+    weapon.isSwinging = true;
+
+
+    // Capture the current pivot rotation as our base
+    baseRotation = weapon.PivotRotation;
+
+    // Play attack sound effect with pitch variation (like Godot demo)
+    // TODO: Add sound effects when audio system is implemented
+  }
+
+  public override void Update(float deltaTime)
+  {
+    swingTimer += deltaTime;
+    float progress = MathF.Min(swingTimer / SwingDuration, 1f);
+
+    // Use easing for more natural swing feel - start fast, slow down at the end
+    float easedProgress = EaseOutCubic(progress);
+
+    // Create swing animation: start at -45°, end at +45° relative to base rotation
+    float swingOffset = Lerp(-SwingArc / 2f, SwingArc / 2f, easedProgress);
+
+    // Set the weapon rotation directly (don't add continuously)
+    weapon.PivotRotation = baseRotation + swingOffset;
+
+    // End swing when duration is reached
+    if (progress >= 1f)
+    {
+      weapon.stateMachine.ChangeState(new WeaponIdleState(weapon));
+    }
+  }
+
+  public override void Exit()
+  {
+    weapon.isSwinging = false;
+    // Weapon visibility handled by idle state
+  }
+
+  private float EaseOutCubic(float t)
+  {
+    return 1f - MathF.Pow(1f - t, 3f);
+  }
+
+  private float Lerp(float a, float b, float t)
+  {
+    return a + (b - a) * t;
   }
 }
