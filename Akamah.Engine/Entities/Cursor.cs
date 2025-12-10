@@ -15,11 +15,6 @@ public class Cursor : GameObject
 
   public Cursor()
   {
-    Collider = new Collider
-    {
-      Size = new Vector2(4),
-      Offset = new Vector2(0)
-    };
   }
 
 
@@ -28,16 +23,9 @@ public class Cursor : GameObject
     var screenPosition = GetMousePosition();
     var worldMousePosition = GetScreenToWorld2D(screenPosition, ViewportManager.Camera);
 
-    // Calculate direction from player to real mouse cursor
-    var directionToMouse = worldMousePosition - GameManager.Player.Position;
-
-    // Limit the cursor distance (adjust maxDistance as needed)
-
-
-    // If mouse is too far, limit cursor to maxDistance
-    var normalizedDirection = Vector2.Normalize(directionToMouse);
-    Position = GameManager.Player.Position - offset + normalizedDirection * maxDistance;
-
+    var direction = worldMousePosition - GameManager.Player.Position;
+    var normalizedDirection = Vector2.Normalize(direction);
+    Position = GameManager.Player.Position + normalizedDirection * maxDistance;
 
     base.Update(dt);
   }

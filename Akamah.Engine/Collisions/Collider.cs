@@ -12,4 +12,32 @@ public class Collider
   public List<GameObject> Collisions { get; } = [];
 
   public Color DebugColor { get; set; } = Fade(Color.Red, 0.5f);
+
+  public virtual void Debug(Vector2 position)
+  {
+    DrawRectangleV(position + Offset, Size, DebugColor);
+  }
+
+  public virtual Rectangle GetBounds(Vector2 position)
+  {
+    return new Rectangle(position.X + Offset.X, position.Y + Offset.Y, Size.X, Size.Y);
+  }
+}
+
+
+public class CircleCollider : Collider
+{
+  public float Radius { get; set; } = 0.5f;
+
+
+  public override void Debug(Vector2 position)
+  {
+    DrawRectangleLinesEx(new Rectangle(position.X + Offset.X - Radius, position.Y + Offset.Y - Radius, Radius * 2, Radius * 2), 1, DebugColor);
+    DrawCircleV(position + Offset, Radius, DebugColor);
+  }
+
+  public override Rectangle GetBounds(Vector2 position)
+  {
+    return new Rectangle(position.X + Offset.X - Radius, position.Y + Offset.Y - Radius, Radius * 2, Radius * 2);
+  }
 }

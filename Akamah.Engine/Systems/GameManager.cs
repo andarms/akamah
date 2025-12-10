@@ -120,8 +120,13 @@ public static class GameManager
     var (viewportTopLeft, viewportBottomRight) = ViewportManager.CameraViewport;
     var visibleObjects = SpatialManager.GetVisibleObjects(viewportTopLeft, viewportBottomRight).ToList();
 
-    // Sort visible objects by Y position for proper rendering order
-    visibleObjects.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
+    // Sort visible objects by layer and then by Y position for proper rendering order
+    visibleObjects.Sort((a, b) =>
+    {
+      int layerComparison = a.Layer.CompareTo(b.Layer);
+      if (layerComparison != 0) return layerComparison;
+      return a.Position.Y.CompareTo(b.Position.Y);
+    });
 
     // Draw visible objects (excluding map since it's already drawn)
     foreach (var obj in visibleObjects)

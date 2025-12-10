@@ -11,7 +11,7 @@ public class Player : GameObject
 {
   const float Speed = 100.0f;
 
-  readonly Cursor cursor = new();
+  // readonly Cursor cursor = new();
   readonly Weapon weapon = new();
   Vector2 weaponOffset = new(4, -2);
 
@@ -30,7 +30,7 @@ public class Player : GameObject
   public override void Initialize()
   {
     base.Initialize();
-    GameManager.AddGameObject(cursor);
+    // GameManager.AddGameObject(cursor);
     GameManager.AddGameObject(weapon);
   }
 

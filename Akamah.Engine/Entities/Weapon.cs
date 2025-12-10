@@ -14,27 +14,20 @@ public class Weapon : GameObject
   public float PivotRotation { get; set; } = 0f;
   public Vector2 PivotScale { get; set; } = Vector2.One;
 
-  // Animation properties
-  internal bool isSwinging = false;
+  public Vector2 Direction { get; internal set; } = Vector2.Zero;
 
-  // Subtle floating effect
-  private float floatOffset = 0f;
+  internal bool isSwinging = false;
 
   public Weapon()
   {
     InitializeWeapon();
     InitializeStateMachine();
+    Layer = 1;
   }
 
   private void InitializeWeapon()
   {
     Anchor = new Vector2(8, 16);
-    Collider = new Collider
-    {
-      Size = new Vector2(16),
-      Offset = Vector2.Zero
-    };
-
     PivotScale = Vector2.One;
   }
 
@@ -68,41 +61,38 @@ public class Weapon : GameObject
   {
     base.Update(dt);
     UpdatePivotTracking(dt);
-    UpdateFloatingEffect(dt);
     stateMachine.Update(dt);
   }
 
   private void UpdatePivotTracking(float dt)
   {
     var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-
-    // Calculate angle to mouse (like Godot's look_at)
     Vector2 direction = mousePosition - PivotPosition;
-    if (direction.LengthSquared() > 0.01f) // Avoid zero direction
+    Direction = Vector2.Normalize(direction);
+    if (direction.LengthSquared() > 0.01f)
     {
-      // Add 90 degrees to account for weapon sprite pointing downward by default
-      PivotRotation = MathF.Atan2(direction.Y, direction.X) * (180f / MathF.PI) + 90f;
+      // Calculate rotation - weapon sprite points up by default, so we need to adjust
+      float angleRad = MathF.Atan2(direction.Y, direction.X);
+      float angleDeg = angleRad * (180f / MathF.PI);
+
+      // Adjust for weapon sprite default orientation (pointing up)
+      PivotRotation = angleDeg + 90f;
+
+      // Normalize angle to 0-360 range for consistency
+      while (PivotRotation < 0) PivotRotation += 360f;
+      while (PivotRotation >= 360f) PivotRotation -= 360f;
     }
 
-    // Handle flipping for left-side attacks (like Godot's scale.y = -1)
+    // Use X-axis flipping for horizontal orientation (not Y-axis)
     if (mousePosition.X - PivotPosition.X < 0)
     {
-      PivotScale = new Vector2(1, -1);
+      PivotScale = new Vector2(-1, 1);  // Flip horizontally
     }
     else
     {
-      PivotScale = new Vector2(1, 1);
+      PivotScale = new Vector2(1, 1);   // Normal orientation
     }
   }
-
-  private void UpdateFloatingEffect(float dt)
-  {
-    // Subtle floating effect like in Godot demo
-    // Use a simple timer approach since GetTime() may not be available
-    floatOffset = MathF.Sin((float)GetTime() * 5.0f) * 2.0f;
-  }
-
-
 
   public override void Draw()
   {
@@ -114,16 +104,8 @@ public class Weapon : GameObject
 
   private void RenderWeapon()
   {
-    // Apply pivot-based rendering similar to Godot approach
     Vector2 renderPosition = PivotPosition;
-    renderPosition.Y += floatOffset; // Add floating effect
-
-    // Get mouse direction to determine sprite orientation using angle ranges
-    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
-    Vector2 direction = mousePosition - PivotPosition;
-
-    // Basic flip based on mouse X position relative to weapon position
-    bool shouldFlip = mousePosition.X > PivotPosition.X;
+    bool shouldFlip = PivotScale.X > 0;
 
     int spriteWidth = shouldFlip ? -16 : 16;
     Rectangle source = new(176, 144, spriteWidth, 16);
@@ -140,14 +122,9 @@ public class Weapon : GameObject
 }
 
 
-public class WeaponIdleState : State
+public class WeaponIdleState(Weapon weapon) : State
 {
-  private readonly Weapon weapon;
-
-  public WeaponIdleState(Weapon weapon)
-  {
-    this.weapon = weapon;
-  }
+  private readonly Weapon weapon = weapon;
 
   public override void Enter()
   {
@@ -168,32 +145,25 @@ public class WeaponIdleState : State
   }
 }
 
-public class WeaponAttackingState : State
+public class WeaponAttackingState(Weapon weapon) : State
 {
-  private readonly Weapon weapon;
+  private readonly Weapon weapon = weapon;
   private float swingTimer = 0f;
   private const float SwingDuration = 0.3f;
+
+  private readonly MeleeAttack meleeAttack = new();
 
   // Store base rotation to animate around
   private float baseRotation = 0f;
   private const float SwingArc = 90f; // Total swing arc in degrees
 
-  public WeaponAttackingState(Weapon weapon)
-  {
-    this.weapon = weapon;
-  }
-
   public override void Enter()
   {
     swingTimer = 0f;
     weapon.isSwinging = true;
-
-
-    // Capture the current pivot rotation as our base
+    GameManager.AddGameObject(meleeAttack);
     baseRotation = weapon.PivotRotation;
-
-    // Play attack sound effect with pitch variation (like Godot demo)
-    // TODO: Add sound effects when audio system is implemented
+    meleeAttack.Position = weapon.Position + weapon.Direction * 8f;
   }
 
   public override void Update(float deltaTime)
@@ -221,6 +191,7 @@ public class WeaponAttackingState : State
   {
     weapon.isSwinging = false;
     // Weapon visibility handled by idle state
+    GameManager.RemoveGameObject(meleeAttack);
   }
 
   private float EaseOutCubic(float t)
@@ -231,5 +202,32 @@ public class WeaponAttackingState : State
   private float Lerp(float a, float b, float t)
   {
     return a + (b - a) * t;
+  }
+}
+
+
+public class MeleeAttack : GameObject
+{
+  public MeleeAttack()
+  {
+    Collider = new CircleCollider
+    {
+      Size = new Vector2(16),
+      Offset = new Vector2(0),
+      Radius = 8
+    };
+  }
+
+
+  public override void Update(float dt)
+  {
+    base.Update(dt);
+    var collisions = CollisionsManager.GetPotentialCollisions(this);
+    foreach (var other in collisions)
+    {
+      if (other is Player) continue;
+      Console.WriteLine("Melee attack hit: " + other.GetType().Name);
+
+    }
   }
 }

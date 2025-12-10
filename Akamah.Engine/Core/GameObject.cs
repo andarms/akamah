@@ -7,6 +7,7 @@ public class GameObject
   public Vector2 Position { get; set; } = Vector2.Zero;
   public Collider? Collider { get; set; }
   public bool Visible { get; set; } = true;
+  public int Layer { get; set; } = 0;
   public Vector2 Anchor { get; set; } = Vector2.Zero;
 
   public bool FlipX { get; set; } = false;
@@ -32,10 +33,7 @@ public class GameObject
 
   public virtual void Debug()
   {
-    if (Collider != null)
-    {
-      DrawRectangleV(Position + Collider.Offset - Anchor, Collider.Size, Collider.DebugColor);
-    }
+    Collider?.Debug(Position - Anchor);
     DrawCircleV(Position, 2, Color.Lime);
   }
 
