@@ -64,10 +64,7 @@ public static class SpatialManager
       }
 
       // Clear collision data
-      if (obj.Collider != null)
-      {
-        obj.Collider.Collisions.Clear();
-      }
+      obj.Collider?.Collisions.Clear();
     }
   }
 
@@ -107,9 +104,9 @@ public static class SpatialManager
   /// </summary>
   public static IEnumerable<GameObject> GetPotentialCollisions(GameObject obj)
   {
-    if (obj.Collider == null) return Enumerable.Empty<GameObject>();
+    if (obj.Collider == null) return [];
 
-    var bounds = GetObjectBounds(obj);
+    var bounds = obj.GetBounds();
     return spatialGrid.GetPotentialCollisions(bounds);
   }
 

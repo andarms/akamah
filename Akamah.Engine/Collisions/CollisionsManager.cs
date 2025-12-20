@@ -41,7 +41,7 @@ public static class CollisionsManager
     {
       if (other == obj || other.Collider == null) continue;
 
-      if (CheckCollisionRecs(GetBounds(obj), GetBounds(other)))
+      if (CheckCollisionRecs(obj.GetBounds(), other.GetBounds()))
       {
         yield return other;
       }

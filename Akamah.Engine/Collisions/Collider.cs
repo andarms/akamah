@@ -13,14 +13,19 @@ public class Collider
 
   public Color DebugColor { get; set; } = Fade(Color.Red, 0.5f);
 
-  public virtual void Debug(Vector2 position)
+  public virtual void Debug(Vector2 position, Vector2 anchor)
   {
-    DrawRectangleV(position + Offset, Size, DebugColor);
+    DrawRectangleV(position + Offset - anchor, Size, DebugColor);
   }
 
-  public virtual Rectangle GetBounds(Vector2 position)
+  public virtual Rectangle GetBounds(Vector2 position, Vector2 anchor)
   {
-    return new Rectangle(position.X + Offset.X, position.Y + Offset.Y, Size.X, Size.Y);
+    return new Rectangle(
+      position.X + Offset.X - anchor.X,
+      position.Y + Offset.Y - anchor.Y,
+      Size.X,
+      Size.Y
+    );
   }
 }
 
@@ -30,14 +35,14 @@ public class CircleCollider : Collider
   public float Radius { get; set; } = 0.5f;
 
 
-  public override void Debug(Vector2 position)
+  public override void Debug(Vector2 position, Vector2 anchor)
   {
-    DrawRectangleLinesEx(new Rectangle(position.X + Offset.X - Radius, position.Y + Offset.Y - Radius, Radius * 2, Radius * 2), 1, DebugColor);
-    DrawCircleV(position + Offset, Radius, DebugColor);
+    DrawRectangleLinesEx(GetBounds(position, anchor), 1, DebugColor);
+    DrawCircleV(position + Offset - anchor, Radius, DebugColor);
   }
 
-  public override Rectangle GetBounds(Vector2 position)
+  public override Rectangle GetBounds(Vector2 position, Vector2 anchor)
   {
-    return new Rectangle(position.X + Offset.X - Radius, position.Y + Offset.Y - Radius, Radius * 2, Radius * 2);
+    return new Rectangle(position.X + Offset.X - anchor.X - Radius, position.Y + Offset.Y - anchor.Y - Radius, Radius * 2, Radius * 2);
   }
 }

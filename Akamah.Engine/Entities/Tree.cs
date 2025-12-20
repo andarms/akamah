@@ -1,12 +1,12 @@
 using Akamah.Engine.Core;
 using Akamah.Engine.Assets;
 using Akamah.Engine.Collisions;
+using Akamah.Engine.Systems;
 
 namespace Akamah.Engine.Entities;
 
-public class Tree : GameObject
+public class Tree : GameObject, IDamageable
 {
-
   public Tree()
   {
     Visible = true;
@@ -18,6 +18,8 @@ public class Tree : GameObject
       Solid = true
     };
   }
+
+  public Health Health { get; } = new Health(30);
 
   public override void Draw()
   {
@@ -32,5 +34,22 @@ public class Tree : GameObject
       0.0f,
       Color.White
     );
+  }
+
+  public bool CanTakeDamage(Damage damage) => true;
+
+  public void TakeDamage(Damage damage)
+  {
+    int amount = damage.Amount;
+    if (damage.Source == DamageSource.Axe)
+    {
+      amount *= 2;
+    }
+    Health.TakeDamage(amount);
+    Console.WriteLine($"Tree took {amount} damage, current health: {Health.Current}");
+    if (Health.Current <= 0)
+    {
+      GameManager.RemoveGameObject(this);
+    }
   }
 }

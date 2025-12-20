@@ -1,5 +1,4 @@
 using Akamah.Engine.Assets;
-using Akamah.Engine.Collisions;
 using Akamah.Engine.Core;
 using Akamah.Engine.Systems;
 
@@ -163,7 +162,7 @@ public class WeaponAttackingState(Weapon weapon) : State
     weapon.isSwinging = true;
     GameManager.AddGameObject(meleeAttack);
     baseRotation = weapon.PivotRotation;
-    meleeAttack.Position = weapon.Position + weapon.Direction * 8f;
+    meleeAttack.Position = weapon.Position + weapon.Direction * 12f;
   }
 
   public override void Update(float deltaTime)
@@ -202,32 +201,5 @@ public class WeaponAttackingState(Weapon weapon) : State
   private float Lerp(float a, float b, float t)
   {
     return a + (b - a) * t;
-  }
-}
-
-
-public class MeleeAttack : GameObject
-{
-  public MeleeAttack()
-  {
-    Collider = new CircleCollider
-    {
-      Size = new Vector2(16),
-      Offset = new Vector2(0),
-      Radius = 8
-    };
-  }
-
-
-  public override void Update(float dt)
-  {
-    base.Update(dt);
-    var collisions = CollisionsManager.GetPotentialCollisions(this);
-    foreach (var other in collisions)
-    {
-      if (other is Player) continue;
-      Console.WriteLine("Melee attack hit: " + other.GetType().Name);
-
-    }
   }
 }

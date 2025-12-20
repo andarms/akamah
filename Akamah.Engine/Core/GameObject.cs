@@ -31,9 +31,14 @@ public class GameObject
   }
 
 
+  public virtual void Terminate()
+  {
+  }
+
+
   public virtual void Debug()
   {
-    Collider?.Debug(Position - Anchor);
+    Collider?.Debug(Position, Anchor);
     DrawCircleV(Position, 2, Color.Lime);
   }
 
@@ -46,5 +51,12 @@ public class GameObject
   protected bool IsInCameraView(Vector2 size)
   {
     return ViewportManager.IsRectInView(Position, size);
+  }
+
+
+  public virtual Rectangle GetBounds()
+  {
+    if (Collider == null) return new Rectangle(Position.X, Position.Y, 0, 0);
+    return Collider.GetBounds(Position, Anchor);
   }
 }

@@ -39,11 +39,11 @@ public class GameScene : Scene
       // Always show basic controls
       DrawText("F1: Debug | R: Regen", 10, GetScreenHeight() - 30, 20, Color.White);
 
-      var performanceInfo = SpatialManager.GetPerformanceInfo();
+      var (totalObjects, visibleObjects, collisionChecks, _) = SpatialManager.GetPerformanceInfo();
 
-      DrawText($"Objects: {performanceInfo.totalObjects}", 10, 30, 20, Color.White);
-      DrawText($"Visible: {performanceInfo.visibleObjects}", 10, 50, 20, Color.White);
-      DrawText($"Collisions: {performanceInfo.collisionChecks}", 10, 70, 20, Color.White);
+      DrawText($"Objects: {totalObjects}", 10, 30, 20, Color.White);
+      DrawText($"Visible: {visibleObjects}", 10, 50, 20, Color.White);
+      DrawText($"Collisions: {collisionChecks}", 10, 70, 20, Color.White);
     }
   }
 }

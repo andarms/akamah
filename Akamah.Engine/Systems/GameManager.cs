@@ -181,6 +181,8 @@ public static class GameManager
     {
       CollisionsManager.RemoveObject(gameObject);
     }
+
+    gameObject.Terminate();
   }
 
   private static bool ShouldAlwaysUpdate(GameObject obj)
