@@ -16,13 +16,16 @@ public class Player : GameObject
   Vector2 weaponOffset = new(4, -2);
 
 
+  public Tool Tool { get; private set; } = ToolsFactory.CreateSword(Material.Wood);
+
+
   public Player()
   {
     Anchor = new(8, 16);
     Collider = new Collider
     {
-      Size = new Vector2(8, 8),
-      Offset = new Vector2(4, 8)
+      Size = new Vector2(16, 8),
+      Offset = new Vector2(0, 8)
     };
 
   }
@@ -60,6 +63,27 @@ public class Player : GameObject
     if (InputManager.IsPressed("attack"))
     {
       weapon.TryAttack();
+    }
+
+    if (IsKeyPressed(KeyboardKey.One))
+    {
+      Tool = ToolsFactory.CreateSword(Material.Wood);
+      Console.WriteLine($"Equipped: {Tool}");
+    }
+    else if (IsKeyPressed(KeyboardKey.Two))
+    {
+      Tool = ToolsFactory.CreateAxe(Material.Stone);
+      Console.WriteLine($"Equipped: {Tool}");
+    }
+    else if (IsKeyPressed(KeyboardKey.Three))
+    {
+      Tool = ToolsFactory.CreatePickaxe(Material.Wood);
+      Console.WriteLine($"Equipped: {Tool}");
+    }
+    else if (IsKeyPressed(KeyboardKey.Four))
+    {
+      Tool = ToolsFactory.CreateShovel(Material.Stone);
+      Console.WriteLine($"Equipped: {Tool}");
     }
 
     // Apply movement with collision detection per axis

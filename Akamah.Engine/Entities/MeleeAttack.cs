@@ -1,5 +1,6 @@
 using Akamah.Engine.Collisions;
 using Akamah.Engine.Core;
+using Akamah.Engine.Systems;
 
 namespace Akamah.Engine.Entities;
 
@@ -7,13 +8,12 @@ public class MeleeAttack : GameObject
 {
   public HashSet<GameObject> ImpactList { get; } = [];
 
+
   public MeleeAttack()
   {
     Collider = new CircleCollider
     {
-      Size = new Vector2(16),
-      Offset = new Vector2(0),
-      Radius = 8
+      Radius = 6
     };
   }
 
@@ -41,10 +41,10 @@ public class MeleeAttack : GameObject
 
   public virtual void InflictDamage(IDamageable damagable)
   {
-    Damage damage = new(10, DamageSource.None);
+    var damage = GameManager.Player.Tool.CalculateDamage();
     if (damagable.CanTakeDamage(damage))
     {
-      damagable.TakeDamage(new Damage(10, DamageSource.Axe));
+      damagable.TakeDamage(damage);
     }
   }
 }

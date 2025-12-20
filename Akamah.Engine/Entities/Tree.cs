@@ -7,9 +7,20 @@ namespace Akamah.Engine.Entities;
 
 public class Tree : GameObject, IDamageable
 {
+
+  public readonly DamageProfile DamageProfile = new()
+  {
+    TypeMultipliers = new Dictionary<DamageType, float>
+    {
+      { DamageType.Chop, 2.0f },
+      { DamageType.Slash, 0.5f },
+      { DamageType.Mine, 0.2f },
+      { DamageType.Dig, 0.2f }
+    }
+  };
+
   public Tree()
   {
-    Visible = true;
     Anchor = new(8, 16);
     Collider = new Collider
     {
@@ -23,9 +34,6 @@ public class Tree : GameObject, IDamageable
 
   public override void Draw()
   {
-    // Spatial system handles visibility culling for trees
-    Visible = true;
-
     DrawTexturePro(
       AssetsManager.Textures["TinyTown"],
       new Rectangle(64, 32, 16, 16),
@@ -36,17 +44,13 @@ public class Tree : GameObject, IDamageable
     );
   }
 
-  public bool CanTakeDamage(Damage damage) => true;
+  public bool CanTakeDamage(Damage attack) => true;
 
-  public void TakeDamage(Damage damage)
+  public void TakeDamage(Damage attack)
   {
-    int amount = damage.Amount;
-    if (damage.Source == DamageSource.Axe)
-    {
-      amount *= 2;
-    }
+    int amount = (int)(attack.Power * DamageProfile.GetMultiplier(attack.Type));
+    Console.WriteLine($"Tree takes {amount} damage.");
     Health.TakeDamage(amount);
-    Console.WriteLine($"Tree took {amount} damage, current health: {Health.Current}");
     if (Health.Current <= 0)
     {
       GameManager.RemoveGameObject(this);

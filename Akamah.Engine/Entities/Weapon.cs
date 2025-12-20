@@ -4,6 +4,7 @@ using Akamah.Engine.Systems;
 
 namespace Akamah.Engine.Entities;
 
+
 public class Weapon : GameObject
 {
   public readonly StateMachine stateMachine = new();
@@ -107,7 +108,9 @@ public class Weapon : GameObject
     bool shouldFlip = PivotScale.X > 0;
 
     int spriteWidth = shouldFlip ? -16 : 16;
-    Rectangle source = new(176, 144, spriteWidth, 16);
+
+    Rectangle sourceSprite = GameManager.Player.Tool.SourceSprite;
+    Rectangle source = new(sourceSprite.X, sourceSprite.Y, spriteWidth, sourceSprite.Height);
 
     DrawTexturePro(
       AssetsManager.Textures["TinyDungeon"],

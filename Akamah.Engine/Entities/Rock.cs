@@ -1,11 +1,14 @@
 using Akamah.Engine.Core;
 using Akamah.Engine.Assets;
 using Akamah.Engine.Collisions;
+using Akamah.Engine.Systems;
 
 namespace Akamah.Engine.Entities;
 
-public class Rock : GameObject
+public class Rock : GameObject, IDamageable
 {
+  public Health Health { get; } = new Health(50);
+
   public Rock()
   {
     Collider = new Collider
@@ -15,6 +18,7 @@ public class Rock : GameObject
       Solid = true
     };
   }
+
 
   public override void Draw()
   {
@@ -27,5 +31,17 @@ public class Rock : GameObject
       0.0f,
       Color.White
     );
+  }
+
+  public bool CanTakeDamage(Damage damage) => damage.Type == DamageType.Mine;
+
+  public void TakeDamage(Damage damage)
+  {
+    int amount = (int)damage.Power;
+    Health.TakeDamage(amount);
+    if (Health.Current <= 0)
+    {
+      GameManager.RemoveGameObject(this);
+    }
   }
 }
