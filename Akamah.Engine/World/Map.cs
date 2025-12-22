@@ -1,21 +1,13 @@
+using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Core.Engine;
+using Akamah.Engine.Gameplay.World.Flora;
+using Akamah.Engine.Gameplay.World.Minerals;
 using Akamah.Engine.Systems;
-using Akamah.Engine.Core;
-using Akamah.Engine.Entities;
-using Akamah.Engine.Collisions;
+using Akamah.Engine.Systems.Spatial;
+using Akamah.Engine.World.Generation;
+using Akamah.Engine.World.Tiles;
 
 namespace Akamah.Engine.World;
-
-
-[Flags]
-public enum TileType
-{
-  None,
-  Grass,
-  Sand,
-  Water,
-  Mountain,
-  Forest
-}
 
 
 public class Map(int width, int height) : GameObject

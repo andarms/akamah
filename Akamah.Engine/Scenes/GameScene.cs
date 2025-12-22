@@ -1,6 +1,7 @@
+using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Core.Scene;
 using Akamah.Engine.Systems;
-using Akamah.Engine.Core;
-using Akamah.Engine.Collisions;
+using Akamah.Engine.Systems.Spatial;
 
 namespace Akamah.Engine.Scenes;
 
