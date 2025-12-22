@@ -42,6 +42,7 @@ public class MeleeAttack : GameObject
   public virtual void InflictDamage(IDamageable damagable)
   {
     var damage = GameManager.Player.Tool.CalculateDamage();
+    GameManager.Player.Tool.Durability.Decrease(1);
     if (damagable.CanTakeDamage(damage))
     {
       damagable.TakeDamage(damage);

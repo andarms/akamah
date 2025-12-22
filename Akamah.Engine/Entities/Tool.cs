@@ -1,5 +1,24 @@
 namespace Akamah.Engine.Entities;
 
+
+public class Durability(float max)
+{
+  public float Max { get; set; } = max;
+  public float Current { get; set; } = max;
+
+  public void Decrease(float amount)
+  {
+    Current -= amount;
+    if (Current < 0) Current = 0;
+  }
+
+  public void Repair(float amount)
+  {
+    Current += amount;
+    if (Current > Max) Current = Max;
+  }
+}
+
 public class Tool
 {
   public string Name { get; set; } = "Unnamed Tool";
@@ -7,6 +26,7 @@ public class Tool
   public DamageType AttackType { get; set; } = DamageType.None;
   public float BasePower { get; set; } = 0;
   public Rectangle SourceSprite { get; set; } = new Rectangle(0, 0, 0, 0);
+  public Durability Durability { get; set; } = new Durability(100);
 
   public Damage CalculateDamage()
   {
@@ -38,10 +58,10 @@ public static class ToolsFactory
       Material = material,
       AttackType = DamageType.Slash,
       BasePower = 8,
+      Durability = new Durability(100 * material.EfficiencyMultiplier()),
       SourceSprite = new Rectangle(176, 128, 16, 16)
     };
   }
-
 
   public static Tool CreateAxe(Material material)
   {
@@ -53,6 +73,7 @@ public static class ToolsFactory
       Material = material,
       AttackType = DamageType.Chop,
       BasePower = 15,
+      Durability = new Durability(150 * material.EfficiencyMultiplier()),
       SourceSprite = new Rectangle(176, 144, 16, 16)
     };
   }
@@ -66,6 +87,7 @@ public static class ToolsFactory
       Material = material,
       AttackType = DamageType.Mine,
       BasePower = 12,
+      Durability = new Durability(120 * material.EfficiencyMultiplier()),
       SourceSprite = new Rectangle(192, 144, 16, 16)
     };
   }
@@ -79,6 +101,7 @@ public static class ToolsFactory
       Material = material,
       AttackType = DamageType.Dig,
       BasePower = 10,
+      Durability = new Durability(110 * material.EfficiencyMultiplier()),
       SourceSprite = new Rectangle(192, 128, 16, 16)
     };
   }
