@@ -8,7 +8,6 @@ using Akamah.Engine.Systems.Collision;
 
 namespace Akamah.Engine.Gameplay.Player;
 
-
 public class Player : GameObject
 {
   const float Speed = 100.0f;

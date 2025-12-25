@@ -16,8 +16,8 @@ public class Rock : GameObject
       Solid = true
     };
     Add(new Health(50));
-    Add(new RockMaterial());
-    Add(new TerminateOnDeath());
+    Add(new Stone());
+    Add(new RemoveOnDeath());
   }
 
 

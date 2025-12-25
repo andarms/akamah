@@ -2,25 +2,6 @@ using Akamah.Engine.Core.Engine;
 
 namespace Akamah.Engine.Gameplay.Interactions.Equipment;
 
-
-public class Durability(float max)
-{
-  public float Max { get; set; } = max;
-  public float Current { get; set; } = max;
-
-  public void Decrease(float amount)
-  {
-    Current -= amount;
-    if (Current < 0) Current = 0;
-  }
-
-  public void Repair(float amount)
-  {
-    Current += amount;
-    if (Current > Max) Current = Max;
-  }
-}
-
 public class Tool
 {
   public string Name { get; set; } = "Unnamed Tool";

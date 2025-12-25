@@ -1,6 +1,6 @@
 namespace Akamah.Engine.Core.Engine;
 
-public class TerminateOnDeath() : Component
+public class RemoveOnDeath() : Component
 {
   public override void Initialize()
   {
@@ -8,4 +8,3 @@ public class TerminateOnDeath() : Component
     Owner.When<HealthDepleted>(_ => Owner.Terminate());
   }
 }
-

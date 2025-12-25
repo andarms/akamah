@@ -1,6 +1,7 @@
 using Akamah.Engine.Assets.Management;
 using Akamah.Engine.Core.Engine;
 using Akamah.Engine.Gameplay.Materials;
+using Akamah.Engine.Gameplay.UI;
 using Akamah.Engine.Systems.Collision;
 
 namespace Akamah.Engine.Gameplay.World.Flora;
@@ -16,9 +17,10 @@ public class Tree : GameObject
       Offset = new Vector2(0, 8),
       Solid = true
     };
-    Add(new WoodMaterial());
+    Add(new Wooden());
     Add(new Health(30));
-    Add(new TerminateOnDeath());
+    Add(new RemoveOnDeath());
+    Add(new ShowDamageOnHit());
   }
 
   public override void Draw()

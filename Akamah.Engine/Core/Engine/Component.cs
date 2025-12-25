@@ -9,6 +9,7 @@ public class Component
   protected IReadOnlyGameObject Owner => owner ?? throw new InvalidOperationException("Owner not set");
 
   public void Attach(GameObject owner) => this.owner = owner;
+
   public void Detach() => owner = null;
 
   public virtual void Initialize() { }
@@ -21,6 +22,3 @@ public class Component
 
   public virtual void Handle(GameAction action) { }
 }
-
-
-
