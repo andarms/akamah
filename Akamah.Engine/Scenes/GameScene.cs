@@ -11,14 +11,14 @@ public class GameScene : Scene
   public override void Initialize()
   {
     base.Initialize();
-    GameManager.Initialize();
+    GameWorld.Initialize();
   }
 
   public override void HandleInput()
   {
     if (IsKeyPressed(KeyboardKey.R))
     {
-      GameManager.Map.GenerateRandomMap();
+      GameWorld.Map.GenerateRandomMap();
     }
   }
 
@@ -31,7 +31,7 @@ public class GameScene : Scene
 
     EndMode2D();
 
-    if (GameManager.DebugMode)
+    if (GameWorld.DebugMode)
     {
       // Debug UI
       DrawRectangleV(new Vector2(0, 0), new Vector2(200, 100), Color.Black);

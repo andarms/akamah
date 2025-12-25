@@ -31,7 +31,7 @@ public class MeleeAttack : GameObject
       if (other is Player.Player || ImpactList.Contains(other)) continue;
 
       ImpactList.Add(other);
-      other.Handle(GameManager.Player.Tool.Action);
+      other.Handle(GameWorld.Player.Tool.Action);
     }
   }
 }

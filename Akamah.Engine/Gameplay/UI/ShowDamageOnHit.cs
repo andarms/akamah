@@ -14,6 +14,6 @@ public class ShowDamageOnHit : Component
   private void OnDamageTaken(HealthChanged evt)
   {
     var damageIndicator = new DamageIndicator(Owner.Position, evt.Before - evt.After);
-    GameManager.AddGameObject(damageIndicator);
+    GameWorld.AddGameObject(damageIndicator);
   }
 }

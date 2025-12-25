@@ -17,8 +17,8 @@ public class Map(int width, int height) : GameObject
 
   public List<int> queue = [];
 
-  PerlinNoise heightNoise = new(GameManager.Seed);
-  PerlinNoise moistureNoise = new(GameManager.Seed + 1);
+  PerlinNoise heightNoise = new(GameWorld.Seed);
+  PerlinNoise moistureNoise = new(GameWorld.Seed + 1);
 
   public int Width { get; } = width;
   public int Height { get; } = height;
@@ -29,11 +29,11 @@ public class Map(int width, int height) : GameObject
   public void GenerateRandomMap()
   {
     // Properly remove all trees using GameManager.RemoveGameObject to clean up spatial systems
-    foreach (var obj in GameManager.GameObjects.ToArray())
+    foreach (var obj in GameWorld.GameObjects.ToArray())
     {
       if (obj is Tree || obj is Rock)
       {
-        GameManager.RemoveGameObject(obj);
+        GameWorld.RemoveGameObject(obj);
       }
     }
     Array.Fill(Tiles, null);

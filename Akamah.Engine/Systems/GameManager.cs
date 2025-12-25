@@ -9,7 +9,7 @@ using Akamah.Engine.World;
 
 namespace Akamah.Engine.Systems;
 
-public static class GameManager
+public static class GameWorld
 {
   public static Player Player { get; set; } = new();
 

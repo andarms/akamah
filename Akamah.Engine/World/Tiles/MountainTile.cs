@@ -12,7 +12,7 @@ public class MountainTile : Tile
   {
     base.Initialize();
     Rock rock = new() { Position = Position };
-    GameManager.AddGameObject(rock);
+    GameWorld.AddGameObject(rock);
   }
 
   public override void Draw()

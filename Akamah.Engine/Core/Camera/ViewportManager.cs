@@ -36,8 +36,8 @@ public static class ViewportManager
   {
     Vector2 screenCenter = GetScreenCenter();
     Vector2 cameraLimit = new(
-      GameManager.Map.Limits.X - screenCenter.X + camera.Offset.X / camera.Zoom,
-      GameManager.Map.Limits.Y - screenCenter.Y + camera.Offset.Y / camera.Zoom
+      GameWorld.Map.Limits.X - screenCenter.X + camera.Offset.X / camera.Zoom,
+      GameWorld.Map.Limits.Y - screenCenter.Y + camera.Offset.Y / camera.Zoom
     );
     camera.Target = Vector2.Clamp(target, Vector2.Zero + camera.Offset / camera.Zoom, cameraLimit);
   }
@@ -71,8 +71,8 @@ public static class ViewportManager
   {
     int minX = Math.Max(0, (int)(cachedTopLeft.X / tileSize) - 1);
     int minY = Math.Max(0, (int)(cachedTopLeft.Y / tileSize) - 1);
-    int maxX = Math.Min(GameManager.Map.Width - 1, (int)(cachedBottomRight.X / tileSize) + 1);
-    int maxY = Math.Min(GameManager.Map.Height - 1, (int)(cachedBottomRight.Y / tileSize) + 1);
+    int maxX = Math.Min(GameWorld.Map.Width - 1, (int)(cachedBottomRight.X / tileSize) + 1);
+    int maxY = Math.Min(GameWorld.Map.Height - 1, (int)(cachedBottomRight.Y / tileSize) + 1);
 
     return (minX, minY, maxX, maxY);
   }

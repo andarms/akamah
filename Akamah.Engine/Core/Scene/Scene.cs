@@ -14,7 +14,7 @@ public abstract class Scene : IDisposable
   public virtual void Initialize()
   {
     IsInitialized = true;
-    foreach (var gameObject in GameManager.GameObjects.ToArray())
+    foreach (var gameObject in GameWorld.GameObjects.ToArray())
     {
       gameObject.Initialize();
     }
@@ -41,17 +41,17 @@ public abstract class Scene : IDisposable
   {
     if (IsKeyPressed(KeyboardKey.F1))
     {
-      GameManager.DebugMode = !GameManager.DebugMode;
+      GameWorld.DebugMode = !GameWorld.DebugMode;
     }
     ViewportManager.Update();
-    GameManager.UpdateVisibleObjects(deltaTime);
+    GameWorld.UpdateVisibleObjects(deltaTime);
   }
 
   public virtual void Draw()
   {
     ClearBackground(BackgroundColor);
     BeginMode2D(ViewportManager.Camera);
-    GameManager.DrawVisibleObjects();
+    GameWorld.DrawVisibleObjects();
     EndMode2D();
   }
 

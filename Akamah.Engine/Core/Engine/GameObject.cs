@@ -64,7 +64,7 @@ public class GameObject : IReadOnlyGameObject
     Components.ForEach(c => c.Terminate());
     Components.Clear();
     listeners.Clear();
-    GameManager.RemoveGameObject(this);
+    GameWorld.RemoveGameObject(this);
   }
 
 

@@ -1,6 +1,7 @@
 using Akamah.Engine.Assets.Management;
 using Akamah.Engine.Core.Engine;
 using Akamah.Engine.Gameplay.Materials;
+using Akamah.Engine.Gameplay.UI;
 using Akamah.Engine.Systems.Collision;
 
 namespace Akamah.Engine.Gameplay.World.Minerals;
@@ -18,6 +19,7 @@ public class Rock : GameObject
     Add(new Health(50));
     Add(new Stone());
     Add(new RemoveOnDeath());
+    Add(new ShowDamageOnHit());
   }
 
 
