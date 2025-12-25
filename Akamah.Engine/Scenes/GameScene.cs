@@ -1,7 +1,7 @@
 using Akamah.Engine.Core.Camera;
 using Akamah.Engine.Core.Scene;
+using Akamah.Engine.Physics.Spatial;
 using Akamah.Engine.Systems;
-using Akamah.Engine.Systems.Spatial;
 
 namespace Akamah.Engine.Scenes;
 
@@ -40,7 +40,7 @@ public class GameScene : Scene
       // Always show basic controls
       DrawText("F1: Debug | R: Regen", 10, GetScreenHeight() - 30, 20, Color.White);
 
-      var (totalObjects, visibleObjects, collisionChecks, _) = SpatialManager.GetPerformanceInfo();
+      var (totalObjects, visibleObjects, collisionChecks, _) = SpatialSystem.GetPerformanceInfo();
 
       DrawText($"Objects: {totalObjects}", 10, 30, 20, Color.White);
       DrawText($"Visible: {visibleObjects}", 10, 50, 20, Color.White);

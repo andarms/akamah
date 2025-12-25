@@ -1,4 +1,4 @@
-using Akamah.Engine.Assets.Management;
+using Akamah.Engine.Assets;
 
 namespace Akamah.Engine.World.Tiles;
 

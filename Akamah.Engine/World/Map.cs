@@ -1,9 +1,9 @@
 using Akamah.Engine.Core.Camera;
-using Akamah.Engine.Core.Engine;
-using Akamah.Engine.Gameplay.World.Flora;
-using Akamah.Engine.Gameplay.World.Minerals;
+using Akamah.Engine.Engine.Core;
+using Akamah.Engine.Physics.Spatial;
 using Akamah.Engine.Systems;
-using Akamah.Engine.Systems.Spatial;
+using Akamah.Engine.World.Environment.Flora;
+using Akamah.Engine.World.Environment.Minerals;
 using Akamah.Engine.World.Generation;
 using Akamah.Engine.World.Tiles;
 
@@ -61,7 +61,7 @@ public class Map(int width, int height) : GameObject
     this.Initialize();
 
     // Resize spatial grid to match current map dimensions
-    SpatialManager.ResizeToMapDimensions();
+    SpatialSystem.ResizeToMapDimensions();
   }
 
   public override void Initialize()

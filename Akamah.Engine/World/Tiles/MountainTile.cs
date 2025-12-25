@@ -1,6 +1,6 @@
-using Akamah.Engine.Assets.Management;
-using Akamah.Engine.Gameplay.World.Minerals;
+using Akamah.Engine.Assets;
 using Akamah.Engine.Systems;
+using Akamah.Engine.World.Environment.Minerals;
 
 namespace Akamah.Engine.World.Tiles;
 
