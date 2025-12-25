@@ -1,26 +1,12 @@
 using Akamah.Engine.Assets.Management;
 using Akamah.Engine.Core.Engine;
-using Akamah.Engine.Gameplay.Interactions;
-using Akamah.Engine.Gameplay.Traits;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Gameplay.Materials;
 using Akamah.Engine.Systems.Collision;
 
 namespace Akamah.Engine.Gameplay.World.Flora;
 
-public class Tree : GameObject, IDamageable
+public class Tree : GameObject
 {
-
-  public readonly DamageProfile DamageProfile = new()
-  {
-    TypeMultipliers = new Dictionary<DamageType, float>
-    {
-      { DamageType.Chop, 2.0f },
-      { DamageType.Slash, 0.5f },
-      { DamageType.Mine, 0.2f },
-      { DamageType.Dig, 0.2f }
-    }
-  };
-
   public Tree()
   {
     Anchor = new(8, 16);
@@ -30,9 +16,10 @@ public class Tree : GameObject, IDamageable
       Offset = new Vector2(0, 8),
       Solid = true
     };
+    Add(new WoodMaterial());
+    Add(new Health(30));
+    Add(new TerminateOnDeath());
   }
-
-  public Health Health { get; } = new Health(30);
 
   public override void Draw()
   {
@@ -44,18 +31,5 @@ public class Tree : GameObject, IDamageable
       0.0f,
       Color.White
     );
-  }
-
-  public bool CanTakeDamage(Damage attack) => true;
-
-  public void TakeDamage(Damage attack)
-  {
-    int amount = (int)(attack.Power * DamageProfile.GetMultiplier(attack.Type));
-    Console.WriteLine($"Tree takes {amount} damage.");
-    Health.TakeDamage(amount);
-    if (Health.Current <= 0)
-    {
-      GameManager.RemoveGameObject(this);
-    }
   }
 }

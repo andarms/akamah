@@ -1,3 +1,5 @@
+using Akamah.Engine.Core.Engine;
+
 namespace Akamah.Engine.Gameplay.Interactions.Equipment;
 
 
@@ -23,20 +25,10 @@ public class Tool
 {
   public string Name { get; set; } = "Unnamed Tool";
   public Material Material { get; set; } = Material.None;
-  public DamageType AttackType { get; set; } = DamageType.None;
   public float BasePower { get; set; } = 0;
   public Rectangle SourceSprite { get; set; } = new Rectangle(0, 0, 0, 0);
-  public Durability Durability { get; set; } = new Durability(100);
 
-  public Damage CalculateDamage()
-  {
-    return new Damage
-    {
-      Power = BasePower * Material.EfficiencyMultiplier(),
-      Type = AttackType
-    };
-  }
-
+  public GameAction Action { get; set; } = new GameAction();
 
   public override string ToString()
   {
@@ -56,10 +48,9 @@ public static class ToolsFactory
     {
       Name = $"{material} Sword",
       Material = material,
-      AttackType = DamageType.Slash,
       BasePower = 8,
-      Durability = new Durability(100 * material.EfficiencyMultiplier()),
-      SourceSprite = new Rectangle(176, 128, 16, 16)
+      SourceSprite = new Rectangle(176, 128, 16, 16),
+      Action = new Slash(Damage: 10)
     };
   }
 
@@ -71,10 +62,9 @@ public static class ToolsFactory
     {
       Name = $"{material} Axe",
       Material = material,
-      AttackType = DamageType.Chop,
       BasePower = 15,
-      Durability = new Durability(150 * material.EfficiencyMultiplier()),
-      SourceSprite = new Rectangle(176, 144, 16, 16)
+      SourceSprite = new Rectangle(176, 144, 16, 16),
+      Action = new Chop(Damage: 15)
     };
   }
 
@@ -85,10 +75,9 @@ public static class ToolsFactory
     {
       Name = $"{material} Pickaxe",
       Material = material,
-      AttackType = DamageType.Mine,
       BasePower = 12,
-      Durability = new Durability(120 * material.EfficiencyMultiplier()),
-      SourceSprite = new Rectangle(192, 144, 16, 16)
+      SourceSprite = new Rectangle(192, 144, 16, 16),
+      Action = new Mine(Damage: 12)
     };
   }
 
@@ -99,10 +88,9 @@ public static class ToolsFactory
     {
       Name = $"{material} Shovel",
       Material = material,
-      AttackType = DamageType.Dig,
       BasePower = 10,
-      Durability = new Durability(110 * material.EfficiencyMultiplier()),
-      SourceSprite = new Rectangle(192, 128, 16, 16)
+      SourceSprite = new Rectangle(192, 128, 16, 16),
+      Action = new Dig(Damage: 10)
     };
   }
 }

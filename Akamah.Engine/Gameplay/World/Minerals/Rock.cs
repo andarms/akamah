@@ -1,16 +1,12 @@
 using Akamah.Engine.Assets.Management;
 using Akamah.Engine.Core.Engine;
-using Akamah.Engine.Gameplay.Interactions;
-using Akamah.Engine.Gameplay.Traits;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Gameplay.Materials;
 using Akamah.Engine.Systems.Collision;
 
 namespace Akamah.Engine.Gameplay.World.Minerals;
 
-public class Rock : GameObject, IDamageable
+public class Rock : GameObject
 {
-  public Health Health { get; } = new Health(50);
-
   public Rock()
   {
     Collider = new Collider
@@ -19,6 +15,9 @@ public class Rock : GameObject, IDamageable
       Offset = new Vector2(0, 0),
       Solid = true
     };
+    Add(new Health(50));
+    Add(new RockMaterial());
+    Add(new TerminateOnDeath());
   }
 
 
@@ -33,17 +32,5 @@ public class Rock : GameObject, IDamageable
       0.0f,
       Color.White
     );
-  }
-
-  public bool CanTakeDamage(Damage damage) => damage.Type == DamageType.Mine;
-
-  public void TakeDamage(Damage damage)
-  {
-    int amount = (int)damage.Power;
-    Health.TakeDamage(amount);
-    if (Health.Current <= 0)
-    {
-      GameManager.RemoveGameObject(this);
-    }
   }
 }
