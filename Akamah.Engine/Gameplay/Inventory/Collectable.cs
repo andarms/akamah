@@ -1,0 +1,33 @@
+using Akamah.Engine.Engine.Core;
+using Akamah.Engine.Systems.Collision;
+
+namespace Akamah.Engine.Gameplay.Inventory;
+
+public class Collectable : GameObject
+{
+  public Item Item { get; private set; }
+
+  public Collectable(Item item)
+  {
+    Item = item;
+    Anchor = new(8, 8);
+    Collider = new Collider
+    {
+      Size = new Vector2(16, 16),
+      Offset = new Vector2(0, 0),
+      Solid = false
+    };
+  }
+
+  public override void Draw()
+  {
+    if (Item.IconAssetPath != string.Empty)
+    {
+      if (!Assets.AssetsManager.Textures.TryGetValue(Item.IconAssetPath, out var texture))
+      {
+        return;
+      }
+      DrawTextureRec(texture, Item.IconSourceRect, Position - Anchor, Color.White);
+    }
+  }
+}

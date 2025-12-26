@@ -24,4 +24,14 @@ public sealed class RandomNumberGenerator(int? seed = null)
     int index = RollInt(0, list.Count - 1);
     return list[index];
   }
+
+  internal float Next(float v1, float v2)
+  {
+    return (float)(_random.NextDouble() * (v2 - v1) + v1);
+  }
+
+  internal int Next(int v1, int v2)
+  {
+    return _random.Next(v1, v2);
+  }
 }

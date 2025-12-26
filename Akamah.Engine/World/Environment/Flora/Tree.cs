@@ -2,13 +2,11 @@ using Akamah.Engine.Assets;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
 using Akamah.Engine.Gameplay.Inventory;
+using Akamah.Engine.Gameplay.Inventory.Items;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World.Materials;
 
 namespace Akamah.Engine.World.Environment.Flora;
-
-public class WoodLog : GameObject;
-public class TreeSeed : GameObject;
 
 public class Tree : GameObject
 {
@@ -29,34 +27,14 @@ public class Tree : GameObject
     Add(new DropLootOnDeath(Loot()));
   }
 
-
-
   public LootTable Loot()
   {
     return new LootTable()
-      .Add(new LootEntry(
-        Create: () =>
-        {
-          WoodLog log = new() { Position = Position };
-          GameWorld.AddGameObject(log);
-          Console.WriteLine("Dropping a wood log at " + Position);
-          return log;
-        },
-        MinAmount: 2,
-        MaxAmount: 5,
-        Chance: 1.0f
-      ))
-      .Add(new LootEntry(
-        Create: () =>
-        {
-          TreeSeed seed = new() { Position = Position };
-          Console.WriteLine("Dropping a tree seed at " + Position);
-          GameWorld.AddGameObject(seed);
-          return seed;
-        },
+      .Add(new(
+        Create: () => new Collectable(new WoodLog()),
         MinAmount: 1,
         MaxAmount: 1,
-        Chance: 0.1f
+        Chance: 1.0f
       ));
   }
 

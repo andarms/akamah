@@ -1,8 +1,8 @@
 using Akamah.Engine.Assets;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
-using Akamah.Engine.Gameplay.Materials;
 using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World.Materials;
 
 namespace Akamah.Engine.World.Environment.Minerals;
 

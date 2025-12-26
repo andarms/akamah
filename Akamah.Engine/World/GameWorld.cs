@@ -176,6 +176,18 @@ public static class GameWorld
     gameObject.Initialize();
   }
 
+
+  // random position around a point with minum distance at leat 5
+  public static void Spawn(GameObject gameObject, Vector2 position, int radius)
+  {
+    float x = Rng.Next(-radius, radius);
+    float y = Rng.Next(-radius, radius);
+    Vector2 offset = new(x, y);
+    gameObject.Position = position + offset;
+    Console.WriteLine("Spawning " + gameObject.GetType().Name + " at " + gameObject.Position);
+    AddGameObject(gameObject);
+  }
+
   public static void RemoveGameObject(GameObject gameObject)
   {
     if (gameObject == null) return;

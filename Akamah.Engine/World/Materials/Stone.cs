@@ -1,7 +1,7 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
 
-namespace Akamah.Engine.Gameplay.Materials;
+namespace Akamah.Engine.World.Materials;
 
 public class Stone : Component, IHandle<Mine>
 {
