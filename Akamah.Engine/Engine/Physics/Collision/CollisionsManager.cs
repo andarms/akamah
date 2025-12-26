@@ -1,5 +1,5 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Physics.Spatial;
+using Akamah.Engine.Engine.Physics.Spatial;
 
 namespace Akamah.Engine.Systems.Collision;
 

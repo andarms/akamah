@@ -1,13 +1,13 @@
-using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
+using Akamah.Engine.Engine.Physics.Spatial;
 using Akamah.Engine.Gameplay.Player;
-using Akamah.Engine.Physics.Spatial;
+using Akamah.Engine.Shared;
 using Akamah.Engine.Systems.Collision;
-using Akamah.Engine.World;
 using Akamah.Engine.World.Environment.Flora;
 
-namespace Akamah.Engine.Systems;
+namespace Akamah.Engine.World;
 
 public static class GameWorld
 {
@@ -20,6 +20,8 @@ public static class GameWorld
   public static int Seed { get; } = new Random().Next();
 
   public static bool DebugMode { get; set; } = false;
+
+  public static RandomNumberGenerator Rng { get; } = new(Seed);
 
   public static void Initialize()
   {

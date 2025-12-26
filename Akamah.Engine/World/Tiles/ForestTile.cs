@@ -1,5 +1,4 @@
 using Akamah.Engine.Assets;
-using Akamah.Engine.Systems;
 using Akamah.Engine.World.Environment.Flora;
 
 namespace Akamah.Engine.World.Tiles;

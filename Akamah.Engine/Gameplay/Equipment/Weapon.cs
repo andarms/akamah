@@ -1,9 +1,9 @@
 using Akamah.Engine.Assets;
-using Akamah.Engine.Core.Camera;
 using Akamah.Engine.Core.StateManagement;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
-using Akamah.Engine.Systems;
+using Akamah.Engine.World;
 
 namespace Akamah.Engine.Gameplay.Interactions.Equipment;
 

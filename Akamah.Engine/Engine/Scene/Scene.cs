@@ -1,7 +1,7 @@
-using Akamah.Engine.Core.Camera;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Engine.Camera;
+using Akamah.Engine.World;
 
-namespace Akamah.Engine.Core.Scene;
+namespace Akamah.Engine.Engine.Scene;
 
 public abstract class Scene : IDisposable
 {

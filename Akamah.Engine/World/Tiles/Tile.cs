@@ -1,4 +1,4 @@
-using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.World.Tiles;

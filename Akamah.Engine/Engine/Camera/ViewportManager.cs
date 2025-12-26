@@ -1,6 +1,6 @@
-using Akamah.Engine.Systems;
+using Akamah.Engine.World;
 
-namespace Akamah.Engine.Core.Camera;
+namespace Akamah.Engine.Engine.Camera;
 
 public static class ViewportManager
 {

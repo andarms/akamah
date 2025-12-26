@@ -1,7 +1,6 @@
-using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Physics.Spatial;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Engine.Physics.Spatial;
 using Akamah.Engine.World.Environment.Flora;
 using Akamah.Engine.World.Environment.Minerals;
 using Akamah.Engine.World.Generation;

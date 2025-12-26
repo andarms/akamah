@@ -1,8 +1,9 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Physics.Spatial;
+using Akamah.Engine.World;
 using Akamah.Engine.World.Tiles;
 
-namespace Akamah.Engine.Physics.Spatial;
+namespace Akamah.Engine.Engine.Physics.Spatial;
 
 /// <summary>
 /// Unified spatial manager for both collision detection and rendering optimization

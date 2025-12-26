@@ -1,11 +1,11 @@
 using Akamah.Engine.Assets;
-using Akamah.Engine.Core.Camera;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Gameplay.Equipment;
 using Akamah.Engine.Gameplay.Interactions.Equipment;
-using Akamah.Engine.Systems;
 using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World;
 
 namespace Akamah.Engine.Gameplay.Player;
 

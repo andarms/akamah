@@ -1,15 +1,8 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Gameplay.Combat;
+using Akamah.Engine.World;
 
-namespace Akamah.Engine.Gameplay.Combat;
-
-public class LootTable
-{
-  public IEnumerable<GameObject> Roll()
-  {
-    return [new GameObject()];
-  }
-}
+namespace Akamah.Engine.Gameplay.Inventory;
 
 public class DropLootOnDeath(LootTable loot) : Component
 {

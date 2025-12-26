@@ -1,7 +1,7 @@
-using Akamah.Engine.Core.Camera;
-using Akamah.Engine.Core.Scene;
-using Akamah.Engine.Physics.Spatial;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Engine.Camera;
+using Akamah.Engine.Engine.Physics.Spatial;
+using Akamah.Engine.Engine.Scene;
+using Akamah.Engine.World;
 
 namespace Akamah.Engine.Scenes;
 

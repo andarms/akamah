@@ -1,6 +1,6 @@
-using Akamah.Engine.Core.Camera;
-using Akamah.Engine.Systems;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World;
 
 namespace Akamah.Engine.Engine.Core;
 
@@ -18,7 +18,6 @@ public interface IReadOnlyGameObject
   void Handle(GameAction action);
   void Emit<T>(T evt) where T : GameEvent;
   void When<T>(Action<T> callback) where T : GameEvent;
-
   void Terminate();
 }
 
