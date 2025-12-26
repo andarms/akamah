@@ -29,10 +29,6 @@ public static class GameWorld
     SpatialSystem.Initialize();
     CollisionsManager.Initialize();
 
-    // Subscribe to collision events
-    CollisionsManager.OnCollisionEnter += OnCollisionEnter;
-    CollisionsManager.OnCollisionExit += OnCollisionExit;
-
     Player.Position = new Vector2(160, 160);
 
     Map.GenerateRandomMap();
@@ -65,30 +61,13 @@ public static class GameWorld
 
   }
 
-  private static void OnCollisionEnter(GameObject objA, GameObject objB)
-  {
-    // Handle collision events (can be used for sound effects, particles, etc.)
-    if ((objA is Player && objB is Tree) || (objA is Tree && objB is Player))
-    {
-      Console.WriteLine("Player collided with tree!");
-    }
-  }
-
-  private static void OnCollisionExit(GameObject objA, GameObject objB)
-  {
-    // Handle collision exit events
-    if ((objA is Player && objB is Tree) || (objA is Tree && objB is Player))
-    {
-      Console.WriteLine("Player left tree collision area");
-    }
-  }
 
   public static void UpdateVisibleObjects(float deltaTime)
   {
     // Always update the player
     Player.Update(deltaTime);
 
-    // Update the map (it has its own internal culling)
+    // Update the map (it has its own internal culsling)
     Map.Update(deltaTime);
 
     // Update spatial system and collision detection

@@ -26,11 +26,12 @@ public class GameScene : Scene
   {
     BeginMode2D(ViewportManager.Camera);
     base.Draw();
-
-
-
     EndMode2D();
+    DrawUI();
+  }
 
+  private static void DrawUI()
+  {
     if (GameWorld.DebugMode)
     {
       // Debug UI

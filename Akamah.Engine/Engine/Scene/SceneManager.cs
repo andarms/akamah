@@ -13,9 +13,12 @@ public static class SceneController
   public static bool IsTransitioning { get; private set; } = false;
   public static Color BackgroundColor { get; set; } = Color.Black;
 
+  public static Scene? InitialScene => scenes.Values.FirstOrDefault();
+
   public static void Initialize()
   {
-    currentScene?.Initialize();
+    currentScene = InitialScene ?? throw new InvalidOperationException("No initial scene found. Please add at least one scene before initializing the SceneController.");
+    currentScene.Initialize();
     AssetsManager.LoadAssets();
   }
 
