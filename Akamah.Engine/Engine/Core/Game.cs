@@ -1,6 +1,6 @@
 using Akamah.Engine.Assets;
-using Akamah.Engine.Core.Scene;
 using Akamah.Engine.Engine.Input;
+using Akamah.Engine.Engine.Scene;
 
 namespace Akamah.Engine.Core.Engine;
 

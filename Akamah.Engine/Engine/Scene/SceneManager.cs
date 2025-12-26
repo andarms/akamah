@@ -1,6 +1,6 @@
 using Akamah.Engine.Assets;
 
-namespace Akamah.Engine.Core.Scene;
+namespace Akamah.Engine.Engine.Scene;
 
 public static class SceneController
 {
