@@ -1,8 +1,8 @@
 using Akamah.Engine.Assets;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
-using Akamah.Engine.Gameplay.Inventory;
-using Akamah.Engine.Gameplay.Inventory.Items;
+using Akamah.Engine.Gameplay.Inventories;
+using Akamah.Engine.Gameplay.Inventories.Items;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World.Materials;
 
@@ -10,7 +10,6 @@ namespace Akamah.Engine.World.Environment.Flora;
 
 public class Tree : GameObject
 {
-
   public Tree()
   {
     Anchor = new(8, 16);

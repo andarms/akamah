@@ -1,7 +1,7 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.World;
 
-namespace Akamah.Engine.Gameplay.Inventory;
+namespace Akamah.Engine.Gameplay.Inventories;
 
 public record LootEntry(
   Func<GameObject> Create,

@@ -2,7 +2,7 @@ using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
 using Akamah.Engine.World;
 
-namespace Akamah.Engine.Gameplay.Inventory;
+namespace Akamah.Engine.Gameplay.Inventories;
 
 public class DropLootOnDeath(LootTable loot) : Component
 {

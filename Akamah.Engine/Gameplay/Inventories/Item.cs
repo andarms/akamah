@@ -1,7 +1,6 @@
-using Akamah.Engine.Core.Engine;
 using Akamah.Engine.Engine.Core;
 
-namespace Akamah.Engine.Gameplay.Inventory;
+namespace Akamah.Engine.Gameplay.Inventories;
 
 public abstract class Item
 {

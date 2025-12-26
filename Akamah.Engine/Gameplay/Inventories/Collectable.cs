@@ -1,7 +1,7 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Systems.Collision;
 
-namespace Akamah.Engine.Gameplay.Inventory;
+namespace Akamah.Engine.Gameplay.Inventories;
 
 public class Collectable : GameObject
 {

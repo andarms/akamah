@@ -1,6 +1,6 @@
 using Akamah.Engine.Engine.Core;
 
-namespace Akamah.Engine.Gameplay.Inventory.Items;
+namespace Akamah.Engine.Gameplay.Inventories.Items;
 
 public class WoodLog : Item
 {

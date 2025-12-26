@@ -2,9 +2,9 @@ using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Engine.Physics.Spatial;
-using Akamah.Engine.Gameplay.Player;
 using Akamah.Engine.Shared;
 using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World.Actors.Player;
 using Akamah.Engine.World.Environment.Flora;
 
 namespace Akamah.Engine.World;

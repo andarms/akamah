@@ -1,6 +1,7 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World;
+using Akamah.Engine.World.Actors.Player;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
@@ -28,7 +29,7 @@ public class MeleeAttack : GameObject
     var collisions = CollisionsManager.GetPotentialCollisions(this);
     foreach (var other in collisions)
     {
-      if (other is Player.Player || ImpactList.Contains(other)) continue;
+      if (other is Player || ImpactList.Contains(other)) continue;
 
       ImpactList.Add(other);
       other.Handle(GameWorld.Player.Tool.Action);

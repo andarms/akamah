@@ -4,21 +4,18 @@ using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Gameplay.Equipment;
 using Akamah.Engine.Gameplay.Interactions.Equipment;
+using Akamah.Engine.Gameplay.Inventories;
 using Akamah.Engine.Systems.Collision;
-using Akamah.Engine.World;
 
-namespace Akamah.Engine.Gameplay.Player;
+namespace Akamah.Engine.World.Actors.Player;
 
 public class Player : GameObject
 {
   const float Speed = 100.0f;
-
   readonly Weapon weapon = new();
   Vector2 weaponOffset = new(4, -2);
 
-
-  public Tool Tool { get; private set; } = ToolsFactory.CreateSword(Equipment.Material.Wood);
-
+  public Tool Tool { get; private set; } = ToolsFactory.CreateSword(Gameplay.Equipment.Material.Wood);
 
   public Player()
   {
@@ -28,7 +25,7 @@ public class Player : GameObject
       Size = new Vector2(16, 8),
       Offset = new Vector2(0, 8)
     };
-
+    Add(new Inventory(20));
   }
 
   public override void Initialize()
@@ -68,22 +65,22 @@ public class Player : GameObject
 
     if (IsKeyPressed(KeyboardKey.One))
     {
-      Tool = ToolsFactory.CreateSword(Equipment.Material.Wood);
+      Tool = ToolsFactory.CreateSword(Gameplay.Equipment.Material.Wood);
       Console.WriteLine($"Equipped: {Tool}");
     }
     else if (IsKeyPressed(KeyboardKey.Two))
     {
-      Tool = ToolsFactory.CreateAxe(Equipment.Material.Stone);
+      Tool = ToolsFactory.CreateAxe(Gameplay.Equipment.Material.Stone);
       Console.WriteLine($"Equipped: {Tool}");
     }
     else if (IsKeyPressed(KeyboardKey.Three))
     {
-      Tool = ToolsFactory.CreatePickaxe(Equipment.Material.Wood);
+      Tool = ToolsFactory.CreatePickaxe(Gameplay.Equipment.Material.Wood);
       Console.WriteLine($"Equipped: {Tool}");
     }
     else if (IsKeyPressed(KeyboardKey.Four))
     {
-      Tool = ToolsFactory.CreateShovel(Equipment.Material.Stone);
+      Tool = ToolsFactory.CreateShovel(Gameplay.Equipment.Material.Stone);
       Console.WriteLine($"Equipped: {Tool}");
     }
 
