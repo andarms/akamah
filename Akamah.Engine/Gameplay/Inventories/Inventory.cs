@@ -2,22 +2,28 @@ using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.Gameplay.Inventories;
 
-public class Inventory : Component
+public record AddToInventory(Item Item, int Quantity) : GameAction;
+
+public class Inventory : Component, IHandle<AddToInventory>
 {
-  public List<InventorySlot> Items { get; set; } = [];
+  public Dictionary<ItemCategory, List<InventorySlot>> Items { get; private set; } = [];
 
   public Inventory(int size)
   {
-    for (int i = 0; i < size; i++)
+    foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
     {
-      Items.Add(new InventorySlot());
+      Items[category] = [];
+      for (int i = 0; i < size; i++)
+      {
+        Items[category].Add(new InventorySlot());
+      }
     }
   }
 
 
   public bool AddItem(Item item, int quantity)
   {
-    foreach (var slot in Items)
+    foreach (var slot in Items[item.Category])
     {
       if (slot.CanAddItem(item))
       {
@@ -26,5 +32,10 @@ public class Inventory : Component
       }
     }
     return false; // Inventory full or no suitable slot found
+  }
+
+  public void Handle(AddToInventory action)
+  {
+    AddItem(action.Item, action.Quantity);
   }
 }

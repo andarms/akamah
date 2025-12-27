@@ -11,6 +11,7 @@ public class WoodLog : Item
     MaxStackSize = 20;
     IconAssetPath = "TinyTown";
     IconSourceRect = new Rectangle(160, 128, 16, 16);
+    Category = ItemCategory.Material;
   }
 
   public override void Use(GameObject user)

@@ -1,5 +1,6 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World;
 
 namespace Akamah.Engine.Gameplay.Inventories;
 
@@ -17,6 +18,22 @@ public class Collectable : GameObject
       Offset = new Vector2(0, 0),
       Solid = false
     };
+  }
+
+
+  public override void Update(float dt)
+  {
+    base.Update(dt);
+    var collision = CollisionsManager.GetPotentialCollisions(this);
+    foreach (var other in collision)
+    {
+      if (other.Has<Inventory>())
+      {
+        other.Handle(new AddToInventory(Item, 1));
+        GameWorld.RemoveGameObject(this);
+        break;
+      }
+    }
   }
 
   public override void Draw()
