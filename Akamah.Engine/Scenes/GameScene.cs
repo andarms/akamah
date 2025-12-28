@@ -5,7 +5,6 @@ using Akamah.Engine.World;
 
 namespace Akamah.Engine.Scenes;
 
-
 public class GameScene : Scene
 {
   public override void Initialize()
@@ -19,6 +18,10 @@ public class GameScene : Scene
     if (IsKeyPressed(KeyboardKey.R))
     {
       GameWorld.Map.GenerateRandomMap();
+    }
+    if (IsKeyPressed(KeyboardKey.I))
+    {
+      SceneController.PushScene<InventoryScene>();
     }
   }
 
