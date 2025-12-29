@@ -16,6 +16,8 @@ public interface IReadOnlyGameObject
   IReadOnlyList<GameObject> Children { get; }
   Collider? Collider { get; }
 
+  Rectangle GetBounds();
+
   T Get<T>() where T : Component;
   bool Has<T>() where T : Component;
   bool TryGet<T>(out T? component) where T : Component;
@@ -66,12 +68,9 @@ public class GameObject : IReadOnlyGameObject
   public virtual void Update(float deltaTime)
   {
     Components.ForEach(c => c.Update(deltaTime));
-
-    // Update all children
-    foreach (var child in Children.ToList()) // ToList to prevent modification during iteration
+    foreach (var child in Children.ToList())
     {
-      if (!child.terminated)
-        child.Update(deltaTime);
+      if (!child.terminated) { child.Update(deltaTime); }
     }
   }
 

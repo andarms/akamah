@@ -1,13 +1,29 @@
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Engine.Scene;
+using Akamah.Engine.Gameplay.Inventories;
+using Akamah.Engine.UserInterface;
 
 namespace Akamah.Engine.Scenes;
 
 public class InventoryScene : Scene
 {
-  Color backgroundColor = Fade(Color.Gray, 0.5f);
+  readonly InventoryPanel panel = new();
+
   public InventoryScene()
   {
+
+  }
+
+  public override void OnEnter()
+  {
+    base.OnEnter();
+    Canvas.Add(panel, Anchor.Center);
+  }
+
+  public override void OnExit()
+  {
+    base.OnExit();
+    Canvas.Remove(panel);
   }
 
   public override void HandleInput()
@@ -17,10 +33,5 @@ public class InventoryScene : Scene
     {
       SceneController.PopScene();
     }
-  }
-
-  public override void Draw()
-  {
-    DrawRectangleV(new(0, 0), new(12800, 720), backgroundColor);
   }
 }

@@ -17,17 +17,17 @@ public static class Canvas
 {
   static readonly List<GameObject> objects = [];
 
+  public static Vector2 Size { get; } = new(Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
+
   public static void Add(GameObject obj, Anchor anchor, Vector2 offset)
   {
-    Vector2 position = CalculatePosition(obj, anchor, offset);
-    obj.Position = position;
+    obj.Position = CalculatePosition(obj, anchor, offset);
     objects.Add(obj);
   }
 
   public static void Add(GameObject obj, Anchor anchor)
   {
-    Vector2 position = CalculatePosition(obj, anchor, new Vector2(0));
-    obj.Position = position;
+    obj.Position = CalculatePosition(obj, anchor, new Vector2(0));
     objects.Add(obj);
   }
 
@@ -64,7 +64,7 @@ public static class Canvas
   }
 
 
-  private static Vector2 CalculatePosition(GameObject obj, Anchor anchor, Vector2 offset)
+  public static Vector2 CalculatePosition(IReadOnlyGameObject obj, Anchor anchor, Vector2 offset)
   {
     float x = 0;
     float y = 0;
