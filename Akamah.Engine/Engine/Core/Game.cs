@@ -6,10 +6,6 @@ namespace Akamah.Engine.Core.Engine;
 
 public class Game
 {
-  protected int ScreenWidth { get; set; } = 1280;
-  protected int ScreenHeight { get; set; } = 720;
-  protected string WindowTitle { get; set; } = "Akamah Engine";
-  protected int TargetFPS { get; set; } = 60;
 
   protected virtual void Initialize()
   {
@@ -42,8 +38,8 @@ public class Game
 
   public void Run()
   {
-    InitWindow(ScreenWidth, ScreenHeight, WindowTitle);
-    SetTargetFPS(TargetFPS);
+    InitWindow(Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT, Setting.TITLE);
+    SetTargetFPS(Setting.TARGET_FPS);
 
     try
     {

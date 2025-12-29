@@ -4,14 +4,13 @@ namespace Akamah.Engine.Engine.Camera;
 
 public static class ViewportManager
 {
-  private const float DEFAULT_ZOOM = 3.0f;
 
   private static Camera2D camera = new()
   {
     Target = new Vector2(0, 0),
     Offset = new Vector2(GetScreenWidth() / 2, GetScreenHeight() / 2),
     Rotation = 0.0f,
-    Zoom = DEFAULT_ZOOM
+    Zoom = Setting.ZOOM_LEVEL
   };
 
   public static Camera2D Camera => camera;

@@ -1,3 +1,4 @@
+using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Engine.Scene;
 
 namespace Akamah.Engine.Scenes;
@@ -9,15 +10,13 @@ public class InventoryScene : Scene
   {
   }
 
-
-  public override void Unload()
-  {
-    // Clean up inventory resources
-  }
-
-  public override void Update(float gameTime)
+  public override void HandleInput()
   {
     // base.Update(gameTime);
+    if (InputSystem.IsPressed("inventory"))
+    {
+      SceneController.PopScene();
+    }
   }
 
   public override void Draw()

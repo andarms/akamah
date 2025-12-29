@@ -51,6 +51,7 @@ public static class GameWorld
     InputSystem.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
     InputSystem.MapAction("move_up", KeyboardKey.Up, KeyboardKey.W);
     InputSystem.MapAction("move_down", KeyboardKey.Down, KeyboardKey.S);
+    InputSystem.MapAction("inventory", KeyboardKey.I);
 
     // Example of mapping attack to both keyboard and mouse inputs
     InputSystem.MapAction(
