@@ -54,7 +54,6 @@ public static class Canvas
     }
   }
 
-
   public static void Draw()
   {
     foreach (var obj in objects)

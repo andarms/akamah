@@ -49,7 +49,6 @@ public class GameObject : IReadOnlyGameObject
 
   public Vector2 RenderPosition => GlobalPosition - Anchor;
 
-
   public List<Component> Components { get; } = [];
   private readonly Dictionary<Type, List<Delegate>> listeners = [];
   private bool terminated = false;
@@ -57,7 +56,6 @@ public class GameObject : IReadOnlyGameObject
   public virtual void Initialize()
   {
     Components.ForEach(c => c.Initialize());
-
     // Initialize all children
     foreach (var child in Children)
     {
@@ -157,6 +155,7 @@ public class GameObject : IReadOnlyGameObject
 
     Children.Add(child);
   }
+
   public void RemoveChild(GameObject child)
   {
     if (child == null || !Children.Contains(child)) return;
