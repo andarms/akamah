@@ -13,7 +13,7 @@ public class GameScene : Scene
   {
     base.Initialize();
     GameWorld.Initialize();
-    Canvas.Add(new Toolbar());
+    Canvas.Add(new Toolbar(), Anchor.BottomCenter, new Vector2(0, -16));
   }
 
   public override void HandleInput()
