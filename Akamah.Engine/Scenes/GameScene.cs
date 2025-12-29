@@ -1,6 +1,8 @@
 using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Physics.Spatial;
 using Akamah.Engine.Engine.Scene;
+using Akamah.Engine.Gameplay.Inventories;
+using Akamah.Engine.UserInterface;
 using Akamah.Engine.World;
 
 namespace Akamah.Engine.Scenes;
@@ -11,6 +13,7 @@ public class GameScene : Scene
   {
     base.Initialize();
     GameWorld.Initialize();
+    Canvas.Add(new Toolbar());
   }
 
   public override void HandleInput()

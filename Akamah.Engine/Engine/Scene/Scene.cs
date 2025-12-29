@@ -1,4 +1,5 @@
 using Akamah.Engine.Engine.Camera;
+using Akamah.Engine.UserInterface;
 using Akamah.Engine.World;
 
 namespace Akamah.Engine.Engine.Scene;
@@ -45,6 +46,7 @@ public abstract class Scene : IDisposable
     }
     ViewportManager.Update();
     GameWorld.UpdateVisibleObjects(deltaTime);
+    Canvas.Update(deltaTime);
   }
 
   public virtual void Draw()
@@ -53,6 +55,7 @@ public abstract class Scene : IDisposable
     BeginMode2D(ViewportManager.Camera);
     GameWorld.DrawVisibleObjects();
     EndMode2D();
+    Canvas.Draw();
   }
 
   public virtual void HandleInput()
