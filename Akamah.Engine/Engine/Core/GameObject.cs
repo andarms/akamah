@@ -1,3 +1,4 @@
+using Akamah.Engine.Core.Engine;
 using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World;
@@ -10,6 +11,9 @@ public record GameAction();
 public interface IReadOnlyGameObject
 {
   Vector2 Position { get; }
+  Vector2 GlobalPosition { get; }
+  GameObject? Parent { get; }
+  IReadOnlyList<GameObject> Children { get; }
   Collider? Collider { get; }
 
   T Get<T>() where T : Component;
@@ -19,6 +23,8 @@ public interface IReadOnlyGameObject
   void Emit<T>(T evt) where T : GameEvent;
   void When<T>(Action<T> callback) where T : GameEvent;
   void Terminate();
+  Vector2 LocalToGlobal(Vector2 localPosition);
+  Vector2 GlobalToLocal(Vector2 globalPosition);
 }
 
 public class GameObject : IReadOnlyGameObject
@@ -29,10 +35,17 @@ public class GameObject : IReadOnlyGameObject
   public int Layer { get; set; } = 0;
   public Vector2 Anchor { get; set; } = Vector2.Zero;
 
+  // Parent-Child relationship
+  public GameObject? Parent { get; private set; }
+  public List<GameObject> Children { get; } = [];
+  IReadOnlyList<GameObject> IReadOnlyGameObject.Children => Children;
+
+  // Global position calculated from parent hierarchy
+  public Vector2 GlobalPosition => Parent != null ? Parent.GlobalPosition + Position : Position;
 
   public bool FlipX { get; set; } = false;
 
-  public Vector2 RenderPosition => Position - Anchor;
+  public Vector2 RenderPosition => GlobalPosition - Anchor;
 
 
   public List<Component> Components { get; } = [];
@@ -42,11 +55,24 @@ public class GameObject : IReadOnlyGameObject
   public virtual void Initialize()
   {
     Components.ForEach(c => c.Initialize());
+
+    // Initialize all children
+    foreach (var child in Children)
+    {
+      child.Initialize();
+    }
   }
 
   public virtual void Update(float deltaTime)
   {
     Components.ForEach(c => c.Update(deltaTime));
+
+    // Update all children
+    foreach (var child in Children.ToList()) // ToList to prevent modification during iteration
+    {
+      if (!child.terminated)
+        child.Update(deltaTime);
+    }
   }
 
   public virtual void Draw()
@@ -56,6 +82,12 @@ public class GameObject : IReadOnlyGameObject
     // The spatial manager filters objects before calling Draw()
     Visible = true;
     Components.ForEach(c => c.Draw());
+
+    // Draw all children
+    foreach (var child in Children)
+    {
+      if (child.Visible && !child.terminated) { child.Draw(); }
+    }
   }
 
 
@@ -63,6 +95,17 @@ public class GameObject : IReadOnlyGameObject
   {
     if (terminated) return;
     terminated = true;
+
+    // Terminate all children first
+    foreach (var child in Children.ToList())
+    {
+      child.Terminate();
+    }
+    Children.Clear();
+
+    // Remove from parent
+    Parent?.RemoveChild(this);
+
     Components.ForEach(c => c.Terminate());
     Components.Clear();
     listeners.Clear();
@@ -72,26 +115,79 @@ public class GameObject : IReadOnlyGameObject
 
   public virtual void Debug()
   {
-    Collider?.Debug(Position, Anchor);
-    DrawCircleV(Position, 2, Color.Lime);
+    Collider?.Debug(GlobalPosition, Anchor);
+    DrawCircleV(GlobalPosition, 2, Color.Lime);
+
+    // Debug children
+    foreach (var child in Children)
+    {
+      child.Debug();
+    }
   }
 
   protected virtual bool IsInCameraView()
   {
     // Default implementation uses point-based visibility with small margin
-    return ViewportManager.IsPointInView(Position, 32f);
+    return ViewportManager.IsPointInView(GlobalPosition, 32f);
   }
 
   protected bool IsInCameraView(Vector2 size)
   {
-    return ViewportManager.IsRectInView(Position, size);
+    return ViewportManager.IsRectInView(GlobalPosition, size);
   }
 
 
   public virtual Rectangle GetBounds()
   {
-    if (Collider == null) return new Rectangle(Position.X, Position.Y, 0, 0);
-    return Collider.GetBounds(Position, Anchor);
+    if (Collider == null) return new Rectangle(GlobalPosition.X, GlobalPosition.Y, 0, 0);
+    return Collider.GetBounds(GlobalPosition, Anchor);
+  }
+
+  public void AddChild(GameObject child)
+  {
+    if (child == null) return;
+    if (child == this) throw new InvalidOperationException("Cannot add self as child");
+
+    // Remove from current parent if it has one
+    child.Parent?.RemoveChild(child);
+
+    // Convert child's global position to local position relative to this parent
+    var childGlobalPos = child.GlobalPosition;
+    child.Parent = this;
+    child.Position = childGlobalPos - this.GlobalPosition;
+
+    Children.Add(child);
+  }
+  public void RemoveChild(GameObject child)
+  {
+    if (child == null || !Children.Contains(child)) return;
+
+    // Convert child's local position back to global position
+    var childGlobalPos = child.GlobalPosition;
+    child.Parent = null;
+    child.Position = childGlobalPos;
+
+    Children.Remove(child);
+  }
+
+  public GameObject GetRoot()
+  {
+    var current = this;
+    while (current.Parent != null)
+    {
+      current = current.Parent;
+    }
+    return current;
+  }
+
+  public Vector2 LocalToGlobal(Vector2 localPosition)
+  {
+    return GlobalPosition + localPosition;
+  }
+
+  public Vector2 GlobalToLocal(Vector2 globalPosition)
+  {
+    return globalPosition - GlobalPosition;
   }
 
   public T Get<T>() where T : Component

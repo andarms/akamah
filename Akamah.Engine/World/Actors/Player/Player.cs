@@ -26,13 +26,15 @@ public class Player : GameObject
       Offset = new Vector2(0, 8)
     };
     Add(new Inventory(20));
+    AddChild(weapon);
+    Console.Write(Children.Count + " children");
   }
 
   public override void Initialize()
   {
     base.Initialize();
     // GameManager.AddGameObject(cursor);
-    GameWorld.AddGameObject(weapon);
+    // GameWorld.AddGameObject(weapon);
   }
 
   public override void Update(float deltaTime)
@@ -182,5 +184,6 @@ public class Player : GameObject
       0.0f,
       Color.White
     );
+    base.Draw();
   }
 }
