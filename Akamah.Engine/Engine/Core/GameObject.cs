@@ -52,6 +52,7 @@ public class GameObject : IReadOnlyGameObject
   public List<Component> Components { get; } = [];
   private readonly Dictionary<Type, List<Delegate>> listeners = [];
   private bool terminated = false;
+  public bool Initialized { get; private set; } = false;
 
   public virtual void Initialize()
   {
@@ -61,6 +62,7 @@ public class GameObject : IReadOnlyGameObject
     {
       child.Initialize();
     }
+    Initialized = true;
   }
 
   public virtual void Update(float deltaTime)
@@ -107,6 +109,8 @@ public class GameObject : IReadOnlyGameObject
     Components.Clear();
     listeners.Clear();
     GameWorld.RemoveGameObject(this);
+
+    Initialized = false;
   }
 
 

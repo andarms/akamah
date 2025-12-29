@@ -10,6 +10,7 @@ public class ForestTile : Tile
 
   public override void Initialize()
   {
+    if (Initialized) return;
     base.Initialize();
     if (random.NextDouble() < 0.3)
     {

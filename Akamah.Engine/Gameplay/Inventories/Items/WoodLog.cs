@@ -2,6 +2,8 @@ using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.Gameplay.Inventories.Items;
 
+public record DoNothing() : GameAction;
+
 public class WoodLog : Item
 {
   public WoodLog()
@@ -14,9 +16,8 @@ public class WoodLog : Item
     Category = ItemCategory.Material;
   }
 
-  public override void Use(GameObject user)
+  public override GameAction OnUse()
   {
-    // Wood logs are not directly usable
-    Console.WriteLine($"{user} tried to use {Name}, but it's not usable.");
+    return new DoNothing();
   }
 }

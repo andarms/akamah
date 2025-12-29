@@ -8,24 +8,11 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
   readonly int slotSize = 48;
   readonly int slotPadding = 4;
   readonly int headerHeight = 24;
-  readonly int tabHeight = 32;
   readonly int columns = columns;
   readonly int rows = rows;
 
   public Inventory? Inventory { get; set; }
   public bool ShowHeader { get; set; } = true;
-  public bool ShowTabs { get; set; } = true;
-  public ItemCategory SelectedCategory { get; set; } = ItemCategory.Tool;
-
-  private readonly ItemCategory[] availableCategories =
-  {
-    ItemCategory.Tool,
-    ItemCategory.Weapon,
-    ItemCategory.Armor,
-    ItemCategory.Material,
-    ItemCategory.Consumable,
-    ItemCategory.Placeable
-  };
 
   public override void Draw()
   {
@@ -41,12 +28,6 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
       DrawHeader();
     }
 
-    // Draw category tabs if enabled
-    if (ShowTabs)
-    {
-      DrawCategoryTabs();
-    }
-
     // Draw inventory grid
     DrawInventoryGrid();
   }
@@ -56,91 +37,27 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
     Rectangle headerRect = new(Owner.Position.X, Owner.Position.Y, size.X, headerHeight);
     DrawRectangleRec(headerRect, Color.DarkGray);
 
-    string title = ShowTabs ? $"Inventory - {GetCategoryShortName(SelectedCategory)}" : "Player Inventory";
+    string title = "Player Inventory";
     int titleWidth = MeasureText(title, 16);
     int titleX = (int)(Owner.Position.X + (size.X - titleWidth) / 2);
     int titleY = (int)(Owner.Position.Y + (headerHeight - 16) / 2);
 
     DrawText(title, titleX, titleY, 16, Color.White);
 
-    // Show inventory statistics for selected category
+    // Show inventory statistics
     if (Inventory != null)
     {
-      int usedSlots = 0;
-      int totalSlots = 0;
+      int totalSlots = Inventory.Items.Count;
+      int usedSlots = Inventory.Items.Count(slot => !slot.IsEmpty());
 
-      if (ShowTabs && Inventory.Items.ContainsKey(SelectedCategory))
-      {
-        var categorySlots = Inventory.Items[SelectedCategory];
-        totalSlots = categorySlots.Count;
-        usedSlots = categorySlots.Count(slot => !slot.IsEmpty());
-      }
-      else
-      {
-        // Show all categories if tabs are disabled
-        foreach (var categorySlots in Inventory.Items.Values)
-        {
-          totalSlots += categorySlots.Count;
-          usedSlots += categorySlots.Count(slot => !slot.IsEmpty());
-        }
-      }
+      string stats = $"{usedSlots}/{totalSlots}";
+      DrawText(stats, (int)Owner.Position.X + 8, titleY, 14, Color.LightGray);
     }
-  }
-
-  private void DrawCategoryTabs()
-  {
-    float tabY = Owner.Position.Y + (ShowHeader ? headerHeight : 0);
-    float tabWidth = size.X / availableCategories.Length;
-
-    for (int i = 0; i < availableCategories.Length; i++)
-    {
-      ItemCategory category = availableCategories[i];
-      Rectangle tabRect = new(
-        Owner.Position.X + i * tabWidth,
-        tabY,
-        tabWidth,
-        tabHeight
-      );
-
-      // Draw tab background
-      Color tabColor = category == SelectedCategory ? Color.White : Color.LightGray;
-      DrawRectangleRec(tabRect, tabColor);
-      DrawRectangleLinesEx(tabRect, 1, Color.DarkGray);
-
-      // Draw tab text
-      string tabText = GetCategoryShortName(category);
-      int textWidth = MeasureText(tabText, 12);
-      int textX = (int)(tabRect.X + (tabWidth - textWidth) / 2);
-      int textY = (int)(tabRect.Y + (tabHeight - 12) / 2);
-
-      Color textColor = category == SelectedCategory ? Color.Black : Color.DarkGray;
-      DrawText(tabText, textX, textY, 12, textColor);
-
-      // Handle tab clicks
-      if (CheckCollisionPointRec(GetMousePosition(), tabRect) && IsMouseButtonPressed(MouseButton.Left))
-      {
-        SelectedCategory = category;
-      }
-    }
-  }
-
-  private static string GetCategoryShortName(ItemCategory category)
-  {
-    return category switch
-    {
-      ItemCategory.Tool => "Tools",
-      ItemCategory.Weapon => "Weapons",
-      ItemCategory.Armor => "Armor",
-      ItemCategory.Material => "Materials",
-      ItemCategory.Consumable => "Consumables",
-      ItemCategory.Placeable => "Blocks",
-      _ => "Other"
-    };
   }
 
   private void DrawInventoryGrid()
   {
-    float gridStartY = Owner.Position.Y + (ShowHeader ? headerHeight : 0) + (ShowTabs ? tabHeight : 0) + slotPadding;
+    float gridStartY = Owner.Position.Y + (ShowHeader ? headerHeight : 0) + slotPadding;
 
     for (int row = 0; row < rows; row++)
     {
@@ -169,19 +86,17 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
 
   private void DrawItemInSlot(Rectangle slotRect, int slotIndex)
   {
-    // Display items only from the selected category
-    if (Inventory?.Items.ContainsKey(SelectedCategory) != true)
+    if (Inventory?.Items == null)
       return;
 
-    var categorySlots = Inventory.Items[SelectedCategory];
-
-    if (slotIndex < categorySlots.Count && !categorySlots[slotIndex].IsEmpty())
+    // Show all items directly from the inventory
+    if (slotIndex < Inventory.Items.Count && !Inventory.Items[slotIndex].IsEmpty())
     {
-      var slot = categorySlots[slotIndex];
+      var slot = Inventory.Items[slotIndex];
       var item = slot.Item!;
 
       // Draw item background with category-specific color
-      Color itemColor = GetCategoryColor(SelectedCategory);
+      Color itemColor = GetCategoryColor(item.Category);
       DrawRectangleRec(slotRect, itemColor);
       DrawRectangleLinesEx(slotRect, 2, Color.DarkBlue);
 
@@ -206,6 +121,8 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
 
         DrawText(itemName, (int)slotRect.X + 2, (int)slotRect.Y + 2, 9, Color.Black);
       }
+
+      // Draw quantity in bottom right
       if (slot.Quantity > 1)
       {
         string quantityText = slot.Quantity.ToString();
@@ -251,7 +168,7 @@ public class InventoryWindow(Vector2 size, int columns = 8, int rows = 4) : Comp
   {
     return new Vector2(
       columns * (slotSize + slotPadding) + slotPadding,
-      rows * (slotSize + slotPadding) + slotPadding + (ShowHeader ? headerHeight : 0) + (ShowTabs ? tabHeight : 0)
+      rows * (slotSize + slotPadding) + slotPadding + (ShowHeader ? headerHeight : 0)
     );
   }
 }

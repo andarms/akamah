@@ -21,5 +21,5 @@ public abstract class Item
   public int MaxStackSize { get; set; } = 1;
   public Rectangle IconSourceRect { get; set; } = new Rectangle(0, 0, 0, 0);
   public string IconAssetPath { get; set; } = string.Empty;
-  public abstract void Use(GameObject user);
+  public abstract GameAction OnUse();
 }

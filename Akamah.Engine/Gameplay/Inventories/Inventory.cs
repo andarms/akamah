@@ -6,24 +6,19 @@ public record AddToInventory(Item Item, int Quantity) : GameAction;
 
 public class Inventory : Component, IHandle<AddToInventory>
 {
-  public Dictionary<ItemCategory, List<InventorySlot>> Items { get; private set; } = [];
+  public List<InventorySlot> Items { get; private set; } = [];
 
   public Inventory(int size)
   {
-    foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
+    for (int i = 0; i < size; i++)
     {
-      Items[category] = [];
-      for (int i = 0; i < size; i++)
-      {
-        Items[category].Add(new InventorySlot());
-      }
+      Items.Add(new InventorySlot());
     }
   }
 
-
   public bool AddItem(Item item, int quantity)
   {
-    foreach (var slot in Items[item.Category])
+    foreach (var slot in Items)
     {
       if (slot.CanAddItem(item))
       {
