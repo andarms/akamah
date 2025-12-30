@@ -1,70 +1,79 @@
-using Akamah.Engine.Assets;
+using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Input;
-using Akamah.Engine.Engine.Scene;
+using Akamah.Engine.Engine.Physics.Spatial;
+using Akamah.Engine.Engine.Scenes;
+using Akamah.Engine.Shared;
+using Akamah.Engine.Systems.Collision;
+using Akamah.Engine.World;
+using Akamah.Engine.World.Actors.Player;
 
-namespace Akamah.Engine.Core.Engine;
+namespace Akamah.Engine.Engine.Core;
 
-public class Game
+// Game is a façade. Do not add logic here.
+public static class Game
 {
+  public static IScenesController Scenes => scenes;
+  public static int Seed { get; } = new Random().Next();
+  public static Player Player { get; } = new();
+  static readonly ScenesController scenes = new();
+  public static bool DebugMode { get; set; } = false;
+  public static Camera2D Camera => ViewportManager.Camera;
+  public static RandomNumberGenerator Rng { get; } = new(Seed);
+  public static Map Map { get; set; } = new(200, 200);
 
-  protected virtual void Initialize()
+  public static void Register(List<Scene> scenes)
   {
-    SceneController.Initialize();
+    foreach (var scene in scenes)
+    {
+      Game.scenes.AddScene(scene);
+    }
   }
 
-  protected virtual void LoadContent()
+  public static void Add(GameObject obj)
   {
-    AssetsManager.LoadAssets();
+    scenes.Add(obj);
+    SpatialSystem.AddObject(obj);
+    if (obj.Collider != null)
+    {
+      CollisionsManager.AddObject(obj);
+    }
   }
 
-  protected virtual void Update(float deltaTime)
+  public static void Remove(GameObject obj)
   {
+    scenes.Add(obj);
+    SpatialSystem.RemoveObject(obj);
+    if (obj.Collider != null)
+    {
+      CollisionsManager.RemoveObject(obj);
+    }
+  }
+
+
+  #region Lifecycle Hooks
+  internal static void Initialize()
+  {
+    SpatialSystem.Initialize();
+    CollisionsManager.Initialize();
+    scenes.Initialize();
+  }
+
+  internal static void Update(float deltaTime)
+  {
+
     InputSystem.Update();
-    SceneController.Update(deltaTime);
+    ViewportManager.Update();
+    scenes.Update(deltaTime);
   }
 
-  protected virtual void Draw()
+  internal static void Draw()
   {
-    BeginDrawing();
-    SceneController.Draw();
-    EndDrawing();
+    scenes.Draw();
   }
 
-  protected virtual void UnloadContent()
+  internal static void Terminate()
   {
-    SceneController.ClearAllScenes();
-    AssetsManager.UnloadAssets();
+
   }
-
-  public void Run()
-  {
-    InitWindow(Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT, Setting.TITLE);
-    SetTargetFPS(Setting.TARGET_FPS);
-
-    try
-    {
-
-      Initialize();
-      LoadContent();
-
-
-      while (!WindowShouldClose())
-      {
-        float deltaTime = GetFrameTime();
-        Update(deltaTime);
-        Draw();
-      }
-    }
-    finally
-    {
-      UnloadContent();
-      CloseWindow();
-    }
-  }
-
-  protected void Exit()
-  {
-    // This will cause WindowShouldClose() to return true
-    // The game loop will exit and cleanup will occur
-  }
+  #endregion
 }

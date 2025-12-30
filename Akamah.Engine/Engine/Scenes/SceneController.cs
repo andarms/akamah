@@ -1,59 +1,54 @@
 using Akamah.Engine.Assets;
+using Akamah.Engine.Engine.Core;
 
-namespace Akamah.Engine.Engine.Scene;
+namespace Akamah.Engine.Engine.Scenes;
 
-public static class SceneController
+public interface IScenesController
 {
-  static Scene? currentScene = null;
-  static Scene? previousScene = null;
-  static readonly Dictionary<Type, Scene> scenes = [];
-  static readonly Stack<Scene> sceneStack = [];
+  void SwitchTo<T>() where T : Scene;
+  void Push<T>() where T : Scene;
+  void Pop();
+}
 
-  public static Scene? CurrentScene => currentScene;
-  public static bool IsTransitioning { get; private set; } = false;
-  public static Color BackgroundColor { get; set; } = Color.Black;
+public class ScenesController : IScenesController
+{
+  Scene? currentScene = null;
+  Scene? previousScene = null;
+  readonly Dictionary<Type, Scene> scenes = [];
+  readonly Stack<Scene> sceneStack = [];
 
-  public static Scene? InitialScene => scenes.Values.FirstOrDefault();
+  public bool IsTransitioning { get; private set; } = false;
+  public Color BackgroundColor { get; set; } = Color.Black;
 
-  public static void Initialize()
+  public Scene? InitialScene => scenes.Values.FirstOrDefault();
+
+  public void Initialize()
   {
     currentScene = InitialScene ?? throw new InvalidOperationException("No initial scene found. Please add at least one scene before initializing the SceneController.");
     currentScene.Initialize();
     AssetsManager.LoadAssets();
   }
 
-  public static void AddScene(Scene scene)
+  public void AddScene(Scene scene)
   {
     scenes.Add(scene.GetType(), scene);
   }
 
-  public static void AddScene<T>(T scene) where T : Scene
+  public void AddScene<T>(T scene) where T : Scene
   {
     scenes[typeof(T)] = scene;
   }
 
-  public static void SwitchTo<T>() where T : Scene, new()
+  public void SwitchTo<T>() where T : Scene
   {
-    if (scenes.TryGetValue(typeof(T), out var scene))
+    if (!scenes.TryGetValue(typeof(T), out var scene))
     {
-      SwitchToScene(scene);
+      throw new InvalidOperationException($"Scene of type {typeof(T).Name} not found. Please add the scene before switching to it.");
     }
-    else
-    {
-      // Create new scene if not found
-      var newScene = new T();
-      scenes[typeof(T)] = newScene;
-      SwitchToScene(newScene);
-    }
-  }
-
-  public static void SwitchTo<T>(T scene) where T : Scene
-  {
-    scenes[typeof(T)] = scene;
     SwitchToScene(scene);
   }
 
-  private static void SwitchToScene(Scene scene)
+  private void SwitchToScene(Scene scene)
   {
     IsTransitioning = true;
     previousScene = currentScene;
@@ -66,13 +61,13 @@ public static class SceneController
     IsTransitioning = false;
   }
 
-  public static void Update(float dt)
+  public void Update(float dt)
   {
     currentScene?.HandleInput();
     currentScene?.Update(dt);
   }
 
-  public static void Draw()
+  public void Draw()
   {
     ClearBackground(BackgroundColor);
 
@@ -86,7 +81,7 @@ public static class SceneController
     currentScene?.Draw();
   }
 
-  public static void PushScene<T>() where T : Scene
+  public void Push<T>() where T : Scene
   {
     Scene? scene = GetScene<T>();
     if (scene == null)
@@ -105,7 +100,7 @@ public static class SceneController
     currentScene.Initialize();
   }
 
-  public static void PopScene()
+  public void Pop()
   {
     if (sceneStack.Count > 0)
     {
@@ -115,17 +110,17 @@ public static class SceneController
     }
   }
 
-  public static T? GetScene<T>() where T : Scene
+  public T? GetScene<T>() where T : Scene
   {
     return scenes.TryGetValue(typeof(T), out var scene) ? scene as T : null;
   }
 
-  public static bool HasScene<T>() where T : Scene
+  public bool HasScene<T>() where T : Scene
   {
     return scenes.ContainsKey(typeof(T));
   }
 
-  public static void RemoveScene<T>() where T : Scene
+  public void RemoveScene<T>() where T : Scene
   {
     if (scenes.TryGetValue(typeof(T), out var scene))
     {
@@ -138,7 +133,7 @@ public static class SceneController
     }
   }
 
-  public static void ClearAllScenes()
+  public void ClearAllScenes()
   {
     foreach (var scene in scenes.Values)
     {
@@ -149,4 +144,9 @@ public static class SceneController
     currentScene = null;
     previousScene = null;
   }
+
+  public void Add(GameObject obj) => currentScene?.Add(obj);
+
+
+  public void Remove(GameObject obj) => currentScene?.Remove(obj);
 }

@@ -15,53 +15,7 @@ public enum Anchor
 
 public static class Canvas
 {
-  static readonly List<GameObject> objects = [];
-
   public static Vector2 Size { get; } = new(Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
-
-  public static void Add(GameObject obj, Anchor anchor, Vector2 offset)
-  {
-    obj.Position = CalculatePosition(obj, anchor, offset);
-    objects.Add(obj);
-  }
-
-  public static void Add(GameObject obj, Anchor anchor)
-  {
-    obj.Position = CalculatePosition(obj, anchor, new Vector2(0));
-    objects.Add(obj);
-  }
-
-  public static void Add(GameObject obj)
-  {
-    objects.Add(obj);
-  }
-
-  public static void Remove(GameObject obj)
-  {
-    objects.Remove(obj);
-  }
-
-  public static void Clear()
-  {
-    objects.Clear();
-  }
-
-  public static void Update(float deltaTime)
-  {
-    foreach (var obj in objects)
-    {
-      obj.Update(deltaTime);
-    }
-  }
-
-  public static void Draw()
-  {
-    foreach (var obj in objects)
-    {
-      obj.Draw();
-    }
-  }
-
 
   public static Vector2 CalculatePosition(IReadOnlyGameObject obj, Anchor anchor, Vector2 offset)
   {

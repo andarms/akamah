@@ -14,7 +14,8 @@ public class DropLootOnDeath(LootTable loot) : Component
   {
     foreach (var item in loot.Roll())
     {
-      GameWorld.Spawn(item, Owner.Position, 10);
+      item.Position = Owner.Position;
+      Game.Add(item);
     }
   }
 }

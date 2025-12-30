@@ -1,4 +1,5 @@
 using Akamah.Engine.Assets;
+using Akamah.Engine.Engine.Core;
 using Akamah.Engine.World.Environment.Minerals;
 
 namespace Akamah.Engine.World.Tiles;
@@ -11,7 +12,7 @@ public class MountainTile : Tile
   {
     base.Initialize();
     Rock rock = new() { Position = Position };
-    GameWorld.AddGameObject(rock);
+    Game.Add(rock);
   }
 
   public override void Draw()

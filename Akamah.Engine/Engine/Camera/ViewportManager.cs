@@ -1,3 +1,4 @@
+using Akamah.Engine.Engine.Core;
 using Akamah.Engine.World;
 
 namespace Akamah.Engine.Engine.Camera;
@@ -35,8 +36,8 @@ public static class ViewportManager
   {
     Vector2 screenCenter = GetScreenCenter();
     Vector2 cameraLimit = new(
-      GameWorld.Map.Limits.X - screenCenter.X + camera.Offset.X / camera.Zoom,
-      GameWorld.Map.Limits.Y - screenCenter.Y + camera.Offset.Y / camera.Zoom
+      Game.Map.Limits.X - screenCenter.X + camera.Offset.X / camera.Zoom,
+      Game.Map.Limits.Y - screenCenter.Y + camera.Offset.Y / camera.Zoom
     );
     camera.Target = Vector2.Clamp(target, Vector2.Zero + camera.Offset / camera.Zoom, cameraLimit);
   }
@@ -70,8 +71,8 @@ public static class ViewportManager
   {
     int minX = Math.Max(0, (int)(cachedTopLeft.X / tileSize) - 1);
     int minY = Math.Max(0, (int)(cachedTopLeft.Y / tileSize) - 1);
-    int maxX = Math.Min(GameWorld.Map.Width - 1, (int)(cachedBottomRight.X / tileSize) + 1);
-    int maxY = Math.Min(GameWorld.Map.Height - 1, (int)(cachedBottomRight.Y / tileSize) + 1);
+    int maxX = Math.Min(Game.Map.Width - 1, (int)(cachedBottomRight.X / tileSize) + 1);
+    int maxY = Math.Min(Game.Map.Height - 1, (int)(cachedBottomRight.Y / tileSize) + 1);
 
     return (minX, minY, maxX, maxY);
   }

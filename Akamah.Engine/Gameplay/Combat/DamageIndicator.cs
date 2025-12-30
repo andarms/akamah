@@ -34,7 +34,7 @@ public class DamageIndicator(Vector2 position, int damage) : GameObject
     lifetime -= deltaTime;
     if (lifetime <= 0)
     {
-      GameWorld.RemoveGameObject(this);
+      Game.Remove(this);
       return;
     }
 

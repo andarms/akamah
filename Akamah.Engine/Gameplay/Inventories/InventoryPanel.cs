@@ -25,7 +25,7 @@ public class InventoryPanel : GameObject
     base.Initialize();
 
     // Connect to player inventory after initialization
-    if (GameWorld.Player.TryGet<Inventory>(out var playerInventory))
+    if (Game.Player.TryGet<Inventory>(out var playerInventory))
     {
       inventoryWindow.Inventory = playerInventory;
     }
@@ -38,7 +38,7 @@ public class InventoryPanel : GameObject
     // Ensure inventory connection is maintained
     if (inventoryWindow.Inventory == null)
     {
-      if (GameWorld.Player.TryGet<Inventory>(out var playerInventory))
+      if (Game.Player.TryGet<Inventory>(out var playerInventory))
       {
         inventoryWindow.Inventory = playerInventory;
       }

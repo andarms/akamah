@@ -1,10 +1,13 @@
 ﻿using Akamah.Engine.Core.Engine;
-using Akamah.Engine.Engine.Scene;
+using Akamah.Engine.Engine.Core;
+using Akamah.Engine.Engine.Scenes;
 using Akamah.Engine.Scenes;
 
+Game.Register([
+  new GameScene(),
+  new InventoryScene()
+]);
+Game.Scenes.SwitchTo<GameScene>();
 
-SceneController.AddScene(new GameScene());
-SceneController.AddScene(new InventoryScene());
-var game = new Game();
-
-game.Run();
+var loop = new Loop();
+loop.Run();

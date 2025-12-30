@@ -108,7 +108,7 @@ public class GameObject : IReadOnlyGameObject
     Components.ForEach(c => c.Terminate());
     Components.Clear();
     listeners.Clear();
-    GameWorld.RemoveGameObject(this);
+    Game.Remove(this);
 
     Initialized = false;
   }

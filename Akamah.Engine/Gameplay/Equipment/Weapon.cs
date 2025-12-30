@@ -112,7 +112,7 @@ public class Weapon : GameObject
 
     int spriteWidth = shouldFlip ? -16 : 16;
 
-    Rectangle sourceSprite = GameWorld.Player.Tool.SourceSprite;
+    Rectangle sourceSprite = Game.Player.Tool.SourceSprite;
     Rectangle source = new(sourceSprite.X, sourceSprite.Y, spriteWidth, sourceSprite.Height);
 
     DrawTexturePro(
@@ -166,7 +166,7 @@ public class WeaponAttackingState(Weapon weapon) : State
   {
     swingTimer = 0f;
     weapon.isSwinging = true;
-    GameWorld.AddGameObject(meleeAttack);
+    Game.Add(meleeAttack);
     baseRotation = weapon.PivotRotation;
     meleeAttack.Position = weapon.Position + weapon.Direction * 12f;
   }
@@ -196,7 +196,7 @@ public class WeaponAttackingState(Weapon weapon) : State
   {
     weapon.isSwinging = false;
     // Weapon visibility handled by idle state
-    GameWorld.RemoveGameObject(meleeAttack);
+    Game.Remove(meleeAttack);
   }
 
   private float EaseOutCubic(float t)

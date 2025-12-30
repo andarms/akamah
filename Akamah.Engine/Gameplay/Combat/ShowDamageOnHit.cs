@@ -1,5 +1,4 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.World;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
@@ -13,7 +12,7 @@ public class ShowDamageOnHit : Component
 
   private void OnDamageTaken(HealthChanged evt)
   {
-    var damageIndicator = new DamageIndicator(Owner.Position, evt.Before - evt.After);
-    GameWorld.AddGameObject(damageIndicator);
+    var damageIndicator = new DamageIndicator(Owner.Position, evt.Amount);
+    Game.Add(damageIndicator);
   }
 }

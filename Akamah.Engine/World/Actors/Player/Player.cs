@@ -33,8 +33,6 @@ public class Player : GameObject
   public override void Initialize()
   {
     base.Initialize();
-    // GameManager.AddGameObject(cursor);
-    // GameWorld.AddGameObject(weapon);
   }
 
   public override void Update(float deltaTime)

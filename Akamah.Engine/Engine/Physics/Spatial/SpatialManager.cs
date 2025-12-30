@@ -27,8 +27,8 @@ public static class SpatialSystem
   public static void Initialize()
   {
     // Use actual map dimensions for spatial grid
-    int mapWorldWidth = (int)GameWorld.Map.Limits.X;
-    int mapWorldHeight = (int)GameWorld.Map.Limits.Y;
+    int mapWorldWidth = (int)Game.Map.Limits.X;
+    int mapWorldHeight = (int)Game.Map.Limits.Y;
     spatialGrid = new SpatialHashGrid(64, mapWorldWidth, mapWorldHeight);
     allObjects.Clear();
     lastKnownBounds.Clear();
@@ -120,7 +120,7 @@ public static class SpatialSystem
     const float COLLISION_RADIUS = 100f; // Only check collisions within 100 pixels of player
 
     // Get objects within collision radius around the player
-    var playerPos = GameWorld.Player.Position;
+    var playerPos = Game.Player.Position;
     var collisionArea = new Rectangle(
       playerPos.X - COLLISION_RADIUS,
       playerPos.Y - COLLISION_RADIUS,
@@ -134,7 +134,7 @@ public static class SpatialSystem
     var collidableObjects = nearbyObjects.Where(obj => obj.Collider != null && ShouldCheckCollisions(obj)).ToList();
 
     // Check collision only between player and nearby objects for better performance
-    var player = GameWorld.Player;
+    var player = Game.Player;
     if (player.Collider == null)
     {
       LastFrameCollisionChecks = 0;
@@ -263,8 +263,8 @@ public static class SpatialSystem
   /// </summary>
   public static void ResizeToMapDimensions()
   {
-    int mapWorldWidth = (int)GameWorld.Map.Limits.X;
-    int mapWorldHeight = (int)GameWorld.Map.Limits.Y;
+    int mapWorldWidth = (int)Game.Map.Limits.X;
+    int mapWorldHeight = (int)Game.Map.Limits.Y;
 
     // Always recreate to ensure proper sizing
     spatialGrid = new SpatialHashGrid(64, mapWorldWidth, mapWorldHeight);

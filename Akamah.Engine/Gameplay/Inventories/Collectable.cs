@@ -30,7 +30,7 @@ public class Collectable : GameObject
       if (other.Has<Inventory>())
       {
         other.Handle(new AddToInventory(Item, 1));
-        GameWorld.RemoveGameObject(this);
+        Game.Remove(this);
         break;
       }
     }

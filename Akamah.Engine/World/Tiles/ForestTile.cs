@@ -1,4 +1,5 @@
 using Akamah.Engine.Assets;
+using Akamah.Engine.Engine.Core;
 using Akamah.Engine.World.Environment.Flora;
 
 namespace Akamah.Engine.World.Tiles;
@@ -15,7 +16,7 @@ public class ForestTile : Tile
     if (random.NextDouble() < 0.3)
     {
       Tree tree = new() { Position = Position + new Vector2(4, 4) };
-      GameWorld.AddGameObject(tree);
+      Game.Add(tree);
     }
   }
 
