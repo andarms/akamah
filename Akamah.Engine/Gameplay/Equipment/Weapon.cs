@@ -69,7 +69,7 @@ public class Weapon : GameObject
 
   private void UpdatePivotTracking(float dt)
   {
-    var mousePosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
+    var mousePosition = GetScreenToWorld2D(GetMousePosition(), Game.Viewport.Camera);
     Vector2 direction = mousePosition - PivotPosition;
     Direction = Vector2.Normalize(direction);
     if (direction.LengthSquared() > 0.01f)

@@ -87,7 +87,7 @@ public abstract class Scene : IDisposable
 
   public virtual void Draw()
   {
-    BeginMode2D(Game.Camera);
+    BeginMode2D(Game.Viewport.Camera);
     DrawWorld();
     EndMode2D();
     DrawUI();

@@ -95,7 +95,7 @@ public class GameScene : Scene
     CollisionsManager.Update(deltaTime);
 
 
-    var (viewportTopLeft, viewportBottomRight) = ViewportManager.CameraViewport;
+    var (viewportTopLeft, viewportBottomRight) = Game.Viewport.Area;
     var visibleObjects = SpatialSystem.GetVisibleObjects(viewportTopLeft, viewportBottomRight);
 
     // Update only visible objects (except special cases)
@@ -114,7 +114,7 @@ public class GameScene : Scene
     Game.Map.Draw();
 
     // Get visible objects from spatial system
-    var (viewportTopLeft, viewportBottomRight) = ViewportManager.CameraViewport;
+    var (viewportTopLeft, viewportBottomRight) = Game.Viewport.Area;
     var visibleObjects = SpatialSystem.GetVisibleObjects(viewportTopLeft, viewportBottomRight).ToList();
 
     // Sort visible objects by layer and then by Y position for proper rendering order

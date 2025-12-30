@@ -129,12 +129,12 @@ public class GameObject : IReadOnlyGameObject
   protected virtual bool IsInCameraView()
   {
     // Default implementation uses point-based visibility with small margin
-    return ViewportManager.IsPointInView(GlobalPosition, 32f);
+    return Game.Viewport.IsPointInView(GlobalPosition, 32f);
   }
 
   protected bool IsInCameraView(Vector2 size)
   {
-    return ViewportManager.IsRectInView(GlobalPosition, size);
+    return Game.Viewport.IsRectInView(GlobalPosition, size);
   }
 
 

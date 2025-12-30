@@ -3,10 +3,21 @@ using Akamah.Engine.World;
 
 namespace Akamah.Engine.Engine.Camera;
 
-public static class ViewportManager
+public interface IViewport
+{
+  virtual Camera2D Camera => new();
+  virtual Vector2 GetScreenCenter() => new();
+  void UpdateTarget(Vector2 target);
+  bool IsPointInView(Vector2 point, float margin);
+  bool IsRectInView(Vector2 position, Vector2 size);
+  (int minX, int minY, int maxX, int maxY) GetVisibleTileRange(int tileSize);
+  (Vector2 topLeft, Vector2 bottomRight) Area { get; }
+}
+
+public class Viewport : IViewport
 {
 
-  private static Camera2D camera = new()
+  private Camera2D camera = new()
   {
     Target = new Vector2(0, 0),
     Offset = new Vector2(GetScreenWidth() / 2, GetScreenHeight() / 2),
@@ -14,25 +25,38 @@ public static class ViewportManager
     Zoom = Setting.ZOOM_LEVEL
   };
 
-  public static Camera2D Camera => camera;
+  public Camera2D Camera => camera;
 
-  public static Vector2 GetScreenCenter() => new(GetScreenWidth() / 2, GetScreenHeight() / 2);
+  public Vector2 GetScreenCenter() => new(GetScreenWidth() / 2, GetScreenHeight() / 2);
 
   // cached viewport for the current frame
-  private static Vector2 cachedTopLeft;
-  private static Vector2 cachedBottomRight;
+  private Vector2 cachedTopLeft;
+  private Vector2 cachedBottomRight;
 
 
-  public static void Update()
+  public void Initialize()
+  {
+    camera = new Camera2D
+    {
+      Target = camera.Target,
+      Offset = GetScreenCenter(),
+      Rotation = camera.Rotation,
+      Zoom = camera.Zoom
+    };
+  }
+
+
+  public void Update()
   {
     Vector2 screenCenter = GetScreenCenter();
     cachedTopLeft = camera.Target - screenCenter / camera.Zoom - new Vector2(32);
     cachedBottomRight = camera.Target + screenCenter / camera.Zoom + new Vector2(32);
+
   }
 
-  public static (Vector2 topLeft, Vector2 bottomRight) CameraViewport => (cachedTopLeft, cachedBottomRight);
+  public (Vector2 topLeft, Vector2 bottomRight) Area => (cachedTopLeft, cachedBottomRight);
 
-  public static void UpdateTarget(Vector2 target)
+  public void UpdateTarget(Vector2 target)
   {
     Vector2 screenCenter = GetScreenCenter();
     Vector2 cameraLimit = new(
@@ -45,7 +69,7 @@ public static class ViewportManager
   /// <summary>
   /// Checks if a point is within the camera viewport with optional margin
   /// </summary>
-  public static bool IsPointInView(Vector2 point, float margin = 0f)
+  public bool IsPointInView(Vector2 point, float margin = 0f)
   {
     return point.X >= cachedTopLeft.X - margin &&
            point.X <= cachedBottomRight.X + margin &&
@@ -56,7 +80,7 @@ public static class ViewportManager
   /// <summary>
   /// Checks if a rectangle is within the camera viewport
   /// </summary>
-  public static bool IsRectInView(Vector2 position, Vector2 size)
+  public bool IsRectInView(Vector2 position, Vector2 size)
   {
     return !(position.X + size.X < cachedTopLeft.X ||
              position.X > cachedBottomRight.X ||
@@ -67,7 +91,7 @@ public static class ViewportManager
   /// <summary>
   /// Gets the visible tile range for the current camera view
   /// </summary>
-  public static (int minX, int minY, int maxX, int maxY) GetVisibleTileRange(int tileSize)
+  public (int minX, int minY, int maxX, int maxY) GetVisibleTileRange(int tileSize)
   {
     int minX = Math.Max(0, (int)(cachedTopLeft.X / tileSize) - 1);
     int minY = Math.Max(0, (int)(cachedTopLeft.Y / tileSize) - 1);

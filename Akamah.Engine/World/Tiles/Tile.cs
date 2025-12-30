@@ -10,7 +10,7 @@ public abstract class Tile : GameObject
   protected override bool IsInCameraView()
   {
     // Use rectangle-based visibility check for tiles (16x16 size)
-    return ViewportManager.IsRectInView(Position, new Vector2(16, 16));
+    return Game.Viewport.IsRectInView(Position, new Vector2(16, 16));
   }
 
   public override void Draw()

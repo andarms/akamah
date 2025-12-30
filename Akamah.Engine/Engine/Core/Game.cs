@@ -15,11 +15,14 @@ public static class Game
   public static IScenesController Scenes => scenes;
   public static int Seed { get; } = new Random().Next();
   public static Player Player { get; } = new();
-  static readonly ScenesController scenes = new();
   public static bool DebugMode { get; set; } = false;
-  public static Camera2D Camera => ViewportManager.Camera;
+  public static IViewport Viewport => viewport;
   public static RandomNumberGenerator Rng { get; } = new(Seed);
   public static Map Map { get; set; } = new(200, 200);
+
+
+  static readonly ScenesController scenes = new();
+  static readonly Viewport viewport = new();
 
   public static void Register(List<Scene> scenes)
   {
@@ -55,14 +58,14 @@ public static class Game
   {
     SpatialSystem.Initialize();
     CollisionsManager.Initialize();
+    viewport.Initialize();
     scenes.Initialize();
   }
 
   internal static void Update(float deltaTime)
   {
-
     InputSystem.Update();
-    ViewportManager.Update();
+    viewport.Update();
     scenes.Update(deltaTime);
   }
 

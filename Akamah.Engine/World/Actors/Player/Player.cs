@@ -27,7 +27,6 @@ public class Player : GameObject
     };
     Add(new Inventory(20));
     AddChild(weapon);
-    Console.Write(Children.Count + " children");
   }
 
   public override void Initialize()
@@ -87,10 +86,10 @@ public class Player : GameObject
     // Apply movement with collision detection per axis
     Vector2 velocity = movement * Speed * deltaTime;
     MoveWithCollisionDetection(velocity);
-    ViewportManager.UpdateTarget(Position);
+    Game.Viewport.UpdateTarget(Position);
 
 
-    var cursorPosition = GetScreenToWorld2D(GetMousePosition(), ViewportManager.Camera);
+    var cursorPosition = GetScreenToWorld2D(GetMousePosition(), Game.Viewport.Camera);
     Vector2 direction = cursorPosition - Position;
 
     // Update player orientation and weapon position based on mouse direction with deadzone
@@ -160,7 +159,7 @@ public class Player : GameObject
   {
     // Player should almost always be visible (around camera center)
     // But still check for edge cases
-    return ViewportManager.IsRectInView(Position, new Vector2(16, 16));
+    return Game.Viewport.IsRectInView(Position, new Vector2(16, 16));
   }
 
   public override void Draw()

@@ -141,7 +141,7 @@ public class Map(int width, int height) : GameObject
   public override void Draw()
   {
     // Get the visible tile range based on camera viewport
-    var (minX, minY, maxX, maxY) = ViewportManager.GetVisibleTileRange(16);
+    var (minX, minY, maxX, maxY) = Game.Viewport.GetVisibleTileRange(16);
 
     // Only render tiles within the visible range
     for (int x = minX; x <= maxX; x++)
@@ -161,7 +161,7 @@ public class Map(int width, int height) : GameObject
   public override void Update(float deltaTime)
   {
     // Get the visible tile range for updates (with larger margin for gameplay logic)
-    var (minX, minY, maxX, maxY) = ViewportManager.GetVisibleTileRange(16);
+    var (minX, minY, maxX, maxY) = Game.Viewport.GetVisibleTileRange(16);
 
     // Expand the update range slightly beyond visible area for smooth gameplay
     minX = Math.Max(0, minX - 2);
