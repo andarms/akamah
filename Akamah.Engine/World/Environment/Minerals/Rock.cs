@@ -20,19 +20,6 @@ public class Rock : GameObject
     Add(new Stone());
     Add(new RemoveOnDeath());
     Add(new ShowDamageOnHit());
-  }
-
-
-  public override void Draw()
-  {
-    base.Draw();
-    DrawTexturePro(
-      AssetsManager.Textures["Desert"],
-      new Rectangle(64, 48, 16, 16),
-      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
-      new Vector2(0, 0),
-      0.0f,
-      Color.White
-    );
+    Add(new Sprite() { TexturePath = "Desert", SourceRect = new Rectangle(64, 48, 16, 16) });
   }
 }

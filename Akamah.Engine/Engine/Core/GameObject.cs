@@ -11,10 +11,13 @@ public record GameAction();
 public interface IReadOnlyGameObject
 {
   Vector2 Position { get; }
+  Vector2 Anchor { get; }
   Vector2 GlobalPosition { get; }
   GameObject? Parent { get; }
   IReadOnlyList<GameObject> Children { get; }
   Collider? Collider { get; }
+  bool Visible { get; }
+  bool FlipX { get; }
 
   Rectangle GetBounds();
 

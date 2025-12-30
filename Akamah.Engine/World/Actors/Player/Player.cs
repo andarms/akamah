@@ -26,7 +26,9 @@ public class Player : GameObject
       Offset = new Vector2(0, 8)
     };
     Add(new Inventory(20));
+    Add(new Sprite { TexturePath = "TinyDungeon", SourceRect = new Rectangle(16, 112, 16, 16) });
     AddChild(weapon);
+
   }
 
   public override void Initialize()
@@ -160,27 +162,5 @@ public class Player : GameObject
     // Player should almost always be visible (around camera center)
     // But still check for edge cases
     return Game.Viewport.IsRectInView(Position, new Vector2(16, 16));
-  }
-
-  public override void Draw()
-  {
-    // Player is usually always visible but still check for edge cases
-    if (!IsInCameraView())
-    {
-      Visible = false;
-      return;
-    }
-
-    Visible = true;
-    Rectangle sourceRect = new(16, 112, FlipX ? -16 : 16, 16);
-    DrawTexturePro(
-      AssetsManager.Textures["TinyDungeon"],
-      sourceRect,
-      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
-      new Vector2(0, 0),
-      0.0f,
-      Color.White
-    );
-    base.Draw();
   }
 }

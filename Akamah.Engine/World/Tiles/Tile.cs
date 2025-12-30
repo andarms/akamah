@@ -15,7 +15,6 @@ public abstract class Tile : GameObject
 
   public override void Draw()
   {
-    // Spatial system handles most culling, but tiles still check for precision
     if (!IsInCameraView())
     {
       Visible = false;
@@ -23,18 +22,7 @@ public abstract class Tile : GameObject
     }
 
     Visible = true;
-    DrawRectangleV(Position, new Vector2(16), Color.Black);
+    base.Draw();
   }
 
-  public virtual List<(TileType type, float weight)> ValidNeighbors()
-  {
-    return
-    [
-      (TileType.Grass, 1.0f),
-      (TileType.Forest, 1.0f),
-      (TileType.Sand, 1.0f),
-      (TileType.Mountain, 1.0f),
-      (TileType.Water, 1.0f)
-    ];
-  }
 }

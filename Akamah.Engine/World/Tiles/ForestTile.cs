@@ -9,6 +9,11 @@ public class ForestTile : Tile
   readonly Random random = new();
   public override TileType Type { get; } = TileType.Forest;
 
+  public ForestTile()
+  {
+    Add(new Sprite { TexturePath = "TinyTown", SourceRect = new Rectangle(16, 0, 16, 16) });
+  }
+
   public override void Initialize()
   {
     if (Initialized) return;
@@ -18,18 +23,5 @@ public class ForestTile : Tile
       Tree tree = new() { Position = Position + new Vector2(4, 4) };
       Game.Add(tree);
     }
-  }
-
-  public override void Draw()
-  {
-    base.Draw();
-    DrawTexturePro(
-      AssetsManager.Textures["TinyTown"],
-      new Rectangle(16, 0, 16, 16),
-      new Rectangle(Position.X, Position.Y, 16, 16),
-      new Vector2(0, 0),
-      0.0f,
-      Color.White
-    );
   }
 }

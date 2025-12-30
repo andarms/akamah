@@ -24,9 +24,16 @@ public class Tree : GameObject
     Add(new RemoveOnDeath());
     Add(new ShowDamageOnHit());
     Add(new DropLootOnDeath(Loot()));
+    Add(
+      new Sprite()
+      {
+        TexturePath = "TinyTown",
+        SourceRect = new Rectangle(64, 32, 16, 16)
+      }
+    );
   }
 
-  public LootTable Loot()
+  public static LootTable Loot()
   {
     return new LootTable()
       .Add(new(
@@ -35,17 +42,5 @@ public class Tree : GameObject
         MaxAmount: 1,
         Chance: 1.0f
       ));
-  }
-
-  public override void Draw()
-  {
-    DrawTexturePro(
-      AssetsManager.Textures["TinyTown"],
-      new Rectangle(64, 32, 16, 16),
-      new Rectangle(RenderPosition.X, RenderPosition.Y, 16, 16),
-      new Vector2(0, 0),
-      0.0f,
-      Color.White
-    );
   }
 }
