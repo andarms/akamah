@@ -54,14 +54,14 @@ public abstract class Scene : IDisposable
   {
     if (pendingObjects.Count <= 0) return;
     objects.AddRange(pendingObjects);
-    foreach (var obj in pendingObjects)
+    foreach (var obj in pendingObjects.ToArray())
     {
       obj.Initialize();
     }
     pendingObjects.Clear();
 
     if (removeObjects.Count <= 0) return;
-    foreach (var obj in removeObjects)
+    foreach (var obj in removeObjects.ToArray())
     {
       objects.Remove(obj);
       obj.Terminate();

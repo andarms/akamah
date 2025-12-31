@@ -35,21 +35,13 @@ public static class Game
   public static void Add(GameObject obj)
   {
     scenes.Add(obj);
-    SpatialSystem.AddObject(obj);
-    if (obj.Collider != null)
-    {
-      CollisionsManager.AddObject(obj);
-    }
+    CollisionsManager.Add(obj);
   }
 
   public static void Remove(GameObject obj)
   {
-    scenes.Add(obj);
-    SpatialSystem.RemoveObject(obj);
-    if (obj.Collider != null)
-    {
-      CollisionsManager.RemoveObject(obj);
-    }
+    scenes.Remove(obj);
+    CollisionsManager.Remove(obj);
   }
 
 

@@ -16,15 +16,15 @@ public static class CollisionsManager
     SpatialSystem.OnCollisionExitEvent = (a, b) => OnCollisionExit?.Invoke(a, b);
   }
 
-  public static void AddObject(GameObject obj)
+  public static void Add(GameObject obj)
   {
     if (obj.Collider == null) return;
-    SpatialSystem.AddObject(obj);
+    SpatialSystem.Add(obj);
   }
 
-  public static void RemoveObject(GameObject obj)
+  public static void Remove(GameObject obj)
   {
-    SpatialSystem.RemoveObject(obj);
+    SpatialSystem.Remove(obj);
   }
 
   public static void Update(float dt)

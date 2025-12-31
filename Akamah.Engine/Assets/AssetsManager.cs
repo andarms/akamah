@@ -4,6 +4,7 @@ public static class AssetsManager
 {
   const string ASSETS_PATH = "Assets/";
   public static readonly Dictionary<string, Texture2D> Textures = [];
+  public static Font DefaultFont { get; private set; }
 
 
   public static void LoadAssets()
@@ -27,6 +28,9 @@ public static class AssetsManager
     {
       Console.WriteLine($"Textures directory not found: {texturesPath}");
     }
+
+    // Load fonts
+    DefaultFont = LoadFont(Path.Combine(ASSETS_PATH, "Fonts/monogram-extended.ttf"));
   }
 
   internal static void UnloadAssets()

@@ -37,7 +37,7 @@ public static class SpatialSystem
   /// <summary>
   /// Add an object to the spatial system
   /// </summary>
-  public static void AddObject(GameObject obj)
+  public static void Add(GameObject obj)
   {
     if (obj == null) return;
 
@@ -54,7 +54,7 @@ public static class SpatialSystem
   /// <summary>
   /// Remove an object from the spatial system
   /// </summary>
-  public static void RemoveObject(GameObject obj)
+  public static void Remove(GameObject obj)
   {
     if (allObjects.Remove(obj))
     {

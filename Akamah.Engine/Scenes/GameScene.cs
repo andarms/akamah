@@ -21,10 +21,10 @@ public class GameScene : Scene
     // objects.Add(Game.Player);
     Game.Player.Position = new Vector2(160, 160);
     Game.Map.GenerateRandomMap();
-    SpatialSystem.AddObject(Game.Player);
+    SpatialSystem.Add(Game.Player);
     if (Game.Player.Collider != null)
     {
-      CollisionsManager.AddObject(Game.Player);
+      CollisionsManager.Add(Game.Player);
     }
 
     InputSystem.MapAction("move_left", KeyboardKey.Left, KeyboardKey.A);
@@ -52,17 +52,17 @@ public class GameScene : Scene
         if (obj != Game.Map && obj != Game.Player)
         {
           objects.Remove(obj);
-          SpatialSystem.RemoveObject(obj);
-          CollisionsManager.RemoveObject(obj);
+          SpatialSystem.Remove(obj);
+          CollisionsManager.Remove(obj);
         }
       }
       Game.Map.GenerateRandomMap();
       objects.Add(Game.Map);
-      SpatialSystem.AddObject(Game.Player);
+      SpatialSystem.Add(Game.Player);
       objects.Add(Game.Player);
       if (Game.Player.Collider != null)
       {
-        CollisionsManager.AddObject(Game.Player);
+        CollisionsManager.Add(Game.Player);
       }
     }
     if (IsKeyPressed(KeyboardKey.I))
