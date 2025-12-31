@@ -12,19 +12,18 @@ public class DamageIndicator(Vector2 position, int damage) : GameObject
   float lifetime = Lifetime;
   readonly Vector2 startPosition = position;
   readonly int damageAmount = damage;
+  readonly Text text = new(damage.ToString())
+  {
+    Color = Color.Red,
+    FontSize = 14
+  };
 
   public override void Initialize()
   {
     base.Initialize();
     Position = startPosition;
     Anchor = new(0.5f, 0.5f);
-    // Set a simple text representation for the damage indicator
-    var textComponent = new Text(damageAmount.ToString())
-    {
-      Color = Color.Red,
-      FontSize = 14
-    };
-    AddChild(textComponent);
+    Add(text);
   }
 
   public override void Update(float deltaTime)
@@ -42,11 +41,10 @@ public class DamageIndicator(Vector2 position, int damage) : GameObject
     float progress = 1 - (lifetime / Lifetime);
     Position = startPosition - new Vector2(0, RiseDistance * progress);
 
-    var textComponent = Get<Text>();
-    if (textComponent != null)
+    if (text != null)
     {
       float alpha = MathF.Max(0, 1 - progress);
-      textComponent.Color = new Color(textComponent.Color.R, textComponent.Color.G, textComponent.Color.B, alpha);
+      text.Color = new Color(text.Color.R, text.Color.G, text.Color.B, alpha);
     }
   }
 }

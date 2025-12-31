@@ -25,9 +25,9 @@ public class Player : GameObject
       Size = new Vector2(16, 8),
       Offset = new Vector2(0, 8)
     };
-    AddChild(new Inventory(20));
-    AddChild(new Sprite { TexturePath = "TinyDungeon", SourceRect = new Rectangle(16, 112, 16, 16) });
-    AddChild(weapon);
+    Add(new Inventory(20));
+    Add(new Sprite { TexturePath = "TinyDungeon", SourceRect = new Rectangle(16, 112, 16, 16) });
+    Add(weapon);
 
   }
 

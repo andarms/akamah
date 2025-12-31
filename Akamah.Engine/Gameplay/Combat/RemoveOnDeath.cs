@@ -7,10 +7,6 @@ public class RemoveOnDeath() : GameObject
   public override void Initialize()
   {
     base.Initialize();
-    When<HealthDepleted>(_ =>
-    {
-      Console.WriteLine($"Removing {this} on death.");
-      Terminate();
-    });
+    When<HealthDepleted>(_ => GetRoot().Terminate());
   }
 }

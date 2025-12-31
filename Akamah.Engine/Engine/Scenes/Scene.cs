@@ -1,4 +1,5 @@
 using Akamah.Engine.Engine.Core;
+using Akamah.Engine.UserInterface;
 
 namespace Akamah.Engine.Engine.Scenes;
 
@@ -64,6 +65,7 @@ public abstract class Scene : IDisposable
     foreach (var obj in removeObjects.ToArray())
     {
       objects.Remove(obj);
+      ui.Remove(obj);
       obj.Terminate();
     }
     removeObjects.Clear();

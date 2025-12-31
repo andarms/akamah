@@ -68,9 +68,16 @@ public class GameObject : IReadOnlyGameObject
 
   public virtual void Update(float deltaTime)
   {
-    foreach (var child in Children.ToList())
+    // Update children and remove terminated ones
+    for (int i = Children.Count - 1; i >= 0; i--)
     {
-      if (!child.terminated) { child.Update(deltaTime); }
+      var child = Children[i];
+      if (child.terminated)
+      {
+        Children.RemoveAt(i);
+        continue;
+      }
+      child.Update(deltaTime);
     }
   }
 
@@ -81,10 +88,16 @@ public class GameObject : IReadOnlyGameObject
     // The spatial manager filters objects before calling Draw()
     Visible = true;
 
-    // Draw all children
-    foreach (var child in Children)
+    // Draw children and remove terminated ones
+    for (int i = Children.Count - 1; i >= 0; i--)
     {
-      if (child.Visible && !child.terminated) { child.Draw(); }
+      var child = Children[i];
+      if (child.terminated)
+      {
+        Children.RemoveAt(i);
+        continue;
+      }
+      if (child.Visible) { child.Draw(); }
     }
   }
 
@@ -93,13 +106,21 @@ public class GameObject : IReadOnlyGameObject
   {
     if (terminated) return;
     terminated = true;
+
+    // Terminate all children first
     foreach (var child in Children.ToList())
     {
       child.Terminate();
     }
     Children.Clear();
+
+    // Remove from parent
     Parent?.RemoveChild(this);
+
+    // Clear local listeners and try to clean up root listeners
     listeners.Clear();
+
+    // Remove from game
     Game.Remove(this);
     Initialized = false;
   }
@@ -135,7 +156,7 @@ public class GameObject : IReadOnlyGameObject
     return Collider.GetBounds(GlobalPosition, Anchor);
   }
 
-  public void AddChild(GameObject child)
+  public void Add(GameObject child)
   {
     if (child == null) return;
     if (child == this) throw new InvalidOperationException("Cannot add self as child");
@@ -208,21 +229,9 @@ public class GameObject : IReadOnlyGameObject
 
   public void Emit<T>(T evt) where T : GameEvent
   {
-    // Emit on this GameObject
-    EmitLocal(evt);
-
-    // Also emit on parent and siblings for component-like behavior
-    if (Parent != null)
-    {
-      Parent.EmitLocal(evt);
-      foreach (var sibling in Parent.Children.ToArray())
-      {
-        if (sibling != this)
-        {
-          sibling.EmitLocal(evt);
-        }
-      }
-    }
+    // Always emit events at the root parent level so all descendants can listen
+    var root = GetRoot();
+    root.EmitToHierarchy(evt);
   }
 
   private void EmitLocal<T>(T evt) where T : GameEvent
@@ -235,7 +244,35 @@ public class GameObject : IReadOnlyGameObject
     }
   }
 
+  private void EmitToHierarchy<T>(T evt) where T : GameEvent
+  {
+    // Don't emit if this object is terminated
+    if (terminated) return;
+
+    // Emit to self first
+    EmitLocal(evt);
+
+    // Then emit to all non-terminated children recursively
+    foreach (var child in Children.ToList())
+    {
+      if (!child.terminated)
+      {
+        child.EmitToHierarchy(evt);
+      }
+    }
+  }
+
   public void When<T>(Action<T> callback) where T : GameEvent
+  {
+    if (terminated)
+      return;
+
+    // Always subscribe at the root level so all hierarchy events can be received
+    var root = GetRoot();
+    root.WhenLocal(callback);
+  }
+
+  private void WhenLocal<T>(Action<T> callback) where T : GameEvent
   {
     if (terminated)
       return;

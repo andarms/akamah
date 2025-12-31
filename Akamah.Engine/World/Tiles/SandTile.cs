@@ -9,7 +9,7 @@ public class SandTile : Tile
 
   public SandTile()
   {
-    AddChild(new Sprite { TexturePath = "TinyTown", SourceRect = new Rectangle(16, 32, 16, 16) });
+    Add(new Sprite { TexturePath = "TinyTown", SourceRect = new Rectangle(16, 32, 16, 16) });
   }
 }
 

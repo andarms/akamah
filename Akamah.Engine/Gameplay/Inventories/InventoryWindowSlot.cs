@@ -126,6 +126,6 @@ public class InventoryWindowSlot : UIObject
 {
   public InventoryWindowSlot(InventorySlot slot)
   {
-    AddChild(new InventoryWindowSlotComponent(slot));
+    Add(new InventoryWindowSlotComponent(slot));
   }
 }

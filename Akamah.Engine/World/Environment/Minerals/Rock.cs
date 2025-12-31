@@ -16,10 +16,10 @@ public class Rock : GameObject
       Offset = new Vector2(0, 0),
       Solid = true
     };
-    AddChild(new Health(50));
-    AddChild(new Stone());
-    AddChild(new RemoveOnDeath());
-    AddChild(new ShowDamageOnHit());
-    AddChild(new Sprite() { TexturePath = "Desert", SourceRect = new Rectangle(64, 48, 16, 16) });
+    Add(new Health(50));
+    Add(new Stone());
+    Add(new RemoveOnDeath());
+    Add(new ShowDamageOnHit());
+    Add(new Sprite() { TexturePath = "Desert", SourceRect = new Rectangle(64, 48, 16, 16) });
   }
 }

@@ -10,7 +10,7 @@ public class MountainTile : Tile
 
   public MountainTile()
   {
-    AddChild(new Sprite { TexturePath = "Desert", SourceRect = new Rectangle(16, 48, 16, 16) });
+    Add(new Sprite { TexturePath = "Desert", SourceRect = new Rectangle(16, 48, 16, 16) });
   }
 
   public override void Initialize()
