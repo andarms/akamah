@@ -2,17 +2,17 @@ using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
-public class ShowDamageOnHit : Component
+public class ShowDamageOnHit : GameObject
 {
   public override void Initialize()
   {
     base.Initialize();
-    Owner.When<HealthChanged>(OnDamageTaken);
+    When<HealthChanged>(OnDamageTaken);
   }
 
   private void OnDamageTaken(HealthChanged evt)
   {
-    var damageIndicator = new DamageIndicator(Owner.Position, evt.Amount);
+    var damageIndicator = new DamageIndicator(Position, evt.Amount);
     Game.Add(damageIndicator);
   }
 }

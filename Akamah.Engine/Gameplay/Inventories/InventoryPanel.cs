@@ -14,11 +14,11 @@ public class InventoryPanel : GameObject
   {
     Collider = new Collider() { Size = size, };
 
-    Add(new Backdrop());
+    AddChild(new Backdrop());
 
     // Create inventory window and connect it to player inventory
     inventoryWindow = new InventoryWindow(size, 8, 4);
-    Add(inventoryWindow);
+    AddChild(inventoryWindow);
   }
 
   public override void Initialize()

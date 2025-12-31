@@ -1,23 +1,24 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
+using Akamah.Engine.Gameplay.Equipment;
 
 namespace Akamah.Engine.World.Materials;
 
-public class Wooden() : Component, IHandle<Chop>, IHandle<Slash>, IHandle<Mine>
+public class Wooden() : GameObject, IHandle<Chop>, IHandle<Slash>, IHandle<Mine>
 {
   public void Handle(Chop action)
   {
-    Owner.Handle(new Damage(action.Damage));
+    Parent?.Handle(new Damage(action.Damage));
   }
 
   public void Handle(Slash action)
   {
-    Owner.Handle(new Damage(action.Damage / 3));
+    Parent?.Handle(new Damage(action.Damage / 3));
   }
 
   public void Handle(Mine action)
   {
-    Owner.Handle(new Damage(action.Damage / 2));
+    Parent?.Handle(new Damage(action.Damage / 2));
   }
 }
 

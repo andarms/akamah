@@ -3,7 +3,7 @@ using Akamah.Engine.UserInterface;
 
 namespace Akamah.Engine.Gameplay.Inventories;
 
-public class Backdrop() : Component
+public class Backdrop() : GameObject
 {
   Color color = Fade(Color.Gray, 0.5f);
 

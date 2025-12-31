@@ -4,7 +4,7 @@ namespace Akamah.Engine.Gameplay.Inventories;
 
 public record AddToInventory(Item Item, int Quantity) : GameAction;
 
-public class Inventory : Component, IHandle<AddToInventory>
+public class Inventory : GameObject, IHandle<AddToInventory>
 {
   public List<InventorySlot> Items { get; private set; } = [];
 

@@ -5,7 +5,7 @@ namespace Akamah.Engine.Gameplay.Combat;
 public record HealthChanged(IReadOnlyGameObject GameObject, int Before, int After, int Amount) : GameEvent;
 public record HealthDepleted(IReadOnlyGameObject GameObject) : GameEvent;
 
-public class Health(int max) : Component, IHandle<Damage>
+public class Health(int max) : GameObject, IHandle<Damage>
 {
   public int Current { get; set; } = max;
   public int Max { get; } = max;
@@ -22,11 +22,11 @@ public class Health(int max) : Component, IHandle<Damage>
 
     int before = Current;
     Current = Math.Max(0, Current - amount);
-    Owner.Emit(new HealthChanged(Owner, before, Current, before - Current));
+    Emit(new HealthChanged(this, before, Current, before - Current));
     Console.WriteLine($"Health Hurt: {before} -> {Current}");
     if (Current == 0)
     {
-      Owner.Emit(new HealthDepleted(Owner));
+      Emit(new HealthDepleted(this));
     }
   }
 
@@ -36,7 +36,7 @@ public class Health(int max) : Component, IHandle<Damage>
 
     int before = Current;
     Current = Math.Min(Max, Current + amount);
-    Owner.Emit(new HealthChanged(Owner, before, Current, Current - before));
+    Emit(new HealthChanged(this, before, Current, Current - before));
   }
 
   public void Handle(Damage action)

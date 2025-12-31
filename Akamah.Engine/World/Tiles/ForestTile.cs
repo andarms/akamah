@@ -11,7 +11,7 @@ public class ForestTile : Tile
 
   public ForestTile()
   {
-    Add(new Sprite { TexturePath = "TinyTown", SourceRect = new Rectangle(16, 0, 16, 16) });
+    AddChild(new Sprite { TexturePath = "TinyTown", SourceRect = new Rectangle(16, 0, 16, 16) });
   }
 
   public override void Initialize()

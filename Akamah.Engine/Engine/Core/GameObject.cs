@@ -21,9 +21,9 @@ public interface IReadOnlyGameObject
 
   Rectangle GetBounds();
 
-  T Get<T>() where T : Component;
-  bool Has<T>() where T : Component;
-  bool TryGet<T>(out T? component) where T : Component;
+  T Get<T>() where T : GameObject;
+  bool Has<T>() where T : GameObject;
+  bool TryGet<T>(out T? gameObject) where T : GameObject;
   void Handle(GameAction action);
   void Emit<T>(T evt) where T : GameEvent;
   void When<T>(Action<T> callback) where T : GameEvent;
@@ -52,14 +52,12 @@ public class GameObject : IReadOnlyGameObject
 
   public Vector2 RenderPosition => GlobalPosition - Anchor;
 
-  public List<Component> Components { get; } = [];
   private readonly Dictionary<Type, List<Delegate>> listeners = [];
   private bool terminated = false;
   public bool Initialized { get; private set; } = false;
 
   public virtual void Initialize()
   {
-    Components.ForEach(c => c.Initialize());
     // Initialize all children
     foreach (var child in Children)
     {
@@ -70,7 +68,6 @@ public class GameObject : IReadOnlyGameObject
 
   public virtual void Update(float deltaTime)
   {
-    Components.ForEach(c => c.Update(deltaTime));
     foreach (var child in Children.ToList())
     {
       if (!child.terminated) { child.Update(deltaTime); }
@@ -83,7 +80,6 @@ public class GameObject : IReadOnlyGameObject
     // Individual objects don't need to check visibility anymore
     // The spatial manager filters objects before calling Draw()
     Visible = true;
-    Components.ForEach(c => c.Draw());
 
     // Draw all children
     foreach (var child in Children)
@@ -97,22 +93,14 @@ public class GameObject : IReadOnlyGameObject
   {
     if (terminated) return;
     terminated = true;
-
-    // Terminate all children first
     foreach (var child in Children.ToList())
     {
       child.Terminate();
     }
     Children.Clear();
-
-    // Remove from parent
     Parent?.RemoveChild(this);
-
-    Components.ForEach(c => c.Terminate());
-    Components.Clear();
     listeners.Clear();
     Game.Remove(this);
-
     Initialized = false;
   }
 
@@ -195,37 +183,49 @@ public class GameObject : IReadOnlyGameObject
     return globalPosition - GlobalPosition;
   }
 
-  public T Get<T>() where T : Component
+  public T Get<T>() where T : GameObject
   {
-    Component? component = Components.FirstOrDefault(c => c is T) ?? throw new InvalidOperationException($"Component of type {typeof(T).Name} not found on GameObject.");
-    return (T)component;
+    var child = Children.OfType<T>().FirstOrDefault() ?? throw new InvalidOperationException($"GameObject of type {typeof(T).Name} not found as child.");
+    return child;
   }
 
-  public bool Has<T>() where T : Component
+  public bool Has<T>() where T : GameObject
   {
-    return Components.Any(c => c is T);
+    return Children.OfType<T>().Any();
   }
 
-  public bool TryGet<T>(out T? component) where T : Component
+  public bool TryGet<T>(out T? gameObject) where T : GameObject
   {
-    Component? foundComponent = Components.FirstOrDefault(c => c is T);
-    if (foundComponent != null)
+    var child = Children.OfType<T>().FirstOrDefault();
+    if (child != null)
     {
-      component = (T)foundComponent;
+      gameObject = child;
       return true;
     }
-    component = default;
+    gameObject = default;
     return false;
   }
 
-
-  public void Add<T>(T component) where T : Component
+  public void Emit<T>(T evt) where T : GameEvent
   {
-    component.Attach(this);
-    Components.Add(component);
+    // Emit on this GameObject
+    EmitLocal(evt);
+
+    // Also emit on parent and siblings for component-like behavior
+    if (Parent != null)
+    {
+      Parent.EmitLocal(evt);
+      foreach (var sibling in Parent.Children.ToArray())
+      {
+        if (sibling != this)
+        {
+          sibling.EmitLocal(evt);
+        }
+      }
+    }
   }
 
-  public void Emit<T>(T evt) where T : GameEvent
+  private void EmitLocal<T>(T evt) where T : GameEvent
   {
     if (!listeners.TryGetValue(typeof(T), out var delegates)) return;
 
@@ -252,19 +252,23 @@ public class GameObject : IReadOnlyGameObject
   }
 
 
-  public void Handle(GameAction action)
+  public virtual void Handle(GameAction action)
   {
-    foreach (var component in Components.ToList())
+    // Handle the action on this GameObject first
+    TryHandle(this, action);
+
+    // Then forward to children that can handle it
+    foreach (var child in Children.ToList())
     {
-      TryHandle(component, action);
+      TryHandle(child, action);
     }
   }
 
-  private static void TryHandle(Component component, GameAction action)
+  private static void TryHandle(GameObject gameObject, GameAction action)
   {
     var actionType = action.GetType();
 
-    var handlerInterfaces = component.GetType()
+    var handlerInterfaces = gameObject.GetType()
       .GetInterfaces()
       .Where(i =>
         i.IsGenericType &&
@@ -274,7 +278,7 @@ public class GameObject : IReadOnlyGameObject
 
     foreach (var handler in handlerInterfaces)
     {
-      handler.GetMethod("Handle")!.Invoke(component, [action]);
+      handler.GetMethod("Handle")!.Invoke(gameObject, [action]);
     }
   }
 }

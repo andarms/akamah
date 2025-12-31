@@ -19,12 +19,12 @@ public class Tree : GameObject
       Offset = new Vector2(0, 8),
       Solid = true
     };
-    Add(new Wooden());
-    Add(new Health(30));
-    Add(new RemoveOnDeath());
-    Add(new ShowDamageOnHit());
-    Add(new DropLootOnDeath(Loot()));
-    Add(
+    AddChild(new Wooden());
+    AddChild(new Health(30));
+    AddChild(new RemoveOnDeath());
+    AddChild(new ShowDamageOnHit());
+    AddChild(new DropLootOnDeath(Loot()));
+    AddChild(
       new Sprite()
       {
         TexturePath = "TinyTown",

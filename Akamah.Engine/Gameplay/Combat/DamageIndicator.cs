@@ -24,7 +24,7 @@ public class DamageIndicator(Vector2 position, int damage) : GameObject
       Color = Color.Red,
       FontSize = 14
     };
-    Add(textComponent);
+    AddChild(textComponent);
   }
 
   public override void Update(float deltaTime)

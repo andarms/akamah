@@ -1,12 +1,13 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Gameplay.Combat;
+using Akamah.Engine.Gameplay.Equipment;
 
 namespace Akamah.Engine.World.Materials;
 
-public class Stone : Component, IHandle<Mine>
+public class Stone : GameObject, IHandle<Mine>
 {
   public void Handle(Mine action)
   {
-    Owner.Handle(new Damage(action.Damage));
+    Parent?.Handle(new Damage(action.Damage));
   }
 }

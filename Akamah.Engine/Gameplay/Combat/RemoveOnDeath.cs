@@ -2,11 +2,15 @@ using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
-public class RemoveOnDeath() : Component
+public class RemoveOnDeath() : GameObject
 {
   public override void Initialize()
   {
     base.Initialize();
-    Owner.When<HealthDepleted>(_ => Owner.Terminate());
+    When<HealthDepleted>(_ =>
+    {
+      Console.WriteLine($"Removing {this} on death.");
+      Terminate();
+    });
   }
 }

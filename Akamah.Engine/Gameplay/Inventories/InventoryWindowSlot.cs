@@ -5,7 +5,7 @@ using Akamah.Engine.UserInterface;
 namespace Akamah.Engine.Gameplay.Inventories;
 
 
-public class InventoryWindowSlotComponent(InventorySlot slot) : Component
+public class InventoryWindowSlotComponent(InventorySlot slot) : GameObject
 {
   const int SLOT_SIZE = 48;
   readonly InventorySlot slot = slot;
@@ -15,7 +15,7 @@ public class InventoryWindowSlotComponent(InventorySlot slot) : Component
   {
     base.Update(deltaTime);
     Vector2 cursor = GetMousePosition();
-    Rectangle slotRect = new(Owner.Position.X, Owner.Position.Y, SLOT_SIZE, SLOT_SIZE);
+    Rectangle slotRect = new(Position.X, Position.Y, SLOT_SIZE, SLOT_SIZE);
     if (CheckCollisionPointRec(cursor, slotRect))
     {
       highlight = true;
@@ -30,7 +30,7 @@ public class InventoryWindowSlotComponent(InventorySlot slot) : Component
   {
     base.Draw();
 
-    Rectangle slotRect = new(Owner.Position.X, Owner.Position.Y, SLOT_SIZE, SLOT_SIZE);
+    Rectangle slotRect = new(Position.X, Position.Y, SLOT_SIZE, SLOT_SIZE);
 
     // Draw slot background
     DrawRectangleRec(slotRect, Color.White);
@@ -126,6 +126,6 @@ public class InventoryWindowSlot : UIObject
 {
   public InventoryWindowSlot(InventorySlot slot)
   {
-    Add(new InventoryWindowSlotComponent(slot));
+    AddChild(new InventoryWindowSlotComponent(slot));
   }
 }
