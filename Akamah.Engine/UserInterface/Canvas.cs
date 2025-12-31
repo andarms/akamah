@@ -17,7 +17,7 @@ public static class Canvas
 {
   public static Vector2 Size { get; } = new(Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
 
-  public static Vector2 CalculatePosition(IReadOnlyGameObject obj, Anchor anchor, Vector2 offset)
+  public static Vector2 CalculatePosition(GameObject obj, Anchor anchor, Vector2 offset)
   {
     float x = 0;
     float y = 0;

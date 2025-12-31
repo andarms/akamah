@@ -1,22 +1,30 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Gameplay.Combat;
 
 namespace Akamah.Engine.Gameplay.Equipment;
+
+public enum ToolAction
+{
+  Chop,
+  Mine,
+  Dig,
+  None
+}
 
 public class Tool
 {
   public string Name { get; set; } = "Unnamed Tool";
   public Material Material { get; set; } = Material.None;
+  public ToolAction Action { get; set; } = ToolAction.None;
   public float BasePower { get; set; } = 0;
   public Rectangle SourceSprite { get; set; } = new Rectangle(0, 0, 0, 0);
-
-  public GameAction Action { get; set; } = new GameAction();
-
   public override string ToString()
   {
     return Name;
   }
 }
+
+
+public record ToolDamage(Tool Tool, int DamageAmount) : GameAction;
 
 
 public static class ToolsFactory
@@ -32,7 +40,7 @@ public static class ToolsFactory
       Material = material,
       BasePower = 8,
       SourceSprite = new Rectangle(176, 128, 16, 16),
-      Action = new Slash(Damage: 10)
+      Action = ToolAction.None
     };
   }
 
@@ -46,7 +54,7 @@ public static class ToolsFactory
       Material = material,
       BasePower = 15,
       SourceSprite = new Rectangle(176, 144, 16, 16),
-      Action = new Chop(Damage: 15)
+      Action = ToolAction.Chop
     };
   }
 
@@ -59,7 +67,7 @@ public static class ToolsFactory
       Material = material,
       BasePower = 12,
       SourceSprite = new Rectangle(192, 144, 16, 16),
-      Action = new Mine(Damage: 12)
+      Action = ToolAction.Mine
     };
   }
 
@@ -72,7 +80,7 @@ public static class ToolsFactory
       Material = material,
       BasePower = 10,
       SourceSprite = new Rectangle(192, 128, 16, 16),
-      Action = new Dig(Damage: 10)
+      Action = ToolAction.Dig
     };
   }
 }

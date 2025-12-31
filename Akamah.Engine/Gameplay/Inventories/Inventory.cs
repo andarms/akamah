@@ -4,7 +4,7 @@ namespace Akamah.Engine.Gameplay.Inventories;
 
 public record AddToInventory(Item Item, int Quantity) : GameAction;
 
-public class Inventory : GameObject, IHandle<AddToInventory>
+public class Inventory : GameObject
 {
   public List<InventorySlot> Items { get; private set; } = [];
 
@@ -14,6 +14,8 @@ public class Inventory : GameObject, IHandle<AddToInventory>
     {
       Items.Add(new InventorySlot());
     }
+
+    Handle<AddToInventory>(action => AddItem(action.Item, action.Quantity));
   }
 
   public bool AddItem(Item item, int quantity)
@@ -27,10 +29,5 @@ public class Inventory : GameObject, IHandle<AddToInventory>
       }
     }
     return false; // Inventory full or no suitable slot found
-  }
-
-  public void Handle(AddToInventory action)
-  {
-    AddItem(action.Item, action.Quantity);
   }
 }

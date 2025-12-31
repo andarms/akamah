@@ -4,10 +4,10 @@ using Akamah.Engine.Gameplay.Equipment;
 
 namespace Akamah.Engine.World.Materials;
 
-public class Stone : GameObject, IHandle<Mine>
+public class Stone : GameObject
 {
-  public void Handle(Mine action)
+  public Stone()
   {
-    Parent?.Handle(new Damage(action.Damage));
+    Handle<Mine>(action => Parent?.Dispatch(new Damage(action.Damage)));
   }
 }

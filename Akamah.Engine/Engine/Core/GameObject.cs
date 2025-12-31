@@ -1,3 +1,4 @@
+using System.Reflection;
 using Akamah.Engine.Core.Engine;
 using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Systems.Collision;
@@ -8,31 +9,7 @@ namespace Akamah.Engine.Engine.Core;
 public record GameEvent();
 public record GameAction();
 
-public interface IReadOnlyGameObject
-{
-  Vector2 Position { get; }
-  Vector2 Anchor { get; }
-  Vector2 GlobalPosition { get; }
-  GameObject? Parent { get; }
-  IReadOnlyList<GameObject> Children { get; }
-  Collider? Collider { get; }
-  bool Visible { get; }
-  bool FlipX { get; }
-
-  Rectangle GetBounds();
-
-  T Get<T>() where T : GameObject;
-  bool Has<T>() where T : GameObject;
-  bool TryGet<T>(out T? gameObject) where T : GameObject;
-  void Handle(GameAction action);
-  void Emit<T>(T evt) where T : GameEvent;
-  void When<T>(Action<T> callback) where T : GameEvent;
-  void Terminate();
-  Vector2 LocalToGlobal(Vector2 localPosition);
-  Vector2 GlobalToLocal(Vector2 globalPosition);
-}
-
-public class GameObject : IReadOnlyGameObject
+public class GameObject
 {
   public Vector2 Position { get; set; } = Vector2.Zero;
   public Collider? Collider { get; set; }
@@ -43,7 +20,6 @@ public class GameObject : IReadOnlyGameObject
   // Parent-Child relationship
   public GameObject? Parent { get; private set; }
   public List<GameObject> Children { get; } = [];
-  IReadOnlyList<GameObject> IReadOnlyGameObject.Children => Children;
 
   // Global position calculated from parent hierarchy
   public Vector2 GlobalPosition => Parent != null ? Parent.GlobalPosition + Position : Position;
@@ -53,8 +29,15 @@ public class GameObject : IReadOnlyGameObject
   public Vector2 RenderPosition => GlobalPosition - Anchor;
 
   private readonly Dictionary<Type, List<Delegate>> listeners = [];
+
+
+  private readonly Dictionary<Type, List<Delegate>> handlers = [];
+
   private bool terminated = false;
   public bool Initialized { get; private set; } = false;
+
+
+  public GameObject Root => GetRoot();
 
   public virtual void Initialize()
   {
@@ -288,34 +271,23 @@ public class GameObject : IReadOnlyGameObject
     handlers.Add(callback);
   }
 
-
-  public virtual void Handle(GameAction action)
+  protected void Handle<T>(Action<T> handler) where T : GameAction
   {
-    // Handle the action on this GameObject first
-    TryHandle(this, action);
-
-    // Then forward to children that can handle it
-    foreach (var child in Children.ToList())
+    var type = typeof(T);
+    if (!Root.handlers.TryGetValue(type, out var list))
     {
-      TryHandle(child, action);
+      Root.handlers[type] = list = [];
     }
+    list.Add(handler);
   }
 
-  private static void TryHandle(GameObject gameObject, GameAction action)
+  public void Dispatch<T>(T action) where T : GameAction
   {
-    var actionType = action.GetType();
-
-    var handlerInterfaces = gameObject.GetType()
-      .GetInterfaces()
-      .Where(i =>
-        i.IsGenericType &&
-        i.GetGenericTypeDefinition() == typeof(IHandle<>) &&
-        i.GenericTypeArguments[0].IsAssignableFrom(actionType)
-      );
-
-    foreach (var handler in handlerInterfaces)
+    var type = typeof(T);
+    if (!Root.handlers.TryGetValue(type, out var delegates)) return;
+    foreach (var del in delegates)
     {
-      handler.GetMethod("Handle")!.Invoke(gameObject, [action]);
+      ((Action<T>)del)(action);
     }
   }
 }

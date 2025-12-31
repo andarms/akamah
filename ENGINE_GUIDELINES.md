@@ -33,7 +33,7 @@ All code changes should follow the rules below.
 ### Components:
 
 - Own behavior and reactions
-- Handle `GameAction`s via `IHandle<T>`
+- Handle `GameAction`s via event-style `Handle<T>()` methods in constructor
 - Emit `GameEvent`s when state changes
 - May observe `GameEvent`s for secondary effects
 

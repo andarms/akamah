@@ -2,10 +2,12 @@ using Akamah.Engine.Engine.Core;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
-public record HealthChanged(IReadOnlyGameObject GameObject, int Before, int After, int Amount) : GameEvent;
-public record HealthDepleted(IReadOnlyGameObject GameObject) : GameEvent;
+public record HealthChanged(GameObject GameObject, int Before, int After, int Amount) : GameEvent;
+public record HealthDepleted(GameObject GameObject) : GameEvent;
 
-public class Health(int max) : GameObject, IHandle<Damage>
+public record DamageTaken(int Amount) : GameEvent;
+
+public class Health(int max) : GameObject
 {
   public int Current { get; set; } = max;
   public int Max { get; } = max;
@@ -14,6 +16,7 @@ public class Health(int max) : GameObject, IHandle<Damage>
   public override void Initialize()
   {
     base.Initialize();
+    When<DamageTaken>(action => Hurt(action.Amount));
   }
 
   public void Hurt(int amount)
@@ -22,8 +25,12 @@ public class Health(int max) : GameObject, IHandle<Damage>
 
     int before = Current;
     Current = Math.Max(0, Current - amount);
+
+    // Emit the DamageTaken event for other components to react
+    Emit(new DamageTaken(amount));
     Emit(new HealthChanged(this, before, Current, before - Current));
     Console.WriteLine($"Health Hurt: {before} -> {Current}");
+
     if (Current == 0)
     {
       Emit(new HealthDepleted(this));
@@ -37,11 +44,6 @@ public class Health(int max) : GameObject, IHandle<Damage>
     int before = Current;
     Current = Math.Min(Max, Current + amount);
     Emit(new HealthChanged(this, before, Current, Current - before));
-  }
-
-  public void Handle(Damage action)
-  {
-    Hurt(action.Amount);
   }
 }
 

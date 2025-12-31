@@ -1,5 +1,3 @@
-using Akamah.Engine.Assets;
-using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Gameplay.Equipment;
@@ -28,7 +26,6 @@ public class Player : GameObject
     Add(new Inventory(20));
     Add(new Sprite { TexturePath = "TinyDungeon", SourceRect = new Rectangle(16, 112, 16, 16) });
     Add(weapon);
-
   }
 
   public override void Initialize()

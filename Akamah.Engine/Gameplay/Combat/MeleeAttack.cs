@@ -1,4 +1,5 @@
 using Akamah.Engine.Engine.Core;
+using Akamah.Engine.Gameplay.Equipment;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World;
 using Akamah.Engine.World.Actors.Player;
@@ -30,9 +31,9 @@ public class MeleeAttack : GameObject
     foreach (var other in collisions)
     {
       if (other is Player || ImpactList.Contains(other)) continue;
-
       ImpactList.Add(other);
-      other.Handle(Game.Player.Tool.Action);
+
+      other.Dispatch(new ToolDamage(Game.Player.Tool, 10));
     }
   }
 }

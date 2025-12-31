@@ -4,21 +4,31 @@ using Akamah.Engine.Gameplay.Equipment;
 
 namespace Akamah.Engine.World.Materials;
 
-public class Wooden() : GameObject, IHandle<Chop>, IHandle<Slash>, IHandle<Mine>
+public class Wooden : GameObject
 {
-  public void Handle(Chop action)
+
+  public override void Initialize()
   {
-    Parent?.Handle(new Damage(action.Damage));
+    base.Initialize();
+    Handle<ToolDamage>(Use);
   }
 
-  public void Handle(Slash action)
+  void Use(ToolDamage action)
   {
-    Parent?.Handle(new Damage(action.Damage / 3));
+    int damage = (int)CalculateDamage(action);
+    Emit(new DamageTaken(damage));
   }
 
-  public void Handle(Mine action)
+
+  public float CalculateDamage(ToolDamage action)
   {
-    Parent?.Handle(new Damage(action.Damage / 2));
+    return action.Tool switch
+    {
+      Tool tool when tool.Action == ToolAction.Chop => tool.BasePower * 1.5f,
+      Tool tool when tool.Action == ToolAction.Mine => tool.BasePower * 0.5f,
+      Tool tool when tool.Action == ToolAction.Dig => tool.BasePower * 0.2f,
+      _ => 5,// Example fixed damage value
+    };
   }
 }
 

@@ -29,7 +29,7 @@ public class Collectable : GameObject
     {
       if (other.Has<Inventory>())
       {
-        other.Handle(new AddToInventory(Item, 1));
+        other.Dispatch(new AddToInventory(Item, 1));
         Game.Remove(this);
         break;
       }
