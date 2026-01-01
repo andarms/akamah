@@ -1,6 +1,7 @@
+using Akamah.Engine.Assets;
 using Akamah.Engine.Engine.Core;
 
-namespace Akamah.Engine.Gameplay.UI;
+namespace Akamah.Engine.UserInterface;
 
 public class Text(string content) : GameObject
 {
@@ -11,6 +12,6 @@ public class Text(string content) : GameObject
   public override void Draw()
   {
     base.Draw();
-    DrawTextEx(GetFontDefault(), Content, Position, FontSize, 1.0f, Color);
+    DrawTextEx(AssetsManager.DefaultFont, Content, GlobalPosition, FontSize, 1.0f, Color);
   }
 }

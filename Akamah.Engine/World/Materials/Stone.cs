@@ -6,8 +6,15 @@ namespace Akamah.Engine.World.Materials;
 
 public class Stone : GameObject
 {
-  public Stone()
+  public override void Initialize()
   {
-    Handle<Mine>(action => Parent?.Dispatch(new Damage(action.Damage)));
+    base.Initialize();
+    Handle<ToolDamage>(Use);
+  }
+
+  bool Use(ToolDamage action)
+  {
+    Emit(new DamageTaken(10)); // Example fixed damage value
+    return true;
   }
 }

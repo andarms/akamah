@@ -33,7 +33,7 @@ public class MeleeAttack : GameObject
       if (other is Player || ImpactList.Contains(other)) continue;
       ImpactList.Add(other);
 
-      other.Dispatch(new ToolDamage(Game.Player.Tool, 10));
+      other.Trigger(new ToolDamage(Game.Player.Tool, 10));
     }
   }
 }

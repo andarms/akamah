@@ -1,29 +1,36 @@
 using Akamah.Engine.Engine.Core;
-using Akamah.Engine.Gameplay.UI;
+using Akamah.Engine.UserInterface;
 using Akamah.Engine.World;
 
 namespace Akamah.Engine.Gameplay.Combat;
 
-public class DamageIndicator(Vector2 position, int damage) : GameObject
+public class DamageIndicator : GameObject
 {
-  const float Lifetime = 0.5f;
+  const float LIFETIME = 0.5f;
   const float RiseDistance = 20.0f;
 
-  float lifetime = Lifetime;
-  readonly Vector2 startPosition = position;
-  readonly int damageAmount = damage;
-  readonly Text text = new(damage.ToString())
+  float lifetime = LIFETIME;
+  readonly Vector2 startPosition;
+  readonly Text text;
+
+  public DamageIndicator(Vector2 position, int damage) : base()
   {
-    Color = Color.Red,
-    FontSize = 14
-  };
+    startPosition = position;
+    text = new(damage.ToString())
+    {
+      Color = Color.White,
+      FontSize = 16
+    };
+    Add(text);
+  }
 
   public override void Initialize()
   {
     base.Initialize();
     Position = startPosition;
-    Anchor = new(0.5f, 0.5f);
-    Add(text);
+    Anchor = Vector2.Zero;
+    text.Position = Vector2.Zero;
+    text.Anchor = Vector2.Zero;
   }
 
   public override void Update(float deltaTime)
@@ -37,14 +44,12 @@ public class DamageIndicator(Vector2 position, int damage) : GameObject
       return;
     }
 
-    // Move the indicator upwards over its lifetime
-    float progress = 1 - (lifetime / Lifetime);
-    Position = startPosition - new Vector2(0, RiseDistance * progress);
 
-    if (text != null)
-    {
-      float alpha = MathF.Max(0, 1 - progress);
-      text.Color = new Color(text.Color.R, text.Color.G, text.Color.B, alpha);
-    }
+    float progress = 1 - (lifetime / LIFETIME);
+    Vector2 newPosition = startPosition - new Vector2(0, RiseDistance * progress);
+    Position = newPosition;
+
+    float alpha = lifetime / LIFETIME;
+    text.Color = new Color(text.Color.R, text.Color.G, text.Color.B, (byte)(alpha * 255));
   }
 }

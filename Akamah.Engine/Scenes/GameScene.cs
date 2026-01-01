@@ -78,11 +78,13 @@ public class GameScene : Scene
 
   protected override void UpdateWorld(float deltaTime)
   {
+    base.UpdateWorld(deltaTime);
     UpdateVisibleObjects(deltaTime);
   }
 
   protected override void DrawWorld()
   {
+    base.DrawWorld(); // Call base to draw all objects including DamageIndicators
     DrawVisibleObjects();
   }
 

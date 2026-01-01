@@ -21,7 +21,6 @@ public class Tree : GameObject
     };
     Add(new Wooden());
     Add(new Health(30));
-    Add(new RemoveOnDeath());
     Add(new ShowDamageOnHit());
     Add(new DropLootOnDeath(Loot()));
     Add(
@@ -31,6 +30,7 @@ public class Tree : GameObject
         SourceRect = new Rectangle(64, 32, 16, 16)
       }
     );
+    Add(new RemoveOnDeath());
   }
 
   public static LootTable Loot()

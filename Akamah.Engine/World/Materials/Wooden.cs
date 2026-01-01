@@ -13,10 +13,11 @@ public class Wooden : GameObject
     Handle<ToolDamage>(Use);
   }
 
-  void Use(ToolDamage action)
+  bool Use(ToolDamage action)
   {
     int damage = (int)CalculateDamage(action);
     Emit(new DamageTaken(damage));
+    return true;
   }
 
 

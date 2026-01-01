@@ -36,12 +36,14 @@ public static class Game
   {
     scenes.Add(obj);
     CollisionsManager.Add(obj);
+    SpatialSystem.Add(obj);
   }
 
   public static void Remove(GameObject obj)
   {
     scenes.Remove(obj);
     CollisionsManager.Remove(obj);
+    SpatialSystem.Remove(obj);
   }
 
 

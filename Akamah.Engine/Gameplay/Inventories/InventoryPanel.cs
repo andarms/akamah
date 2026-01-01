@@ -57,7 +57,7 @@ public class InventoryPanel : GameObject
     // Clear existing slot objects
     foreach (var slotObj in slotObjects)
     {
-      RemoveChild(slotObj);
+      Remove(slotObj);
     }
     slotObjects.Clear();
 

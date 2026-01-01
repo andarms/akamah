@@ -12,7 +12,7 @@ public class ShowDamageOnHit : GameObject
 
   private void OnDamageTaken(HealthChanged evt)
   {
-    var damageIndicator = new DamageIndicator(Position, evt.Amount);
+    var damageIndicator = new DamageIndicator(GlobalPosition, evt.Amount);
     Game.Add(damageIndicator);
   }
 }

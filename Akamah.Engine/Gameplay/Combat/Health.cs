@@ -3,7 +3,7 @@ using Akamah.Engine.Engine.Core;
 namespace Akamah.Engine.Gameplay.Combat;
 
 public record HealthChanged(GameObject GameObject, int Before, int After, int Amount) : GameEvent;
-public record HealthDepleted(GameObject GameObject) : GameEvent;
+public record HealthDepleted() : GameEvent;
 
 public record DamageTaken(int Amount) : GameEvent;
 
@@ -26,14 +26,13 @@ public class Health(int max) : GameObject
     int before = Current;
     Current = Math.Max(0, Current - amount);
 
-    // Emit the DamageTaken event for other components to react
-    Emit(new DamageTaken(amount));
     Emit(new HealthChanged(this, before, Current, before - Current));
     Console.WriteLine($"Health Hurt: {before} -> {Current}");
 
     if (Current == 0)
     {
-      Emit(new HealthDepleted(this));
+      Emit(new HealthDepleted());
+      Console.WriteLine("Health Depleted!");
     }
   }
 

@@ -28,17 +28,13 @@ public class GameObject
 
   public Vector2 RenderPosition => GlobalPosition - Anchor;
 
-  private readonly Dictionary<Type, List<Delegate>> listeners = [];
-
-
-  private readonly Dictionary<Type, List<Delegate>> handlers = [];
+  private readonly Dictionary<Type, List<Delegate>> eventListeners = [];
+  private readonly Dictionary<Type, List<Delegate>> actionHandlers = [];
 
   private bool terminated = false;
   public bool Initialized { get; private set; } = false;
 
-
-  public GameObject Root => GetRoot();
-
+  #region  Lifecycle Methods
   public virtual void Initialize()
   {
     // Initialize all children
@@ -98,10 +94,10 @@ public class GameObject
     Children.Clear();
 
     // Remove from parent
-    Parent?.RemoveChild(this);
+    Parent?.Remove(this);
 
     // Clear local listeners and try to clean up root listeners
-    listeners.Clear();
+    eventListeners.Clear();
 
     // Remove from game
     Game.Remove(this);
@@ -132,6 +128,7 @@ public class GameObject
     return Game.Viewport.IsRectInView(GlobalPosition, size);
   }
 
+  #endregion
 
   public virtual Rectangle GetBounds()
   {
@@ -139,23 +136,25 @@ public class GameObject
     return Collider.GetBounds(GlobalPosition, Anchor);
   }
 
+
+  #region Hierarchy Methods
+
   public void Add(GameObject child)
   {
     if (child == null) return;
     if (child == this) throw new InvalidOperationException("Cannot add self as child");
 
     // Remove from current parent if it has one
-    child.Parent?.RemoveChild(child);
+    child.Parent?.Remove(child);
 
     // Convert child's global position to local position relative to this parent
     var childGlobalPos = child.GlobalPosition;
     child.Parent = this;
-    child.Position = childGlobalPos - this.GlobalPosition;
-
+    child.Position = childGlobalPos - GlobalPosition;
     Children.Add(child);
   }
 
-  public void RemoveChild(GameObject child)
+  public void Remove(GameObject child)
   {
     if (child == null || !Children.Contains(child)) return;
 
@@ -175,16 +174,6 @@ public class GameObject
       current = current.Parent;
     }
     return current;
-  }
-
-  public Vector2 LocalToGlobal(Vector2 localPosition)
-  {
-    return GlobalPosition + localPosition;
-  }
-
-  public Vector2 GlobalToLocal(Vector2 globalPosition)
-  {
-    return globalPosition - GlobalPosition;
   }
 
   public T Get<T>() where T : GameObject
@@ -209,85 +198,89 @@ public class GameObject
     gameObject = default;
     return false;
   }
+  #endregion
+
+
+  #region Event System
+
+  public void When<T>(Action<T> listener) where T : GameEvent
+  {
+    var type = typeof(T);
+    if (!eventListeners.TryGetValue(type, out List<Delegate>? eventHandlers))
+    {
+      eventHandlers = [];
+      eventListeners[type] = eventHandlers;
+    }
+
+    eventHandlers.Add(listener);
+  }
 
   public void Emit<T>(T evt) where T : GameEvent
   {
-    // Always emit events at the root parent level so all descendants can listen
-    var root = GetRoot();
-    root.EmitToHierarchy(evt);
-  }
-
-  private void EmitLocal<T>(T evt) where T : GameEvent
-  {
-    if (!listeners.TryGetValue(typeof(T), out var delegates)) return;
-
-    foreach (var del in delegates)
-    {
-      ((Action<T>)del)(evt);
-    }
-  }
-
-  private void EmitToHierarchy<T>(T evt) where T : GameEvent
-  {
-    // Don't emit if this object is terminated
     if (terminated) return;
 
-    // Emit to self first
-    EmitLocal(evt);
+    Parent?.ReceiveEvent(evt, source: this);
+  }
 
-    // Then emit to all non-terminated children recursively
+  private void ReceiveEvent<T>(T evt, GameObject source) where T : GameEvent
+  {
+    if (terminated) return;
+
+    // Fan out to children (siblings)
     foreach (var child in Children.ToList())
     {
-      if (!child.terminated)
-      {
-        child.EmitToHierarchy(evt);
-      }
+      if (!child.terminated) child.Notify(evt);
     }
   }
 
-  public void When<T>(Action<T> callback) where T : GameEvent
+  private void Notify<T>(T evt) where T : GameEvent
   {
-    if (terminated)
-      return;
+    if (!eventListeners.TryGetValue(typeof(T), out var eventHandlers)) { return; }
 
-    // Always subscribe at the root level so all hierarchy events can be received
-    var root = GetRoot();
-    root.WhenLocal(callback);
+    foreach (var del in eventHandlers) { ((Action<T>)del)(evt); }
   }
 
-  private void WhenLocal<T>(Action<T> callback) where T : GameEvent
+
+
+  public void Handle<T>(Func<T, bool> handler) where T : GameAction
   {
-    if (terminated)
-      return;
-
     var type = typeof(T);
-
-    if (!listeners.TryGetValue(type, out var handlers))
+    if (!actionHandlers.TryGetValue(type, out List<Delegate>? handlers))
     {
       handlers = [];
-      listeners[type] = handlers;
+      actionHandlers[type] = handlers;
     }
 
-    handlers.Add(callback);
+    handlers.Add(handler);
   }
 
-  protected void Handle<T>(Action<T> handler) where T : GameAction
+  public void Trigger<T>(T gameAction) where T : GameAction
   {
-    var type = typeof(T);
-    if (!Root.handlers.TryGetValue(type, out var list))
+    if (terminated) return;
+
+    // First, try to handle locally
+    if (actionHandlers.TryGetValue(typeof(T), out var handlers))
     {
-      Root.handlers[type] = list = [];
+      foreach (var del in handlers)
+      {
+        var handled = ((Func<T, bool>)del)(gameAction);
+        if (handled) return; // Stop if handled
+      }
     }
-    list.Add(handler);
+
+    // If not handled, propagate
+    ReceiveAction(gameAction);
   }
 
-  public void Dispatch<T>(T action) where T : GameAction
+  private void ReceiveAction<T>(T gameAction) where T : GameAction
   {
-    var type = typeof(T);
-    if (!Root.handlers.TryGetValue(type, out var delegates)) return;
-    foreach (var del in delegates)
+    // Fan out to children
+    foreach (var child in Children.ToList())
     {
-      ((Action<T>)del)(action);
+      if (!child.terminated) child.Trigger(gameAction);
     }
   }
+
+
+  #endregion
 }

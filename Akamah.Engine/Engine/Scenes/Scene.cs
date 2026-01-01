@@ -16,10 +16,18 @@ public abstract class Scene : IDisposable
   protected readonly List<GameObject> pendingObjects = [];
   protected readonly List<GameObject> removeObjects = [];
   protected readonly List<GameObject> ui = [];
+  private int frameCount = 0;
 
   public void Add(GameObject obj)
   {
-    pendingObjects.Add(obj);
+    if (IsInitialized)
+    {
+      pendingObjects.Add(obj);
+    }
+    else
+    {
+      objects.Add(obj);
+    }
   }
 
   public void Remove(GameObject obj)
@@ -27,10 +35,25 @@ public abstract class Scene : IDisposable
     removeObjects.Add(obj);
   }
 
+  public void AddUI(GameObject uiObj)
+  {
+    ui.Add(uiObj);
+    if (IsInitialized)
+    {
+      uiObj.Initialize();
+    }
+  }
+
+
+  public void RemoveUI(GameObject uiObj)
+  {
+    removeObjects.Add(uiObj);
+  }
+
   public virtual void Initialize()
   {
     IsInitialized = true;
-    foreach (var gameObject in objects)
+    foreach (var gameObject in objects.ToArray())
     {
       gameObject.Initialize();
     }
@@ -53,22 +76,28 @@ public abstract class Scene : IDisposable
 
   private void ProcessPendingObjects()
   {
-    if (pendingObjects.Count <= 0) return;
-    objects.AddRange(pendingObjects);
-    foreach (var obj in pendingObjects.ToArray())
+    // Process object additions
+    if (pendingObjects.Count > 0)
     {
-      obj.Initialize();
+      objects.AddRange(pendingObjects);
+      foreach (var obj in pendingObjects.ToArray())
+      {
+        obj.Initialize();
+      }
+      pendingObjects.Clear();
     }
-    pendingObjects.Clear();
 
-    if (removeObjects.Count <= 0) return;
-    foreach (var obj in removeObjects.ToArray())
+    // Process object removals
+    if (removeObjects.Count > 0)
     {
-      objects.Remove(obj);
-      ui.Remove(obj);
-      obj.Terminate();
+      foreach (var obj in removeObjects.ToArray())
+      {
+        objects.Remove(obj);
+        ui.Remove(obj);
+        obj.Terminate();
+      }
+      removeObjects.Clear();
     }
-    removeObjects.Clear();
   }
 
   protected virtual void UpdateUI(float deltaTime)
@@ -81,7 +110,8 @@ public abstract class Scene : IDisposable
 
   protected virtual void UpdateWorld(float deltaTime)
   {
-    foreach (var gameObject in objects)
+    frameCount++;
+    foreach (GameObject gameObject in objects.ToArray())
     {
       gameObject.Update(deltaTime);
     }
