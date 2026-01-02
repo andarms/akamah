@@ -5,14 +5,21 @@ using Akamah.Engine.World.Actors.Player;
 
 namespace Akamah.Engine.Gameplay.Inventories;
 
-public class InventorySlotUI(InventorySlot slot) : GameObject
+public class InventorySlotUI : GameObject
 {
   private const int SlotSize = 64;
   private const int TextPadding = 4;
   private const int TextSize = 12;
   private const int BorderThickness = 2;
 
-  private readonly InventorySlot _slot = slot;
+  private readonly InventorySlot slot;
+
+
+  public InventorySlotUI(InventorySlot slot) : base()
+  {
+    Collider = new() { Size = new Vector2(SlotSize, SlotSize) };
+    this.slot = slot;
+  }
 
   public override void Draw()
   {
@@ -26,10 +33,26 @@ public class InventorySlotUI(InventorySlot slot) : GameObject
     DrawRectangleLinesEx(slotRect, BorderThickness, Color.DarkGray);
 
     // Draw item name if slot is not empty
-    if (!_slot.IsEmpty() && _slot.Item != null)
+    if (!slot.IsEmpty() && slot.Item != null)
     {
-      var textPosition = GlobalPosition + new Vector2(TextPadding, TextPadding);
-      DrawTextEx(AssetsManager.DefaultFont, _slot.Item.Name, textPosition, TextSize, 1, Color.Black);
+      string texture = slot.Item.IconAssetPath;
+      if (AssetsManager.Textures.TryGetValue(texture, out var itemTexture))
+      {
+        Rectangle destination = new(
+          GlobalPosition.X,
+          GlobalPosition.Y,
+          slot.Item.IconSourceRect.Width * Setting.ZOOM_LEVEL,
+          slot.Item.IconSourceRect.Height * Setting.ZOOM_LEVEL
+        );
+        DrawTexturePro(
+          itemTexture,
+          slot.Item.IconSourceRect,
+          destination,
+          Vector2.Zero,
+          0.0f,
+          Color.White
+        );
+      }
     }
   }
 }

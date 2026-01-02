@@ -17,15 +17,11 @@ public class GameScene : Scene
   {
 
     base.Initialize();
-    objects.Add(Game.Map);
-    // objects.Add(Game.Player);
+    Game.Add(Game.Map);
+    Game.Add(Game.Player);
     Game.Player.Position = new Vector2(160, 160);
     Game.Map.GenerateRandomMap();
-    SpatialSystem.Add(Game.Player);
-    if (Game.Player.Collider != null)
-    {
-      CollisionsManager.Add(Game.Player);
-    }
+
 
     InputSystem.MapAction("move_left", KeyboardKey.Left, KeyboardKey.A);
     InputSystem.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
@@ -90,10 +86,6 @@ public class GameScene : Scene
 
   public void UpdateVisibleObjects(float deltaTime)
   {
-    // Always update the player
-    Game.Player.Update(deltaTime);
-    Game.Map.Update(deltaTime);
-
     CollisionsManager.Update(deltaTime);
 
 
@@ -137,16 +129,6 @@ public class GameScene : Scene
         {
           obj.Debug();
         }
-      }
-    }
-
-    // Always draw the player if not already in visible objects
-    if (!visibleObjects.Contains(Game.Player))
-    {
-      Game.Player.Draw();
-      if (Game.DebugMode)
-      {
-        Game.Player.Debug();
       }
     }
   }

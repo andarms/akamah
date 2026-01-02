@@ -12,6 +12,7 @@ namespace Akamah.Engine.Engine.Core;
 // Game is a façade. Do not add logic here.
 public static class Game
 {
+  const int ZoomLevel = 3;
   public static IScenesController Scenes => scenes;
   public static int Seed { get; } = new Random().Next();
   public static Player Player { get; } = new();

@@ -28,12 +28,13 @@ public class Collectable : GameObject
     foreach (var other in collision)
     {
       Console.WriteLine("Collided with " + other);
-      if (other.Has<Inventory>())
+      if (!other.TryGet<Inventory>(out var inventory))
       {
-        other.Trigger(new AddToInventory(Item, 1));
-        Game.Remove(this);
-        break;
+        continue;
       }
+      inventory.Trigger(new AddToInventory(Item, 1));
+      Game.Remove(this);
+      break;
     }
   }
 

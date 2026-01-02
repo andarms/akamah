@@ -24,17 +24,17 @@ public class Inventory : GameObject
   public override void Initialize()
   {
     base.Initialize();
-    Handle<AddToInventory>(action => AddItem(action.Item, action.Quantity));
+    Handle<AddToInventory>(AddItem);
   }
 
-  public bool AddItem(Item item, int quantity)
+
+  public bool AddItem(AddToInventory action)
   {
-    Console.WriteLine($"Adding {quantity} x {item.Name} to inventory.");
     foreach (var slot in Items)
     {
-      if (slot.CanAddItem(item))
+      if (slot.CanAddItem(action.Item))
       {
-        slot.AddItem(item, quantity);
+        slot.AddItem(action.Item, action.Quantity);
         return true;
       }
     }
