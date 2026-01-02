@@ -3,7 +3,9 @@ using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Engine.Physics.Spatial;
 using Akamah.Engine.Engine.Scenes;
+using Akamah.Engine.Gameplay.Equipment;
 using Akamah.Engine.Gameplay.Inventories;
+using Akamah.Engine.Gameplay.Inventories.Items;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.UserInterface;
 using Akamah.Engine.World;
@@ -22,6 +24,13 @@ public class GameScene : Scene
     Game.Player.Position = new Vector2(160, 160);
     Game.Map.GenerateRandomMap();
 
+    var item = new Collectable(new Stone())
+    {
+      Position = new Vector2(200, 200)
+    };
+    Game.Add(item);
+
+
 
     InputSystem.MapAction("move_left", KeyboardKey.Left, KeyboardKey.A);
     InputSystem.MapAction("move_right", KeyboardKey.Right, KeyboardKey.D);
@@ -36,7 +45,13 @@ public class GameScene : Scene
       [MouseButton.Left]
     );
 
-    // canvas.Add(new Toolbar(), Anchor.BottomCenter, new Vector2(0, -16));
+    Toolbar toolbar = new();
+    toolbar.Position = Canvas.CalculatePosition(
+      toolbar,
+      Anchor.BottomCenter,
+      new Vector2(0, -16)
+    );
+    ui.Add(toolbar);
   }
 
   public override void HandleInput()
@@ -53,13 +68,6 @@ public class GameScene : Scene
         }
       }
       Game.Map.GenerateRandomMap();
-      objects.Add(Game.Map);
-      SpatialSystem.Add(Game.Player);
-      objects.Add(Game.Player);
-      if (Game.Player.Collider != null)
-      {
-        CollisionsManager.Add(Game.Player);
-      }
     }
     if (IsKeyPressed(KeyboardKey.I))
     {

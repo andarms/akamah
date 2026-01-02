@@ -1,4 +1,3 @@
-using Akamah.Engine.Assets;
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.World.Environment.Minerals;
 
@@ -15,6 +14,7 @@ public class MountainTile : Tile
 
   public override void Initialize()
   {
+    if (Initialized) return;
     base.Initialize();
     Rock rock = new() { Position = Position };
     Game.Add(rock);

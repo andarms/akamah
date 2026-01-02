@@ -10,6 +10,7 @@ public class DropLootOnDeath(LootTable loot) : GameObject
 
   public override void Initialize()
   {
+    base.Initialize();
     When<HealthDepleted>(_ => DropLoot());
   }
 
