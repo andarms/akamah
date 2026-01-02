@@ -27,6 +27,7 @@ public class Collectable : GameObject
     var collision = CollisionsManager.GetPotentialCollisions(this);
     foreach (var other in collision)
     {
+      Console.WriteLine("Collided with " + other);
       if (other.Has<Inventory>())
       {
         other.Trigger(new AddToInventory(Item, 1));

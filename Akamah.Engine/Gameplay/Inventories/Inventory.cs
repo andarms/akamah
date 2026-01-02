@@ -8,18 +8,28 @@ public class Inventory : GameObject
 {
   public List<InventorySlot> Items { get; private set; } = [];
 
-  public Inventory(int size)
+  private Inventory(int size)
   {
     for (int i = 0; i < size; i++)
     {
       Items.Add(new InventorySlot());
     }
+  }
 
+  public static Inventory Small()
+  {
+    return new Inventory(24);
+  }
+
+  public override void Initialize()
+  {
+    base.Initialize();
     Handle<AddToInventory>(action => AddItem(action.Item, action.Quantity));
   }
 
   public bool AddItem(Item item, int quantity)
   {
+    Console.WriteLine($"Adding {quantity} x {item.Name} to inventory.");
     foreach (var slot in Items)
     {
       if (slot.CanAddItem(item))

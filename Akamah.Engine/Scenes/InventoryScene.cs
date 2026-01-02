@@ -8,26 +8,19 @@ namespace Akamah.Engine.Scenes;
 
 public class InventoryScene : Scene
 {
-  readonly InventoryPanel panel = new();
-
-
-  public override Color BackgroundColor => Fade(Color.Black, 0.5f);
-
-  public InventoryScene()
-  {
-  }
+  InventoryUI inventory = new();
 
   public override void OnEnter()
   {
     base.OnEnter();
-    panel.Position = Canvas.CalculatePosition(panel, Anchor.Center, Vector2.Zero);
-    ui.Add(panel);
+    inventory = new InventoryUI();
+    AddUI(inventory);
   }
 
   public override void OnExit()
   {
     base.OnExit();
-    ui.Remove(panel);
+    RemoveUI(inventory);
   }
 
   public override void HandleInput()

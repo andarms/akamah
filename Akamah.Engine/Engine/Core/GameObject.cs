@@ -62,21 +62,12 @@ public class GameObject
 
   public virtual void Draw()
   {
-    // Spatial system now handles visibility culling more efficiently
-    // Individual objects don't need to check visibility anymore
-    // The spatial manager filters objects before calling Draw()
-    Visible = true;
-
-    // Draw children and remove terminated ones
-    for (int i = Children.Count - 1; i >= 0; i--)
+    foreach (GameObject child in Children)
     {
-      var child = Children[i];
-      if (child.terminated)
+      if (child.Visible)
       {
-        Children.RemoveAt(i);
-        continue;
+        child.Draw();
       }
-      if (child.Visible) { child.Draw(); }
     }
   }
 
@@ -244,6 +235,8 @@ public class GameObject
 
   public void Handle<T>(Func<T, bool> handler) where T : GameAction
   {
+    if (!Initialized) throw new InvalidOperationException("Cannot register action handlers before initialization.");
+
     var type = typeof(T);
     if (!actionHandlers.TryGetValue(type, out List<Delegate>? handlers))
     {

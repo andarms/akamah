@@ -35,19 +35,17 @@ public abstract class Scene : IDisposable
     removeObjects.Add(obj);
   }
 
-  public void AddUI(GameObject uiObj)
+  public void AddUI(GameObject obj)
   {
-    ui.Add(uiObj);
-    if (IsInitialized)
-    {
-      uiObj.Initialize();
-    }
+    ui.Add(obj);
+    obj.Initialize();
   }
 
 
-  public void RemoveUI(GameObject uiObj)
+  public void RemoveUI(GameObject obj)
   {
-    removeObjects.Add(uiObj);
+    ui.Remove(obj);
+    obj.Terminate();
   }
 
   public virtual void Initialize()
@@ -61,7 +59,10 @@ public abstract class Scene : IDisposable
 
   public virtual void OnEnter() { }
 
-  public virtual void OnExit() { }
+  public virtual void OnExit()
+  {
+    IsInitialized = false;
+  }
 
   public virtual void OnPause() { }
 
@@ -143,6 +144,32 @@ public abstract class Scene : IDisposable
 
   public virtual void HandleInput()
   {
+    HandleWorldInput();
+    HandleUIInput();
+  }
+
+  protected virtual void HandleWorldInput()
+  {
+    foreach (var obj in objects.ToArray())
+    {
+      if (!ui.Contains(obj))
+      {
+        HandleObjectInput(obj);
+      }
+    }
+  }
+
+  protected virtual void HandleUIInput()
+  {
+    foreach (var uiObj in ui.ToArray())
+    {
+      HandleObjectInput(uiObj);
+    }
+  }
+
+  protected virtual void HandleObjectInput(GameObject obj)
+  {
+
   }
 
   public virtual void Dispose()

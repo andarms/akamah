@@ -11,6 +11,8 @@ public class Player : GameObject
 {
   const float Speed = 100.0f;
   readonly Weapon weapon = new();
+  public Inventory Inventory { get; } = Inventory.Small();
+
   Vector2 weaponOffset = new(4, -2);
 
   public Tool Tool { get; private set; } = ToolsFactory.CreateSword(Gameplay.Equipment.Material.Wood);
@@ -23,7 +25,7 @@ public class Player : GameObject
       Size = new Vector2(16, 8),
       Offset = new Vector2(0, 8)
     };
-    Add(new Inventory(20));
+    Add(Inventory);
     Add(new Sprite { TexturePath = "TinyDungeon", SourceRect = new Rectangle(16, 112, 16, 16) });
     Add(weapon);
   }
