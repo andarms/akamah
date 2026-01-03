@@ -5,7 +5,7 @@ namespace Akamah.Engine.Gameplay.Inventories;
 
 public class Backdrop() : GameObject
 {
-  Color color = Fade(Color.Black, 0.5f);
+  Color color = Fade(Color.DarkGray, 0.5f);
 
   public override void Draw()
   {

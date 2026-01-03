@@ -17,6 +17,11 @@ public class InventorySlotUI : GameObject
     this.slot = slot;
   }
 
+  public override void Update(float deltaTime)
+  {
+    HandleMouseClick();
+  }
+
   public override void Draw()
   {
     base.Draw();
@@ -25,8 +30,9 @@ public class InventorySlotUI : GameObject
     DrawRectangleV(GlobalPosition, new Vector2(SlotSize, SlotSize), Color.LightGray);
 
     // Draw slot border
+    Color color = IsMouseOver() ? Color.Yellow : Color.DarkGray;
     var slotRect = new Rectangle(GlobalPosition.X, GlobalPosition.Y, SlotSize, SlotSize);
-    DrawRectangleLinesEx(slotRect, BorderThickness, Color.DarkGray);
+    DrawRectangleLinesEx(slotRect, BorderThickness, color);
 
     // Draw item name if slot is not empty
     if (!slot.IsEmpty() && slot.Item != null)
@@ -61,6 +67,29 @@ public class InventorySlotUI : GameObject
           DrawTextEx(AssetsManager.DefaultFont, quantityText, textPosition, 16, 1, Color.White);
         }
       }
+    }
+  }
+
+
+  private bool IsMouseOver()
+  {
+    Vector2 mousePosition = GetMousePosition();
+    Rectangle slotRect = new(
+      GlobalPosition.X,
+      GlobalPosition.Y,
+      SlotSize,
+      SlotSize
+    );
+    return CheckCollisionPointRec(mousePosition, slotRect);
+  }
+
+  private void HandleMouseClick()
+  {
+    if (IsMouseOver() && IsMouseButtonPressed(MouseButton.Left))
+    {
+      GameAction? action = slot?.Item?.OnUse();
+      if (action is null) return;
+      Game.Player.Trigger(action);
     }
   }
 }
