@@ -103,7 +103,7 @@ public abstract class Scene : IDisposable
 
   protected virtual void UpdateUI(float deltaTime)
   {
-    foreach (var uiObject in ui)
+    foreach (var uiObject in ui.ToArray())
     {
       uiObject.Update(deltaTime);
     }

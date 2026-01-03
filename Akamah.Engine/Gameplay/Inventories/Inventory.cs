@@ -8,6 +8,8 @@ public class Inventory : GameObject
 {
   public List<InventorySlot> Items { get; private set; } = [];
 
+  public static int ToolbarSize => 6;
+
   private Inventory(int size)
   {
     for (int i = 0; i < size; i++)
@@ -39,5 +41,10 @@ public class Inventory : GameObject
       }
     }
     return false; // Inventory full or no suitable slot found
+  }
+
+  public IEnumerable<Item> ToolbarItems()
+  {
+    return Items.Take(6).Select(slot => slot.Item!);
   }
 }

@@ -40,6 +40,12 @@ public static class Game
     SpatialSystem.Add(obj);
   }
 
+
+  public static void AddUI(GameObject obj)
+  {
+    scenes.AddUI(obj);
+  }
+
   public static void Remove(GameObject obj)
   {
     scenes.Remove(obj);

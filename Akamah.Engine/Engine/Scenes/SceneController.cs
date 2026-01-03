@@ -147,6 +147,8 @@ public class ScenesController : IScenesController
 
   public void Add(GameObject obj) => currentScene?.Add(obj);
 
+  public void AddUI(GameObject obj) => currentScene?.AddUI(obj);
+
 
   public void Remove(GameObject obj) => currentScene?.Remove(obj);
 }

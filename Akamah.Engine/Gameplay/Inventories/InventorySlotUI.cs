@@ -10,6 +10,8 @@ public class InventorySlotUI : GameObject
 
   private readonly InventorySlot slot;
 
+  public bool IsToolbarSlot { get; set; } = false;
+
 
   public InventorySlotUI(InventorySlot slot) : base()
   {
@@ -27,10 +29,11 @@ public class InventorySlotUI : GameObject
     base.Draw();
 
     // Draw slot background
-    DrawRectangleV(GlobalPosition, new Vector2(SlotSize, SlotSize), Color.LightGray);
+    Color bgColor = IsToolbarSlot ? Color.SkyBlue : Color.Gray;
+    DrawRectangleV(GlobalPosition, new Vector2(SlotSize, SlotSize), bgColor);
 
     // Draw slot border
-    Color color = IsMouseOver() ? Color.Yellow : Color.DarkGray;
+    Color color = IsMouseOver() ? Color.White : Color.DarkGray;
     var slotRect = new Rectangle(GlobalPosition.X, GlobalPosition.Y, SlotSize, SlotSize);
     DrawRectangleLinesEx(slotRect, BorderThickness, color);
 
@@ -87,9 +90,31 @@ public class InventorySlotUI : GameObject
   {
     if (IsMouseOver() && IsMouseButtonPressed(MouseButton.Left))
     {
-      GameAction? action = slot?.Item?.OnUse();
-      if (action is null) return;
-      Game.Player.Trigger(action);
+      if (slot.IsEmpty()) return;
+      Game.AddUI(new FloatingInventorySlot(slot));
     }
+  }
+}
+
+
+
+public class FloatingInventorySlot : GameObject
+{
+  public InventorySlot Slot { get; }
+
+  public FloatingInventorySlot(InventorySlot slot)
+  {
+    Slot = slot;
+    Add(new UISprite()
+    {
+      TexturePath = slot.Item?.IconAssetPath ?? string.Empty,
+      SourceRect = slot.Item?.IconSourceRect ?? new Rectangle(0, 0, 0, 0),
+    });
+  }
+
+  public override void Update(float deltaTime)
+  {
+    base.Update(deltaTime);
+    Position = GetMousePosition();
   }
 }

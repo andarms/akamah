@@ -1,3 +1,5 @@
+using Akamah.Engine.Engine.Core;
+
 namespace Akamah.Engine.Gameplay.Inventories;
 
 public class InventorySlot()
@@ -26,3 +28,6 @@ public class InventorySlot()
     }
   }
 }
+
+
+

@@ -10,7 +10,7 @@ public class InventoryWindow : GameObject
   private const int SlotSize = 64;
   private const int SlotPadding = 4;
   private const int HeaderHeight = 48;
-  private const int Columns = 8;
+  private const int Columns = 6;
   private const int SlotTotalSize = SlotSize + SlotPadding;
   private const int WindowPadding = 8;
   private const int BorderThickness = 6;
@@ -73,13 +73,16 @@ public class InventoryWindow : GameObject
   {
     if (Inventory?.Items == null) return;
 
+    int count = 0;
     foreach (var slot in Inventory.Items)
     {
       var slotUI = new InventorySlotUI(slot)
       {
-        Position = CalculateSlotPosition(slot)
+        Position = CalculateSlotPosition(slot),
+        IsToolbarSlot = count < Inventory.ToolbarSize
       };
       Add(slotUI);
+      count++;
     }
   }
 
@@ -120,7 +123,7 @@ public class InventoryWindow : GameObject
     DrawRectangleRec(headerRect, Color.DarkGray);
 
 
-    const string title = "Player Inventory";
+    const string title = "Inventory";
     int titleWidth = MeasureText(title, TitleFontSize);
     int titleX = (int)(Position.X + (size.X - titleWidth) / 2);
     int titleY = (int)(Position.Y + (HeaderHeight - TitleFontSize) / 2);
