@@ -8,7 +8,7 @@ public class Stone : Item
   {
     Name = "Stone";
     Description = "A small piece of stone, useful for crafting and building.";
-    MaxStackSize = 50;
+    Stackable = true;
     IconAssetPath = "Desert";
     IconSourceRect = new Rectangle(192, 192, 16, 16);
     Category = ItemCategory.Material;

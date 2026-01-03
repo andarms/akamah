@@ -8,19 +8,26 @@ namespace Akamah.Engine.Scenes;
 
 public class InventoryScene : Scene
 {
-  InventoryUI inventory = new();
-
   public override void OnEnter()
   {
     base.OnEnter();
-    inventory = new InventoryUI();
-    AddUI(inventory);
+    // inventory = new InventoryUI();
+    // AddUI(inventory);
+    AddUI(Game.Inventory);
+    AddUI(Game.Toolbar);
+    Game.Toolbar.Position = Canvas.CalculatePosition(
+      Game.Toolbar,
+      Anchor.BottomCenter,
+      new Vector2(0, -16)
+    );
   }
 
   public override void OnExit()
   {
     base.OnExit();
-    RemoveUI(inventory);
+    // RemoveUI(inventory);
+    RemoveUI(Game.Inventory);
+    RemoveUI(Game.Toolbar);
   }
 
   public override void HandleInput()

@@ -45,13 +45,18 @@ public class GameScene : Scene
       [MouseButton.Left]
     );
 
-    Toolbar toolbar = new();
-    toolbar.Position = Canvas.CalculatePosition(
-      toolbar,
+    // Game.Inventory.Visible = false;
+    Game.Inventory.Initialize();
+    // AddUI(Game.Inventory);
+
+
+    Game.Toolbar.Position = Canvas.CalculatePosition(
+      Game.Toolbar,
       Anchor.BottomCenter,
       new Vector2(0, -16)
     );
-    ui.Add(toolbar);
+    ui.Add(Game.Toolbar);
+
   }
 
   public override void HandleInput()
@@ -72,6 +77,7 @@ public class GameScene : Scene
     if (IsKeyPressed(KeyboardKey.I))
     {
       Game.Scenes.Push<InventoryScene>();
+      // Game.Inventory.Visible = !Game.Inventory.Visible;
     }
 
     if (IsKeyPressed(KeyboardKey.F1))

@@ -15,17 +15,24 @@ public class Toolbar : GameObject
     {
       Size = new Vector2(width, 56),
     };
+    for (int i = 0; i < slotCount; i++)
+    {
+      var slot = new InventorySlot()
+      {
+        Index = i,
+        Position = new Vector2(
+          Position.X + padding + (slotSize + padding) * i,
+          Position.Y + padding
+        )
+      };
+      Add(slot);
+    }
   }
 
   public override void Draw()
   {
-    base.Draw();
     if (Collider == null) return;
-
     DrawRectangleV(Position, Collider.Size, Color.DarkGray);
-    for (int i = 0; i < slotCount; i++)
-    {
-      DrawRectangleV(Position + new Vector2(padding + i * padding + i * slotSize, 4), new Vector2(slotSize, slotSize), Color.LightGray);
-    }
+    base.Draw();
   }
 }

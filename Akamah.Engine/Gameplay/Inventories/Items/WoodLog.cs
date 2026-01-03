@@ -10,7 +10,7 @@ public class WoodLog : Item
   {
     Name = "Wood Log";
     Description = "A sturdy log of wood, useful for crafting and building.";
-    MaxStackSize = 20;
+    Stackable = true;
     IconAssetPath = "TinyTown";
     IconSourceRect = new Rectangle(160, 128, 16, 16);
     Category = ItemCategory.Material;

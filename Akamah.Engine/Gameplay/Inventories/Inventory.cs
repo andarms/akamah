@@ -6,16 +6,45 @@ public record AddToInventory(Item Item, int Quantity) : GameAction;
 
 public class Inventory : GameObject
 {
-  public List<InventorySlot> Items { get; private set; } = [];
+  public List<ItemStack> Items { get; private set; } = [];
+  public List<InventorySlot> ToolbarItems { get; private set; } = [];
 
   public static int ToolbarSize => 6;
 
+  private const int SlotSize = 64;
+  private const int SlotPadding = 4;
+  private const int HeaderHeight = 48;
+  private const int Columns = 6;
+  private const int SlotTotalSize = SlotSize + SlotPadding;
+  private const int WindowPadding = 8;
+  private const int BorderThickness = 6;
+
   private Inventory(int size)
   {
+    Add(new Backdrop());
     for (int i = 0; i < size; i++)
     {
-      Items.Add(new InventorySlot());
+      var slot = new InventorySlot
+      {
+        Index = i,
+        Position = CalculateSlotPosition(i)
+      };
+      Items.Add(new ItemStack(new EmptyItem(), 0));
+      Add(slot);
     }
+  }
+
+
+  private Vector2 CalculateSlotPosition(int index)
+  {
+    if (index == -1) return Vector2.Zero;
+
+    int column = index % Columns;
+    int row = index / Columns;
+
+    float x = Position.X + BorderThickness + WindowPadding + column * SlotTotalSize;
+    float y = Position.Y + BorderThickness + HeaderHeight + WindowPadding + row * SlotTotalSize;
+    return new Vector2(x, y);
   }
 
   public static Inventory Small()
@@ -32,19 +61,19 @@ public class Inventory : GameObject
 
   public bool AddItem(AddToInventory action)
   {
-    foreach (var slot in Items)
+    foreach (var stack in Items)
     {
-      if (slot.CanAddItem(action.Item))
+      if (stack.IsEmpty)
       {
-        slot.AddItem(action.Item, action.Quantity);
+        stack.Add(action.Item);
+        return true;
+      }
+      else if (stack.CanAdd(action.Item, action.Quantity))
+      {
+        stack.Add(action.Quantity);
         return true;
       }
     }
     return false; // Inventory full or no suitable slot found
-  }
-
-  public IEnumerable<Item> ToolbarItems()
-  {
-    return Items.Take(6).Select(slot => slot.Item!);
   }
 }

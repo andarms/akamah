@@ -45,7 +45,6 @@ public abstract class Scene : IDisposable
   public void RemoveUI(GameObject obj)
   {
     ui.Remove(obj);
-    obj.Terminate();
   }
 
   public virtual void Initialize()

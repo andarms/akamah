@@ -62,6 +62,7 @@ public class GameObject
 
   public virtual void Draw()
   {
+    if (!Visible) return;
     foreach (GameObject child in Children)
     {
       if (child.Visible)

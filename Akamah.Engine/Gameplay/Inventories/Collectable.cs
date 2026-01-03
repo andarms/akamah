@@ -1,6 +1,7 @@
 using Akamah.Engine.Engine.Core;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World;
+using Akamah.Engine.World.Actors.Player;
 
 namespace Akamah.Engine.Gameplay.Inventories;
 
@@ -27,8 +28,9 @@ public class Collectable : GameObject
     var collision = CollisionsManager.GetPotentialCollisions(this);
     foreach (var other in collision)
     {
-      if (!other.TryGet<Inventory>(out var inventory)) { continue; }
-      inventory.Trigger(new AddToInventory(Item, 1));
+      if (other is not Player) { continue; }
+
+      Game.Inventory.Trigger(new AddToInventory(Item, 1));
       Game.Remove(this);
       break;
     }

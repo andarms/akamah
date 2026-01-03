@@ -2,6 +2,7 @@ using Akamah.Engine.Engine.Camera;
 using Akamah.Engine.Engine.Input;
 using Akamah.Engine.Engine.Physics.Spatial;
 using Akamah.Engine.Engine.Scenes;
+using Akamah.Engine.Gameplay.Inventories;
 using Akamah.Engine.Shared;
 using Akamah.Engine.Systems.Collision;
 using Akamah.Engine.World;
@@ -20,6 +21,10 @@ public static class Game
   public static IViewport Viewport => viewport;
   public static RandomNumberGenerator Rng { get; } = new(Seed);
   public static Map Map { get; set; } = new(200, 200);
+
+
+  public static Inventory Inventory { get; } = Inventory.Small();
+  public static Toolbar Toolbar { get; } = new();
 
 
   static readonly ScenesController scenes = new();
